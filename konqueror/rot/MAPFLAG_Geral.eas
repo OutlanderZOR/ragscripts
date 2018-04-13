@@ -1,0 +1,270 @@
+//================= MAPAS DE PVP ===========================
+pvp_y_1-1	mapflag	pvp
+pvp_y_1-2	mapflag	pvp
+pvp_y_1-3	mapflag	pvp
+pvp_y_1-4	mapflag	pvp
+pvp_y_1-5	mapflag	pvp
+rot_pvp_01	mapflag	pvp
+rot_pvp_02	mapflag	pvp
+rot_pvp_03	mapflag	pvp
+rot_pvp_04	mapflag	pvp
+rot_pvp_05	mapflag	pvp
+rot_pvp_06	mapflag	pvp
+rot_pvp_07	mapflag	pvp
+rot_pvp_08	mapflag	pvp
+rot_pvp_09	mapflag	pvp
+rot_pvp_10	mapflag	pvp
+rot_pvp_11	mapflag	pvp
+rot_pvp_12	mapflag	pvp
+guild_vs1	mapflag	pvp
+guild_vs2	mapflag	pvp
+guild_vs3	mapflag	pvp
+poring_c01	mapflag	pvp
+bat_c01	mapflag	pvp
+
+//pvp_y_1-1	mapflag	pvp_noparty
+//pvp_y_1-2	mapflag	pvp_noparty
+//pvp_y_1-3	mapflag	pvp_noparty
+//pvp_y_1-4	mapflag	pvp_noparty
+//pvp_y_1-5	mapflag	pvp_noparty
+//rot_pvp_01	mapflag	pvp_noparty
+//rot_pvp_02	mapflag	pvp_noparty
+//rot_pvp_03	mapflag	pvp_noparty
+//rot_pvp_04	mapflag	pvp_noparty
+//rot_pvp_05	mapflag	pvp_noparty
+//rot_pvp_06	mapflag	pvp_noparty
+//rot_pvp_07	mapflag	pvp_noparty
+//rot_pvp_08	mapflag	pvp_noparty
+//rot_pvp_09	mapflag	pvp_noparty
+//rot_pvp_10	mapflag	pvp_noparty
+//rot_pvp_11	mapflag	pvp_noparty
+//rot_pvp_12	mapflag	pvp_noparty
+//guild_vs1	mapflag	pvp_noparty
+//guild_vs2	mapflag	pvp_noparty
+//guild_vs3	mapflag	pvp_noparty
+//poring_c01	mapflag	pvp_noparty
+//bat_c01	mapflag	pvp_noparty
+
+pvp_y_1-1	mapflag	nobranch
+pvp_y_1-2	mapflag	nobranch
+pvp_y_1-3	mapflag	nobranch
+pvp_y_1-4	mapflag	nobranch
+pvp_y_1-5	mapflag	nobranch
+rot_pvp_01	mapflag	nobranch
+rot_pvp_02	mapflag	nobranch
+rot_pvp_03	mapflag	nobranch
+rot_pvp_04	mapflag	nobranch
+rot_pvp_05	mapflag	nobranch
+rot_pvp_06	mapflag	nobranch
+rot_pvp_07	mapflag	nobranch
+rot_pvp_08	mapflag	nobranch
+rot_pvp_09	mapflag	nobranch
+rot_pvp_10	mapflag	nobranch
+rot_pvp_11	mapflag	nobranch
+rot_pvp_12	mapflag	nobranch
+guild_vs1	mapflag	nobranch
+guild_vs2	mapflag	nobranch
+guild_vs3	mapflag	nobranch
+poring_c01	mapflag	nobranch
+bat_c01	mapflag	nobranch
+pvp_n_1-5	mapflag	nobranch
+
+pvp_y_1-1	mapflag	nomemo
+pvp_y_1-2	mapflag	nomemo
+pvp_y_1-3	mapflag	nomemo
+pvp_y_1-4	mapflag	nomemo
+pvp_y_1-5	mapflag	nomemo
+rot_pvp_01	mapflag	nomemo
+rot_pvp_02	mapflag	nomemo
+rot_pvp_03	mapflag	nomemo
+rot_pvp_04	mapflag	nomemo
+rot_pvp_05	mapflag	nomemo
+rot_pvp_06	mapflag	nomemo
+rot_pvp_07	mapflag	nomemo
+rot_pvp_08	mapflag	nomemo
+rot_pvp_09	mapflag	nomemo
+rot_pvp_10	mapflag	nomemo
+rot_pvp_11	mapflag	nomemo
+rot_pvp_12	mapflag	nomemo
+guild_vs1	mapflag	nomemo
+guild_vs2	mapflag	nomemo
+guild_vs3	mapflag	nomemo
+poring_c01	mapflag	nomemo
+bat_c01	mapflag	nomemo
+pvp_n_1-5	mapflag	nomemo
+
+pvp_y_1-1	mapflag	noreturn
+pvp_y_1-2	mapflag	noreturn
+pvp_y_1-3	mapflag	noreturn
+pvp_y_1-4	mapflag	noreturn
+pvp_y_1-5	mapflag	noreturn
+rot_pvp_01	mapflag	noreturn
+rot_pvp_02	mapflag	noreturn
+rot_pvp_03	mapflag	noreturn
+rot_pvp_04	mapflag	noreturn
+rot_pvp_05	mapflag	noreturn
+rot_pvp_06	mapflag	noreturn
+rot_pvp_07	mapflag	noreturn
+rot_pvp_08	mapflag	noreturn
+rot_pvp_09	mapflag	noreturn
+rot_pvp_10	mapflag	noreturn
+rot_pvp_11	mapflag	noreturn
+rot_pvp_12	mapflag	noreturn
+guild_vs1	mapflag	noreturn
+guild_vs2	mapflag	noreturn
+guild_vs3	mapflag	noreturn
+poring_c01	mapflag	noreturn
+pvp_n_1-5	mapflag	noreturn
+
+pvp_y_1-1	mapflag	nosave	SavePoint
+pvp_y_1-2	mapflag	nosave	SavePoint
+pvp_y_1-3	mapflag	nosave	SavePoint
+pvp_y_1-4	mapflag	nosave	SavePoint
+pvp_y_1-5	mapflag	nosave	SavePoint
+rot_pvp_01	mapflag	nosave	SavePoint
+rot_pvp_02	mapflag	nosave	SavePoint
+rot_pvp_03	mapflag	nosave	SavePoint
+rot_pvp_04	mapflag	nosave	SavePoint
+rot_pvp_05	mapflag	nosave	SavePoint
+rot_pvp_06	mapflag	nosave	SavePoint
+rot_pvp_07	mapflag	nosave	SavePoint
+rot_pvp_08	mapflag	nosave	SavePoint
+rot_pvp_09	mapflag	nosave	SavePoint
+rot_pvp_10	mapflag	nosave	SavePoint
+rot_pvp_11	mapflag	nosave	SavePoint
+rot_pvp_12	mapflag	nosave	SavePoint
+guild_vs1	mapflag	nosave	SavePoint
+guild_vs2	mapflag	nosave	SavePoint
+guild_vs3	mapflag	nosave	SavePoint
+poring_c01	mapflag	nosave	SavePoint
+pvp_n_1-5	mapflag	nosave	SavePoint
+
+pvp_y_1-1	mapflag	noteleport
+pvp_y_1-2	mapflag	noteleport
+pvp_y_1-3	mapflag	noteleport
+pvp_y_1-4	mapflag	noteleport
+pvp_y_1-5	mapflag	noteleport
+rot_pvp_01	mapflag	noteleport
+rot_pvp_02	mapflag	noteleport
+rot_pvp_03	mapflag	noteleport
+rot_pvp_04	mapflag	noteleport
+rot_pvp_05	mapflag	noteleport
+rot_pvp_06	mapflag	noteleport
+rot_pvp_07	mapflag	noteleport
+rot_pvp_08	mapflag	noteleport
+rot_pvp_09	mapflag	noteleport
+rot_pvp_10	mapflag	noteleport
+rot_pvp_11	mapflag	noteleport
+rot_pvp_12	mapflag	noteleport
+guild_vs1	mapflag	noteleport
+guild_vs2	mapflag	noteleport
+guild_vs3	mapflag	noteleport
+bat_c01	mapflag	noteleport
+poring_c01	mapflag	noteleport
+pvp_n_1-5	mapflag	noteleport
+
+pvp_y_1-1	mapflag	nowarp
+pvp_y_1-2	mapflag	nowarp
+pvp_y_1-3	mapflag	nowarp
+pvp_y_1-4	mapflag	nowarp
+pvp_y_1-5	mapflag	nowarp
+rot_pvp_01	mapflag	nowarp
+rot_pvp_02	mapflag	nowarp
+rot_pvp_03	mapflag	nowarp
+rot_pvp_04	mapflag	nowarp
+rot_pvp_05	mapflag	nowarp
+rot_pvp_06	mapflag	nowarp
+rot_pvp_07	mapflag	nowarp
+rot_pvp_08	mapflag	nowarp
+rot_pvp_09	mapflag	nowarp
+rot_pvp_10	mapflag	nowarp
+rot_pvp_11	mapflag	nowarp
+rot_pvp_12	mapflag	nowarp
+guild_vs1	mapflag	nowarp
+guild_vs2	mapflag	nowarp
+guild_vs3	mapflag	nowarp
+bat_c01	mapflag	nowarp
+poring_c01	mapflag	nowarp
+pvp_n_1-5	mapflag	nowarp
+
+pvp_y_1-1	mapflag	nowarpto
+pvp_y_1-2	mapflag	nowarpto
+pvp_y_1-3	mapflag	nowarpto
+pvp_y_1-4	mapflag	nowarpto
+pvp_y_1-5	mapflag	nowarpto
+rot_pvp_01	mapflag	nowarpto
+rot_pvp_02	mapflag	nowarpto
+rot_pvp_03	mapflag	nowarpto
+rot_pvp_04	mapflag	nowarpto
+rot_pvp_05	mapflag	nowarpto
+rot_pvp_06	mapflag	nowarpto
+rot_pvp_07	mapflag	nowarpto
+rot_pvp_08	mapflag	nowarpto
+rot_pvp_09	mapflag	nowarpto
+rot_pvp_10	mapflag	nowarpto
+rot_pvp_11	mapflag	nowarpto
+rot_pvp_12	mapflag	nowarpto
+guild_vs1	mapflag	nowarpto
+guild_vs2	mapflag	nowarpto
+guild_vs3	mapflag	nowarpto
+bat_c01	mapflag	nowarpto
+poring_c01	mapflag	nowarpto
+pvp_n_1-5	mapflag	nowarpto
+
+pvp_y_1-1	mapflag	nodrop
+pvp_y_1-2	mapflag	nodrop
+pvp_y_1-3	mapflag	nodrop
+pvp_y_1-4	mapflag	nodrop
+pvp_y_1-5	mapflag	nodrop
+rot_pvp_01	mapflag	nodrop
+rot_pvp_02	mapflag	nodrop
+rot_pvp_03	mapflag	nodrop
+rot_pvp_04	mapflag	nodrop
+rot_pvp_05	mapflag	nodrop
+rot_pvp_06	mapflag	nodrop
+rot_pvp_07	mapflag	nodrop
+rot_pvp_08	mapflag	nodrop
+rot_pvp_09	mapflag	nodrop
+rot_pvp_10	mapflag	nodrop
+rot_pvp_11	mapflag	nodrop
+rot_pvp_12	mapflag	nodrop
+guild_vs1	mapflag	nodrop
+guild_vs2	mapflag	nodrop
+guild_vs3	mapflag	nodrop
+bat_c01	mapflag	nodrop
+poring_c01	mapflag	nodrop
+pvp_n_1-5	mapflag	nodrop
+
+//================= MAPAS DE PVP ===========================
+guild_vs4	mapflag	pvp	off
+guild_vs5	mapflag	pvp	off
+
+guild_vs4	mapflag	nobranch
+guild_vs5	mapflag	nobranch
+
+guild_vs4	mapflag	nomemo
+guild_vs5	mapflag	nomemo
+
+guild_vs4	mapflag	noreturn
+guild_vs5	mapflag	noreturn
+
+guild_vs4	mapflag	nosave	SavePoint
+guild_vs5	mapflag	nosave	SavePoint
+
+guild_vs4	mapflag	noteleport
+guild_vs5	mapflag	noteleport
+
+guild_vs4	mapflag	nowarp
+guild_vs5	mapflag	nowarp
+
+guild_vs4	mapflag	nowarpto
+guild_vs5	mapflag	nowarpto
+
+guild_vs4	mapflag	nowarpto
+guild_vs5	mapflag	nowarpto
+
+guild_vs4	mapflag	noloot
+guild_vs5	mapflag	noloot
+
+guild_vs4	mapflag	noexp
+guild_vs5	mapflag	noexp

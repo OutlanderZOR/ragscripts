@@ -1,0 +1,157 @@
+prontera,143,169,6	script	RoT Battlegrounds	928,{
+	set .@title$, "["+"^e42600"+"RoT Battlegrounds"+"^000000]";
+	mes .@title$;
+	mes "Olá ^4c96d4"+strcharinfo(0)+"^000000!";
+	mes "Em que posso ajudar?";
+	L_MenuSelect:
+	next;
+	menu .op$+" Entrar "+.op$, L_Entrar, .op$+" Prêmios "+.op$, L_Premios, 
+	.op$+" Como funciona "+.op$, L_ComoFunciona, .op$+" Gravity Error? "+.op$, L_Erro, .op$+" Sair "+.op$,-;
+	close;
+	
+	L_Entrar:
+		mes .@title$;
+		mes "Em manutenção.";
+		close;
+		mes .@title$;
+		mes "Para participar do RoT Battlegrounds é necessário estar em uma party com 5 ou mais membros online!";
+		next;
+		mes .@title$;
+		set .@IsEventActive, getvariableofnpc(.IsEventActive,"RoTBattlegrounds");
+		// Verifica se já existe uma partida ativa
+		if (.@IsEventActive) || (getmapusers("bat_b01")) {
+			mes "Já existe uma partida em andamento... por favor aguarde.";
+			close;
+		}
+		// Verifica se é lider
+		if (getpartyleader(getcharid(1),1)<=0) {
+			mes "Você não é o lider da party, apenas o lider pode iniciar a partida.";
+			close; 
+		}
+		// Verifica número de membros da party
+		getpartymember getcharid(1),3;
+		if ($@partymembercount < 1) {
+			mes "Sua party deve ter no mínimo 5 membros online para acessar o RoT Battlegrounds.";
+			close;
+		}
+		// Verifica número de membros online
+		set @onlineMembers, 0;
+		getpartymember getcharid(1),2;
+		for (set .@i, 0; .@i < getarraysize($@partymemberaid); set .@i, .@i + 1) {
+			if (isloggedin($@partymemberaid[.@i]))
+				 set @onlineMembers, @onlineMembers + 1;
+		}
+		if (@onlineMembers < 1) {
+			mes "online check";
+			mes "Sua party deve ter no mínimo 5 membros online para acessar o RoT Battlegrounds.";
+			close;
+		}
+		mes "Sua party está dentro dos requerimentos mínimos... o que deseja fazer?";
+		next;
+		switch(select(.op$+" Iniciar partida "+.op$, .op$+" Sair "+.op$)) {
+			case 1: 
+				goto L_GoIn;
+				break;
+			case 2:
+				announce "saida",0;
+				close;
+				break;
+		}
+		end;
+		
+	L_GoIn:
+		close2;
+		doevent "RoTBattlegrounds::OnNpcEntry";
+		delwaitingroom;
+		waitingroom "* Ocupado *",0;
+		sleep2(1000);
+		donpcevent "RoT Battlegrounds::OnCheckActivity";
+		end;
+		
+	L_Premios:
+		mes .@title$;
+		mes "- Diablo's Armor";
+		mes "- Diablo's Boots";
+		mes "- Diablo's Manteau";
+		mes "- Diablo's Ring";
+		mes "- Diablo's Robe";
+		mes "- 5 Valkyrie's Armor";
+		mes "- 5 Valkyrie's Manteau";
+		mes "- 2 Randgris Card";
+		mes "- 2 Thanatos Card";
+		mes "- 2 Orlean's Gloves";
+		mes "- Brynhildr";
+		mes "- Aesprika";
+		next;
+		mes .@title$;
+		mes "Observação 1:";
+		mes "Para poder escolher os prêmios, o time deverá terminar a partida até o round 5.";
+		next;
+		mes .@title$;
+		mes "Observação 2:";
+		mes "Para liberar os itens GOD na seleção de prêmios será necessário terminar a partida no round 3.";
+		goto L_MenuSelect;
+		
+	L_ComoFunciona:
+		mes .@title$;
+		mes "O RoT Battlegrounds é o script PvM controlado por inteligencia artificial.";
+		next;
+		mes .@title$;
+		mes "Os principais objetivos são:";
+		mes "1 - Defender a Torre";
+		mes "2 - Destruir os Emperiums localizados na área de spawn das tropas";
+		next;
+		mes .@title$;
+		mes "O time perde quando:";
+		mes "- A torre for destruida pelas tropas inimigas";
+		next;
+		mes .@title$;
+		mes "O time ganha quando:";
+		mes "- Todos os emperiums forem destruidos";
+		next;
+		mes .@title$;
+		mes "Observações:";
+		mes "- Cada vez que um emperium é destruido, a torre cura 1kk de HP";
+		mes "- Com o passar dos rounds os monstros que protegem os emperiums irão desaparecer";
+		next;
+		mes .@title$;
+		mes "Atenção:";
+		mes "- Quando morrer aguarde que o script irá ressuscita-lo em 2 segundos";
+		mes "- Caso saia da sala clicando em algum botão por acidente quando morrer, "+
+			"basta acessar o mapa pelo NPC de entrada do RoT Battlegrounds.";
+		next;
+		mes .@title$;
+		goto L_MenuSelect;
+		
+	L_Erro:
+		mes .@title$;
+		mes "Este script utiliza arquivos de audio do RoT Patch 0.8.9+ e um mapa recentemente "+
+			"adicionado ao sakray 1017+ 'bat_b01'";
+		next;
+		mes .@title$;
+		mes "Caso tenha alguma dificuldade em acessar o evento, tente atualizar seu sakray "+
+			"para uma versão mais recente ou verifique a versão do seu RoT Patch.";
+		goto L_MenuSelect;	
+end;
+
+OnCheckActivity:
+	sleep(5000);
+	do {
+		set .@IsEventActive, getvariableofnpc(.IsEventActive,"RoTBattlegrounds");
+		sleep(1000);
+		//announce "IsEventActive = "+.@IsEventActive + "  map users = "+getmapusers("bat_b01"),0;
+	} while (.@IsEventActive) || (getmapusers("bat_b01"));
+	sleep(5000);
+	delwaitingroom;
+	waitingroom "RoT Battlegrounds",0;
+	end;
+
+OnCreateWaitingroom:
+	waitingroom "Ocupado",0;
+end;
+OnInit:
+	set .op$,"^e42600(^000000^931e07*^000000^e42600)^000000";
+	sleep(1000);
+	donpcevent "RoT Battlegrounds::OnCheckActivity";
+end;
+}

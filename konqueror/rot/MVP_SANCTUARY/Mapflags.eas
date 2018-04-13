@@ -1,0 +1,9 @@
+rot_force	mapflag	nowarp
+
+rot_force	mapflag	nowarpto
+
+rot_force	mapflag	nosave	SavePoint
+
+rot_force	mapflag	nobranch
+
+rot_force	mapflag	nomemo

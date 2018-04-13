@@ -1,0 +1,10 @@
+prontera,164,164,2	script	VIP Warper	100,{
+	mes "Este warper é temporário, futuramente somente os vencedores da WOE terão acesso a sala VIP.";
+	close2;
+	warp "quiz_00",65,6;
+	end;
+	
+OnInit:
+	waitingroom "Sala VIP", 0;
+	end;
+}

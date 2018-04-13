@@ -1,0 +1,34 @@
+-	script	CONST	-1,{
+	end;
+	
+OnInit:
+	set $MD_CLASS, 0;
+	set $MD_LEVEL, 1;
+	set $MD_HP, 2;
+	set $MD_MAX_HP, 3;
+	set $MD_MASTER_ID, 4;
+	set $MD_MAP_INDEX, 5;
+	set $MD_X, 6;
+	set $MD_Y, 7;
+	set $MD_SPEED, 8;
+	set $MD_MODE, 9;
+	set $MD_AI_STATE, 10;
+	set $MD_SC_OPTION, 11;
+	set $MD_SEX, 12;
+	set $MD_SPRITE, 13;
+	set $MD_HAIR_STYLE, 14;
+	set $MD_HAIR_COLOR, 15;
+	set $MD_HEADGEAR_BOTTOM, 16;
+	set $MD_HEADGEAR_MIDDLE, 17;
+	set $MD_HEADGEAR_TOP, 18;
+	set $MD_CLOTH_COLOR, 19;
+	set $MD_SHIELD, 20;
+	set $MD_WEAPON, 21;
+	set $MD_SIZE, 22;
+	set $MD_LOOKING_DIR, 23;
+	set $MD_KILLER_STATE, 24;
+	set $MD_CALLBACK_FLAG, 25;
+	set $MD_NO_RANDOM_WALK, 26;
+	set $MD_NAME, 27;
+	end;
+}

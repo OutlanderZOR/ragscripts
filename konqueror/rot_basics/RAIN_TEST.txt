@@ -1,0 +1,135 @@
+prontera.gat,150,150,0	script	RAIN	50,10,10{
+end;
+OnTouch:
+	announce "lol",0;
+	end;
+
+OnInit:
+	do {
+		misceffect 665;
+		sleep(rand(1,2)*1000);
+	} while(1);
+	//hideonnpc "RAIN";
+
+
+	end;
+
+	mes "next pra começa";
+	next;
+	soundeffectall "lobby_1.wav",0,1,"prontera.gat",0,0,300,300;
+	set @timenow, ((gettime(3)*60) + gettime(2)) * 60 + gettime(1);
+	mes "tocando...";
+	next;
+	set @timenow, ((gettime(3)*60) + gettime(2)) * 60 + gettime(1) - @timenow;
+	set @timenow, @timenow * 1000;
+	mes @timenow;
+	close;
+	
+	// mercenarie fortress rush
+	do {
+		soundeffectall "merc_fortress.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(361000);
+	} while (1);
+	
+	// elf village 1
+	do {
+		soundeffectall "elf_village_1.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(159000);
+	} while (1);
+	
+	// main town 2 - rain
+	do {
+		soundeffectall "main_town_2.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(144000);
+	} while (1);
+	
+	// main town 1 - sun
+	do {
+		soundeffectall "main_town_1.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(164000);
+	} while (1);
+	
+	// lobby 3 - zack bar
+	do {
+		soundeffectall "lobby_3.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(40000);
+	} while (1);
+	
+	// lobby 2 - jungle
+	do {
+		soundeffectall "lobby_2.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(35000);
+	} while (1);
+	
+	// lobby 1 - halloween
+	do {
+		soundeffectall "lobby_1.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(34500);
+	} while (1);
+	
+	// boss 3
+	do {
+		soundeffectall "boss_3.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(164000);
+	} while (1);
+
+	
+	// boss_2
+	do {
+		soundeffectall "boss_2.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(91000);
+	} while (1);
+	
+	// boss_1
+	do {
+		soundeffectall "boss_1.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(137000);
+	} while (1);
+	
+	// angelic
+	do {
+		soundeffectall "angelic.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(41000);
+	} while (1);
+	
+	// tavern
+	do {
+		soundeffectall "tavern.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(66000);
+	} while (1);
+	
+	// temple of time
+	do {
+		soundeffectall "temple_of_time.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(74000);
+	} while (1);
+	
+	// battle event 4
+	do {
+		soundeffectall "battle-event_4.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(123000);
+	} while (1);
+	
+	// battle event 3
+	do {
+		soundeffectall "battle-event_3.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(117000);
+	} while (1);
+	
+	// battle event 2
+	do {
+		soundeffectall "battle-event_2.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(110000);
+	} while (1);
+
+	
+	// battle event 1
+	do {
+		soundeffectall "battle-event_1.wav",0,1,"prontera.gat",0,0,300,300;
+		sleep(194000);
+	} while (1);
+	
+	end;
+
+end;
+}

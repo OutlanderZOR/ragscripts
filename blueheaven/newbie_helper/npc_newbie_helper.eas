@@ -1,0 +1,102 @@
+//=================================================================================================
+//			STARTER SCRIPT
+//=================================================================================================
+prontera,141,170,6	script	NPC_Newbie_Helper	877,{
+	
+	function F_StarterLevel	{
+		if (BaseLevel < 30)
+		{
+			set .@blvl, 30 - BaseLevel;
+			atcommand "@blvl " + .@blvl;
+		}
+	}
+	
+	cutin "nyuang_1",2;
+	set .@title$,"[^681EA6Nyuang^000000]";
+	mes .@title$;
+	mes "Olá, eu ofereço level base para jogadores de level abaixo de 30 e first job para Novice.";
+	next;
+	if (!Class)
+	{
+		mes .@title$;
+		mes "Parece que vc não possui um first job. Quer que eu te ajude?";
+		next;
+		switch(select("Sim", "Não")) 
+		{
+			case 1:
+				mes .@title$;
+				mes "Escolha a classe...";
+				next;
+				set @classe, select("Swordman","Mage","Archer","Acolyte","Merchant","Thief","Super Novice","Gunslinger","Ninja");
+				atcommand "@skillall";
+				switch(@classe) {
+					case 1: // Swordman
+						jobchange 1;
+						getitem 1107, 1; // Blade
+						break;
+					case 2: // Mage
+						jobchange 2;
+						getitem 1610, 1; // Arc Wand
+						break;
+					case 3: // Archer
+						jobchange 3;
+						getitem 1704, 1; // Composite Bow
+						getitem 1750, 1500; // Arrows
+						break;
+					case 4: // Acolyte
+						jobchange 4;
+						getitem 1610, 1; // Arc Wand
+						getitem 1519, 1;
+						break;
+					case 5: // Merchant
+						jobchange 5;
+						getitem 1304, 1; // Orcish Axe
+						break;
+					case 6: // Thief
+						jobchange 6;
+						getitem 1207, 1; // Main gauche
+						break;
+					case 7:
+						jobchange 23;
+						getitem 1243, 1; // Novice Gauche
+						break;
+					case 8:
+						jobchange 24;
+						getitem 13150, 1; // Bench
+						break;
+					case 9:
+						jobchange 25;
+						break;
+				}
+				getitem 501, 50;        // 50 Red Potions
+				getitem 601, 20;        // 20 Fly Wings
+				getitem 602, 10;        // 10 Butterfly Wings
+				getitem 7059, 15;       // 15 Storage Tickets
+				F_StarterLevel();
+				mes "Boa sorte!";
+				break;
+			case 2:
+				mes .@title$;
+				mes "Tudo bem...";
+				break;
+		}
+	}
+	else if (BaseLevel < 30) 
+	{
+		mes .@title$;
+		mes "Por enquanto só posso te ajudar com alguns leveis. Boa sorte!";
+		F_StarterLevel();
+	}
+	else
+	{
+		mes .@title$;
+		mes "Sinto muito, mas vc não me parece um iniciante.";
+	}
+	close2;
+	cutin "",255;
+	end;
+
+OnInit:
+	waitingroom "Novatos Aqui!!1",0;
+	end;
+}

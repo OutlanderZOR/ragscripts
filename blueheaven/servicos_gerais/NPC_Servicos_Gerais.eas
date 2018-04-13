@@ -1,0 +1,120 @@
+-	script	Serviços Gerais	873,{
+
+	set .@title$, "[^D3220EServiços Gerais^000000]";
+	cutin "fly_trock",2;
+	
+	mes .@title$;
+	mes "Bem Vindo. Selecione o serviço desejado.";
+	next;
+//	switch(select("(*) Resetar Posição (*)","(*) Status do Servidor (*)","(*) Alterar Senha da Conta (*)","(*) Alterar Sexo (*)")) {
+	switch(select("(*) Resetar Posição (*)","(*) Alterar Sexo (*)")) {
+		case 1: goto L_Reset_Pos; break;
+//		case 2: goto L_Server_Status; break;
+//		case 3: goto L_Alterar_Senha; break;
+		case 2: goto L_Change_Sex;
+	}
+	end;
+	
+L_Change_Sex:
+	set @resultado, 0;
+	query_sql "select 1 from `char` where account_id = "+getcharid(3)+" and class in (4020, 4021, 19, 20)", @resultado;
+	mes .@title$;
+	if (@resultado) {
+		mes "Você não pode alterar o sexo de sua conta por ter pessonagens (Gypsy, Clown, Bard e Dancer)";
+	} else {
+		mes "O sexo de todos os personagens da conta atual serão alterados. Deseja Continuar?";
+		next;
+		menu "Sim",-,"Não",L_Exit;
+		changesex;
+	}
+	close2;
+	cutin "",255;
+	
+	end;	
+L_Server_Status:
+	mes .@title$;
+	mes "Sem informações no momento...";
+	goto L_CloseCutin;
+	
+L_Alterar_Senha:
+	mes .@title$;
+	mes "^E22B0A!!! ATENÇÃO !!!^000000";
+	mes "Muito cuidado ao alterar a senha de sua conta! Caso você esqueça ou a perca, não haverá outro meio de recuperá-la!";
+	next;
+	mes .@title$;
+	mes "^E22B0A!!! ATENÇÃO !!!^000000";
+	mes "Dentro do jogo não existe máscara de senha (como os asteriscos), é importante que você siga as próximas etapas em privacidade.";
+	mes "Deseja Continuar?";
+	next;
+	menu "Não",L_Exit,"Sim, desejo alterar a senha",-;
+	query_sql "Select user_pass from login where account_id = "+getcharid(3),@pw_src$;
+	mes .@title$;
+	mes "1. Informe sua senha atual";
+	input @pw_now$;
+	if (@pw_now$ != @pw_src$) {
+		mes "^E22B0ASenha Incorreta.^000000";
+		goto L_CloseCutin;
+	}
+	mes "2. Informe a NOVA senha desejada (min 5 caract.)";
+	input @pw_1$;
+	if (getstrlen(@pw_1$) < 4) {
+		mes "^E22B0AToda senha deve ter no mínimo 5 caracteres.^000000"; 
+		goto L_CloseCutin;
+	}
+	mes "3. Informe novamente a NOVA senha";
+	input @pw_2$;
+	if (@pw_1$!=@pw_2$) {
+		mes "^E22B0ASenha não confere.^000000";
+		goto L_CloseCutin;
+	}
+	mes "^E22B0ANOVA SENHA:^000000 "+ @pw_1$;
+	next;
+	menu "(*) Cancelar (*)",L_Exit,"(*) Confirmar (*)",-;
+	mes .@title$;
+	query_sql "update `login` set user_pass = '"+@pw_1$+"' where account_id = "+getcharid(3);
+	mes "Senha alterada com sucesso!";
+	mes "^E22B0ADe:^000000 "+@pw_src$;
+	mes "^E22B0APara:^000000 "+@pw_1$;	
+	goto L_CloseCutin;
+	
+	
+	
+L_Reset_Pos:
+	mes .@title$;
+	mes "Selecione o número do personagem desejado.";
+	query_sql "Select char_id, name, last_map from `char` where account_id = " + getcharid(3),@char_id,@name$,@last_map$;
+	set @i, 0;
+	do {
+		mes "["+@i+"] - "+@name$[@i]+" - ["+@last_map$+"]";
+		set @i, @i + 1;
+	} while (@i < getarraysize(@char_id));
+	input @selected_id;
+	if (@selected_id >= @i) {
+		mes "D3220EValor Inválido.^000000";
+		goto L_CloseCutin;
+	}
+	query_sql "Update `char` SET last_map = 'prontera', last_x = 156, last_y = 179 where char_id = "+@char_id[@selected_id];
+	next;
+	mes .@title$;
+	mes "A posição do personagem ^3768B0"+@name$[@selected_id]+"^000000 foi resetada!";
+	goto L_CloseCutin;
+	
+L_Exit:
+	mes .@title$;
+	mes "bye.";
+	goto L_CloseCutin;
+	
+L_CloseCutin:
+	close2;
+	cutin "",255;
+	end;
+	
+end;
+}
+
+prontera,146,172,6	duplicate(Serviços Gerais)	Serviços Gerais#rp01	873
+morocc,164,97,4	duplicate(Serviços Gerais)	Serviços Gerais#rp02	873
+geffen,130,74,0	duplicate(Serviços Gerais)	Serviços Gerais#rp03	873
+payon,176,110,4	duplicate(Serviços Gerais)	Serviços Gerais#rp04	873
+izlude,134,95,2	duplicate(Serviços Gerais)	Serviços Gerais#rp05	873
+quiz_00,79,36,4	duplicate(Serviços Gerais)	Serviços Gerais#rp06	873

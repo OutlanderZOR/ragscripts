@@ -1,0 +1,5 @@
+payon.gat,143,200,0	script	Distribuidor de Poções	50,{
+	mes "Npc desativado temporariamente...";
+	close;
+	end;
+}

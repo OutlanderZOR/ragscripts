@@ -1,0 +1,15 @@
+prontera,150,150,0	script	NPC_Warper_Treinamento	100,{
+	set .@title$, "[" + "^dddddd" + "Warper de Treinamento" + "^000000" + "]";
+	set .@ml$, "(^20AF1D$^000000) ^131E11";
+	set .@mr$, "^000000 (^20AF1D$^000000)";
+	
+L_Begin:
+	mes .title$;
+	mes "Selecione o mapa.";
+	
+
+
+OnInit:
+	
+	end;
+}

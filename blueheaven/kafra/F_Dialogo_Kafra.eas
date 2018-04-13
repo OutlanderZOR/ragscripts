@@ -1,0 +1,23 @@
+function	script	F_Dialogo_Kafra	{
+	set .@local$, getarg(0); // Nome do local para exibição no titulo;
+	set .@sv_map$, getarg(1); // Nome GAT do mapa de savepoint;
+	set .@sv_map_x, getarg(2); // Coordenada X do savepoint;
+	set .@sv_map_y, getarg(3); // Coordenada Y do savepoint;
+	set .@imagem$, getarg(4); // Imagem cutin do npc;
+	set .@title$, "[" + "^8538d4" + .@local$ + " Kafra" + "^000000" + "]";
+	cutin .@imagem$, 2;
+	mes .@title$;
+	mes "Olá, o que deseja?";
+	menu "Abrir Storage:Definir Savepoint",-;
+	close2;
+	cutin .@imagem$, 255;
+	switch(@menu) {
+		case 1:
+			openstorage;
+			break;
+		case 2:
+			savepoint .@sv_map$, .@sv_map_x, .@sv_map_y;
+			dispbottom "Savepoint alterado.";
+			break;
+	}
+}

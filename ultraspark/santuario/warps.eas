@@ -1,0 +1,7 @@
+// Sala de eventos para bar santuario
+rot_event,73,39,0	warp	rot_san_wp1	2,2,rot_san_in,84,78
+rot_san_in,80,78,0	warp	rot_san_wp2	2,2,rot_event,73,34
+
+// Bar do santuario para santuario
+rot_san_in,68,95,0	warp	rot_san_wp3	2,2,rot_san_01,121,113
+rot_san_01,125,113,0	warp	rot_san_wp4	2,2,rot_san_in,68,90

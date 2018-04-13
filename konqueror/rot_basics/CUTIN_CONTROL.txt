@@ -1,0 +1,44 @@
+//=================
+//= CUTIN CONTROL
+//=================
+
+// Adiciona cutin a lista
+Function	script	fnc_Cutin_Add	{
+	//getarg(0) = account id
+	//getarg(1) = cutin_type
+	set .@cutin_exists, 0;
+	query_sql "select 1 from cutin where acid = "+getarg(0)+" and cutin_type = "+getarg(1),.@cutin_exists;
+	if (!.@cutin_exists) query_sql "insert into cutin (`acid`, `cutin_type`) VALUES ("+getarg(0)+", '"+getarg(1)+"')";
+}
+
+Function	script	fnc_Cutin_Del	{
+	//getarg(0) = account_id
+	query_sql "delete from cutin where acid = "+getarg(0);
+}
+
+-	script	eve_Cutin_Thread	-1,{
+end;
+
+OnStart:
+	if (PC_CUTIN_THREAD_ACTIVE) end;
+	//Inicia
+	set PC_CUTIN_THREAD_ACTIVE, 1;
+	do {
+		cutin "",255;
+		set @cutin_exists, 0;
+		set @cutin_type$, "";
+		query_sql "select 1, cutin_type, displayside, soundeffect from cutin where acid = "+getcharid(3)+" order by priority desc"
+		,@cutin_exists, @cutin_type$, @displayside, @soundeffect$;
+		cutin @cutin_type$,@displayside;
+		soundeffect @soundeffect$,0;
+		sleep(5000);
+	} while (@cutin_exists);
+	set PC_CUTIN_THREAD_ACTIVE, 0;
+	end;
+}
+
+Function	script	fnc_Cutin_DoEffects	{
+	switch(@cutin_type) {
+		case 1:
+	}
+}

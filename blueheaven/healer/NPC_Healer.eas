@@ -1,0 +1,15 @@
+-	script	Healer	83,{
+	percentheal 100,100;
+	specialeffect2 408;
+	specialeffect2 491;
+}
+morocc,160,97,4	duplicate(Healer)	Healer#heal-02	83
+geffen,122,62,0	duplicate(Healer)	Healer#heal-03	83
+payon,179,104,4	duplicate(Healer)	Healer#heal-04	83
+alberta,30,229,4	duplicate(Healer)	Healer#heal-05	83
+izlude,134,89,2	duplicate(Healer)	Healer#heal-06	83
+aldebaran,147,119,4	duplicate(Healer)	Healer#heal-07	83
+xmas,144,137,4	duplicate(Healer)	Healer#heal-08	83
+comodo,197,158,4	duplicate(Healer)	Healer#heal-09	83
+yuno,163,47,4	duplicate(Healer)	Healer#heal-10	83
+sch_gld,141,83,4	duplicate(Healer)	Healer#heal-11	83

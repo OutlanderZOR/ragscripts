@@ -1,0 +1,53 @@
+pvp_y_room,37,66,4	script	PvP Healer	83,{
+	percentheal 100,100;
+	specialeffect2 408;
+	specialeffect2 491;
+}
+pvp_y_room,53,66,4	duplicate(PvP Healer)	PvP Healer#rotpvp1	83
+pvp_y_room,69,66,4	duplicate(PvP Healer)	PvP Healer#rotpvp2	83
+pvp_y_room,85,66,4	duplicate(PvP Healer)	PvP Healer#rotpvp3	83
+	
+
+pvp_y_room,27,68,6	script	PvP Item Repair	86,{
+	set .@title$, "["+"^ad250a"+"Reparador de Itens"+"^000000"+"]";
+	mes .@title$;
+	if (getgmlevel()) {
+		if(getbrokenid(1)==NULL) {
+			mes "Todos seus itens estão em perfeitas condições, volte quando precisar...";
+		} else {
+			mes "Qual item deseja reparar?";
+			set @choice,select(getitemname(getbrokenid(1)),getitemname(getbrokenid(2)),
+				getitemname(getbrokenid(3)),getitemname(getbrokenid(4)),getitemname(getbrokenid(5)),
+				getitemname(getbrokenid(6)),getitemname(getbrokenid(7)),getitemname(getbrokenid(8)),
+				getitemname(getbrokenid(9)),getitemname(getbrokenid(10)));
+			repair(@choice);
+			mes "Pronto!";
+		}
+	} else {
+		mes "Sinto muito, mas este serviço é exclusivo para usuários VIP";
+	}
+	close;
+}
+pvp_y_room,42,68,6	duplicate(PvP Item Repair)	PvP Item Repair#r1	86
+pvp_y_room,58,68,6	duplicate(PvP Item Repair)	PvP Item Repair#r2	86
+pvp_y_room,74,68,6	duplicate(PvP Item Repair)	PvP Item Repair#r3	86
+	
+pvp_y_room,27,66,6	script	PvP Kafra	112,{
+	openstorage;
+}
+
+pvp_y_room,42,66,6	duplicate(PvP Kafra)	PvP Kafra#rotpvp1	112
+pvp_y_room,58,66,6	duplicate(PvP Kafra)	PvP Kafra#rotpvp2	112
+pvp_y_room,74,66,6	duplicate(PvP Kafra)	PvP Kafra#rotpvp3	112
+	
+pvp_y_room,52,39,0	script	PvP Warper#rotpvp1	874,{
+	warp "prontera",156,180;
+	savepoint "prontera",156,180;
+OnInit:
+	waitingroom ">> Voltar",0;
+}
+
+prontera,151,187,4	script	PvP Warper#rotpvp2	874,{
+	warp "pvp_y_room",51,44;
+	savepoint "pvp_y_room",57,71;
+}

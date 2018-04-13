@@ -1,0 +1,39 @@
+-	script	Reset NPC	-1,{
+	set .@title$, "["+"^ad250a"+"Reset NPC"+"^000000"+"]";
+	mes .@title$;
+	mes "Reinicie todas suas skills ou status!";
+	if (getgmlevel() == 0) {
+		mes "Para skills vc paga apenas 40k, para status 60k.";
+		mes "Jogadores abaixo do lvl 80 não pagam.";
+	}
+	mes "Algum interesse?";
+	next;
+	switch(select("Por enquanto não...","Resetar Skills","Resetar Status")) {
+		case 1:
+			break;
+		case 2:
+			if (BaseLevel < 80 || getgmlevel() > 0) {
+				resetskill;
+			} else if (zeny >= 40000) { 
+				set zeny, zeny - 40000;
+				resetskill;
+			} else {
+				mes "Volte quando for capaz de me pagar!";	
+			}
+			break;
+		case 3:
+			if (BaseLevel < 80 || getgmlevel() > 0) {
+				resetstatus;
+			} else if (zeny >= 60000) {
+				set zeny, zeny - 60000;
+				resetstatus;
+			} else { 
+				mes "Volte quando for capaz de me pagar!";
+			}
+			break;
+	}
+	close;
+}
+
+prontera,157,187,6	duplicate(Reset NPC)	Reset NPC#rn01	862
+quiz_00,54,36,4	duplicate(Reset NPC)	Reset NPC#rn02	862

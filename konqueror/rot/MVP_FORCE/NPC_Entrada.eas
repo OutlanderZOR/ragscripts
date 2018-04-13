@@ -1,0 +1,25 @@
+prontera,146,151,6	script	Mvp Force#entr	811,{
+	mes "[MvP Force]";
+	mes "Bem vindo ao MVP Force!";
+	mes "Para entrar no MVP Force você deve pagar uma taxa de 100k.";
+	next;
+	mes "Não existe outra forma de sair do MVP Force se não pelo warp do primeiro labirinto. Caso vc não consiga alcança-lo seu personagem ficará preso no mapa.";
+	next;
+	mes "Você tem certeza que deseja prosseguir? Seu personagem pode ficar preso no mapa caso não consiga chegar ao Warp!";
+	next;
+	menu "Não", L_Nao, "Sim", -;
+	mes "Tem mesmo certeza que você leu sobre o mapa e deseja prosseguir?";
+	menu "Não", L_Nao, "Sim", -;
+	if (zeny >= 100000)
+	{
+		set zeny, zeny - 100000;
+		warp "que_job01",81,78;
+		savepoint "que_job01",81,78;
+	}
+	mes "Infelizmente você não tem zeny suficiente para prosseguir...";
+	end;
+	
+L_Nao:
+	close2;
+	end;
+}

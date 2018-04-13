@@ -1,0 +1,12 @@
+payon.gat,143,210,0	script	PvP Healer	-1,20,20,{
+	end;
+	
+OnTouch:
+	if (Hp < MaxHp) 
+	{
+		percentheal 100,100;
+		specialeffect2 14;
+		specialeffect2 408;
+		specialeffect2 491;
+	}
+}

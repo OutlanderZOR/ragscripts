@@ -1,0 +1,18 @@
+que_job01,91,90,0	script	Reparador de Itens#mf	86,{
+	if(getbrokenid(1)==NULL) goto L_NOREPAIR;
+	set @choice,select(getitemname(getbrokenid(1)),getitemname(getbrokenid(2)),
+		getitemname(getbrokenid(3)),getitemname(getbrokenid(4)),getitemname(getbrokenid(5)),
+		getitemname(getbrokenid(6)),getitemname(getbrokenid(7)),getitemname(getbrokenid(8)),
+		getitemname(getbrokenid(9)),getitemname(getbrokenid(10)));
+	repair(@choice);
+	mes "tudo ok..";
+	close;
+	end;
+
+L_NOREPAIR:
+	end;
+
+OnInit:
+	waitingroom "Reparador de Itens",0;
+	end;
+}

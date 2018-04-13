@@ -1,0 +1,41 @@
+rot_force,0,0,0,0	monster	Fallen Bishop	1871,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Nidhoggr Shadow	2022,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Naght Sieger	1956,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Beelzebub	1874,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Gloom Under Night	1768,1,1800000,900000,1
+rot_force,0,0,0,0	monster	High Wizard Kathryne	1651,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Wounded Morroc	1917,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Assassin Cross	1647,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Lord Knight Seyren	1646,1,1800000,900000,1
+rot_force,0,0,0,0	monster	High Priest Margaretha	1649,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Whitesmith Howard	1648,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Satan Morroc	1917,1,1800000,900000,1
+rot_force,0,0,0,0	monster	High Priest Margaretha	1649,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Sniper Shecil	1650,1,1800000,900000,1
+
+rot_force,0,0,0,0	monster	Ifrit	1832,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Valkyrie Randgris	1751,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Detardeurus	1719,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Kiel	1734,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Ktullanux	1779,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Thanatos	1708,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Orc Lord	1190,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Amon Ra	1511,1,1800000,900000,1
+
+rot_force,0,0,0,0	monster	Garm	1252,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Golden Thief Bug	1086,2,1800000,900000,1
+rot_force,0,0,0,0	monster	Maya	1147,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Moonlight Flower	1150,4,1800000,900000,1
+rot_force,0,0,0,0	monster	Orc Hero	1087,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Stormy Knight	1251,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Tao Gunka	1583,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Turtle General	1312,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Valkyrie	1765,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Maya Purple	1289,4,1800000,900000,1
+rot_force,0,0,0,0	monster	Angeling	1096,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Deviling	1582,4,1800000,900000,1
+rot_force,0,0,0,0	monster	Ghostring	1120,4,1800000,900000,1
+rot_force,0,0,0,0	monster	Lord of the Dead	1373,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Lady Tanee	1688,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Incantation Samurai	1542,1,1800000,900000,1
+rot_force,0,0,0,0	monster	Dark Priest	1198,15,0,0,0

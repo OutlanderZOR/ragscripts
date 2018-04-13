@@ -1,0 +1,138 @@
+prontera,149,187,4	script	Mundo Alternativo	500,{
+	set .@ntitle$, "[^1b6bffMundo Alternativo^000000]";
+	mes .@ntitle$;
+	mes "Olá, o que deseja?";
+	next;
+	menu "Exibir mapas", -, "Vender poring coins", L_Vender;
+	mes .@ntitle$;
+	mes "Veja as areas que vc poderá dropar poring coins.";
+	next;
+	menu "Rot Dungeon 1",L_Dun01,"Rot Dungeon 2",L_Dun02,"Rot Dungeon 3",L_Dun03,"Rot Dungeon 4",L_Dun04,"Rot Dungeon 5",L_Dun05,"Rot Dungeon 6",L_Dun06;
+	
+L_Dun01:
+	warp "rot_trea01",0,0;
+	end;
+L_Dun02:
+	warp "rot_trea02",0,0;
+	end;
+L_Dun03:
+	warp "rot_trea03",0,0;
+	end;
+L_Dun04:
+	warp "rot_trea04",0,0;
+	end;
+L_Dun05:
+	warp "rot_trea05",0,0;
+	end;
+L_Dun06:
+	warp "rot_trea06",0,0;
+	end;
+	
+L_Vender:
+	close2;
+	callshop "ma1536",2;
+	end;
+	
+OnInit:
+	waitingroom "Mundo Alternativo",0;
+	end;
+	
+	function	fncObterQuantidadeCoin {
+		set .@mob_id, getarg(0);
+		set .@quantidade, 0;
+		switch(.@mob_id)
+		{
+			// MAJORUROS
+			case 2518: set .@quantidade, 25; break;
+			// Ancient Mummy
+			case 2517: set .@quantidade, 25; break;
+			// Dullahan
+			case 2520: set .@quantidade, 15; break;
+			// Zombie Prisoner
+			case 2511: set .@quantidade, 15; break;
+			// Rybio
+			case 2512: set .@quantidade, 10; break;
+			// Injustice
+			case 2515: set .@quantidade, 8; break;
+			// DISGUISE
+			case 2521: set .@quantidade, 7; break;
+			// ORC ARCHER
+			case 2508: set .@quantidade, 7; break;
+			// HYLOZOIST
+			case 2523: set .@quantidade, 6; break;
+			// ISIS
+			case 2502: set .@quantidade, 6; break;
+			// HIGH_ORC
+			case 2514: set .@quantidade, 6; break;
+			// GIBBET
+			case 2519: set .@quantidade, 5; break;
+			// MIMIC
+			case 2509: set .@quantidade, 5; break;
+			// ARCLOUSE
+			case 2510: set .@quantidade, 4; break;
+			// BRILIGHT
+			case 2513: set .@quantidade, 4; break;
+			// HUNTER_FLY
+			case 2503: set .@quantidade, 3; break;
+			// MUMMY
+			case 2505: set .@quantidade, 3; break;
+			// QUVE
+			case 2522: set .@quantidade, 3; break;
+			// DARK_GARGOYLE
+			case 2500: set .@quantidade, 2; break;
+			// MATYR
+			case 2507: set .@quantidade, 2; break;
+			// ORC LADY
+			case 2516: set .@quantidade, 1; break;
+			// ORK WARRIOR
+			case 2501: set .@quantidade, 1; break;
+		}
+		return .@quantidade;
+	}
+	
+OnNPCKillEvent:
+	set .@map_prefix$, "rot_trea0";
+	if (killedrid >= 2500 && killedrid <= 2523)
+	{
+		set .@mob_id, killedrid;
+		set .@party_id, getcharid(1);
+		if (.@party_id == 0)
+			getitem 7539,1;
+		else
+		{
+			getpartymember .@party_id, 2;
+			deletearray .@mas_party_aid[0], getarraysize(.@mas_party_aid);
+			copyarray .@mas_party_aid[0], $@partymemberaid[0], getarraysize($@partymemberaid);
+			//announce "party_id: "+ .@party_id,0;
+			//announce "getarraysize(.@mas_party_aid): " + getarraysize(.@mas_party_aid), 0;
+			getmapxy(.@map$,.@x,.@y,0);
+			set .@map_killer$, .@map$;
+			for(set .@i, 0; .@i < getarraysize(.@mas_party_aid); set .@i, .@i + 1)
+			{
+				//announce ".@mas_party_aid: " + .@mas_party_aid[.@i], 0;
+				detachrid;
+				if (isloggedin(.@mas_party_aid[.@i]))
+				{
+					attachrid(.@mas_party_aid[.@i]);
+					getmapxy(.@map$,.@x,.@y,0);
+					if (.@map$ == .@map_killer$)
+					{
+						if (mas_last_hp != hp
+							|| mas_last_sp != sp
+							|| mas_last_x != .@x
+							|| mas_last_y != .@y)
+							getitem 7539, fncObterQuantidadeCoin(.@mob_id);
+						set mas_last_hp, hp;
+						set mas_last_sp, sp;
+						set mas_last_map$, .@map$;
+						set mas_last_x, .@x;
+						set mas_last_y, .@y;
+					}
+				}
+			}
+		}
+	}
+	end;
+}
+	
+izlude,116,126,3	shop	ma1536	-1,4132:20,4140:20,4035:20,4072:20,662:1450,12016:2,7142:10

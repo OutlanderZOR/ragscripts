@@ -1,0 +1,1167 @@
+//|      ___           ___           ___           ___                                                    ___     
+//|     /  /\         /  /\         /  /\         /  /\          ___            ___         ___          /  /\    
+//|    /  /::\       /  /::\       /  /::\       /  /::\        /__/\          /__/\       /  /\        /  /::\   
+//|   /  /:/\:\     /  /:/\:\     /  /:/\:\     /  /:/\:\       \  \:\         \__\:\     /  /:/       /  /:/\:\  
+//|  /  /:/  \:\   /  /::\ \:\   /  /::\ \:\   /  /::\ \:\       \__\:\        /  /::\   /  /:/       /  /::\ \:\ 
+//| /__/:/ \  \:\ /__/:/\:\_\:\ /__/:/\:\ \:\ /__/:/\:\_\:\      /  /::\    __/  /:/\/  /__/:/  ___  /__/:/\:\ \:\
+//| \  \:\  \__\/ \__\/~|::\/:/ \  \:\ \:\_\/ \__\/  \:\/:/     /  /:/\:\  /__/\/:/~~   |  |:| /  /\ \  \:\ \:\_\/
+//|  \  \:\          |  |:|::/   \  \:\ \:\        \__\::/     /  /:/__\/  \  \::/      |  |:|/  /:/  \  \:\ \:\  
+//|   \  \:\         |  |:|\/     \  \:\_\/        /  /:/     /__/:/        \  \:\      |__|:|__/:/    \  \:\_\/  
+//|    \  \:\        |__|:|~       \  \:\         /__/:/      \__\/          \__\/       \__\::::/      \  \:\    
+//|     \__\/         \__\|         \__\/         \__\/                                      ~~~~        \__\/    
+//|      ___           ___           ___                                                    ___                   
+//|     /  /\         /  /\         /  /\           ___         ___           ___          /  /\                  
+//|    /  /::\       /  /::\       /  /::\         /__/\       /  /\         /__/\        /  /::\                 
+//|   /__/:/\:\     /  /:/\:\     /  /:/\:\        \__\:\     /  /::\        \  \:\      /__/:/\:\                
+//|  _\_ \:\ \:\   /  /:/  \:\   /  /::\ \:\       /  /::\   /  /:/\:\        \__\:\    _\_ \:\ \:\               
+//| /__/\ \:\ \:\ /__/:/ \  \:\ /__/:/\:\_\:\   __/  /:/\/  /  /::\ \:\       /  /::\  /__/\ \:\ \:\              
+//| \  \:\ \:\_\/ \  \:\  \__\/ \__\/~|::\/:/  /__/\/:/~~  /__/:/\:\_\:\     /  /:/\:\ \  \:\ \:\_\/              
+//|  \  \:\_\:\    \  \:\          |  |:|::/   \  \::/     \__\/  \:\/:/    /  /:/__\/  \  \:\_\:\                
+//|   \  \:\/:/     \  \:\         |  |:|\/     \  \:\          \  \::/    /__/:/        \  \:\/:/                
+//|    \  \::/       \  \:\        |__|:|~       \__\/           \__\/     \__\/          \  \::/                 
+//|     \__\/         \__\/         \__\|                                                  \__\/                  
+//|
+//|===============================================================================================================
+//|
+//|				M V P    S U R V I V O R    A R E N A
+//|
+//|===============================================================================================================
+//|
+//| Módulo: Script Core
+//| Categoria: Evento
+//| Autor: Outlander
+//| Data: 12/01/2008
+//| SQL: Não
+//| 
+//|===============================================================================================================
+-	script	MSACore	-1,{
+//|===============================================================================================================
+//|	Funções essenciais
+//|===============================================================================================================
+	// Valida o mapa da RID se o mapa atual é um mapa do evento
+	function F_Valida_Mapa
+	{
+		getmapxy(.@map$, .@x, .@y, 0);
+		if (.@map$ == .mapaEvento1$ || .@map$ == .mapaEvento2$)
+			return 1;
+		else
+			return 0;
+	}
+	// Exibe mensagem dispbottom para cada membro online da party
+	// Retorna NULL sempre
+	function F_Mensagem_Time
+	{
+		set .@mensagem$, getarg(0);
+		set .@len, getarraysize(.jogadoresaid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				attachrid(.jogadoresaid[.@i]);
+				dispbottom "[MVP Survivor Arena]: " + .@mensagem$;
+				detachrid;
+			}
+		}
+		return;
+	}
+	
+	// Exibe mensagem dispbottom com string padronizada
+	function F_Mensagem_Player
+	{
+		set .@mensagem$, getarg(0);
+		dispbottom "[MVP Survivor Arena]: " + .@mensagem$;
+	}
+	
+	function F_Qt_Classe
+	{
+		set .@classe, getarg(0);
+		set .@count, 0;
+		set .@len, getarraysize(.jogadoresaid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				attachrid(.jogadoresaid[.@i]);
+				if (Class == .@classe)
+				{
+					set .@count, .@count + 1;
+				}
+				detachrid;
+			}
+		}
+		return .@count;
+	}
+	
+	// Valida o time
+	function F_Valida_Time
+	{
+		set .@count, 0;
+		set .@len, getarraysize(.jogadoresaid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				set .@count, .@count + 1;
+				attachrid(.jogadoresaid[.@i]);
+				set .@classe, Class;
+				detachrid;
+				if (F_Qt_Classe(.@classe) > .maxClasseIgual)
+				{
+					return 0;
+				}
+			}
+			else
+			{
+				F_Mensagem_Time("Jogador " + rid2name(.jogadoresaid[.@i]) + " offline, removido do time");
+				deletearray .jogadoresaid[.@i], 1;
+			}
+		}
+		if (.@count >= .minJogadores && .@count <= .maxJogadores)
+			return 1;
+		else
+			return 0;
+	}
+	
+	// Envia anuncio global utilizando a padronização de mensagens do NPC
+	function F_Mensagem_Global
+	{
+		set .@mensagem$, getarg(0);
+		announce "[MVP Survivor Arena]: " + .@mensagem$, 0;
+		return;
+	}
+	
+	// Envia anuncio para os todos os mapas do evento
+	function F_Mensagem_Evento
+	{
+		mapannounce .mapaEvento1$, "[MVP Survivor Arena]: " + getarg(0), 0;
+		mapannounce .mapaEvento2$, "[MVP Survivor Arena]: " + getarg(0), 0;
+		return;
+	}
+	
+	// Retorna contagem de membros registrados ONLINE
+	function F_Count_Registrados
+	{
+		set .@count, 0;
+		set .@len, getarraysize(.jogadoresaid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				set .@count, .@count + 1;
+			}
+		}
+		return .@count;
+	}
+	
+	// Cura e repara todos os membros do time registrado
+	function F_Cura_Repara
+	{
+		set .@len, getarraysize(.jogadoresaid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				attachrid(.jogadoresaid[.@i]);
+				if (F_Valida_Mapa())
+				{
+					atcommand "@repairall";
+					atcommand "@alive";
+					percentheal 100,100;
+					specialeffect2 408;
+					specialeffect2 491;
+				}
+				detachrid;
+			}
+		}
+		return;
+	}
+	
+	// Retorna string MM:SS de um dado segundo
+	function F_Converte_Tempo_Str
+	{
+		set .@tempo, getarg(0);
+		set .@minuto, 0;
+		set .@segundo, 0;
+		while (.@tempo >= 60)
+		{
+			set .@minuto, .@minuto + 1;
+			set .@tempo, .@tempo - 60;
+		}
+		set .@segundo, .@tempo;
+		if (.@segundo >= 10)
+			return .@minuto + ":" + .@segundo;
+		else
+			return .@minuto + ":0" + .@segundo;
+	}
+	
+	// Retorna número aleatório par utilizando limite
+	function F_Retorna_Random_Par
+	{
+		set .@random, 0;
+		set .@valormaximo, getarg(0);
+		do {
+			set .@random, rand(.@valormaximo);
+		} while (.@random % 2 != 0);
+		return .@random;
+	}
+	
+	// Função responsável por selecionar o MVP adequado
+	function F_Seleciona_MVP
+	{
+		set .@mvpSelecionado, 0;
+		set .@chance, rand(1, 10);
+//		playground:	70% - 20% - 10%
+//		normal:		30% - 40% - 30%
+//		ninja:		10% - 20% - 70%
+		switch(.nivelDificuldade)
+		{
+			case 1:
+				set .@perFacil, 8;
+				set .@perMedio, 2;
+				set .@perDificil, 0;
+				break;
+			case 2:
+				set .@perFacil, 2;
+				set .@perMedio, 6;
+				set .@perDificil, 2;
+				break;
+			case 3:
+				set .@perFacil, 0;
+				set .@perMedio, 2;
+				set .@perDificil, 8;
+				break;
+		}
+		if (.@chance <= .@perFacil)
+		{
+			set .@chance, 1;
+		}
+		else if (.@chance > .@perFacil && .@chance <= .@perFacil + .@perMedio)
+		{
+			set .@chance, 2;
+		}
+		else
+		{
+			set .@chance, 3;
+		}
+		set .@indice, 0;
+		switch(.@chance)
+		{
+			// Playground
+			case 1:
+				switch(.round)
+				{
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+					case 6:
+						set .@indice, F_Retorna_Random_Par(getarraysize(.mvpFacil));
+						set .@mvpSelecionado, .mvpFacil[.@indice];
+						set .mvpCoin, .mvpFacil[.@indice+1];
+						break;
+					case 7:
+						set .@indice, F_Retorna_Random_Par(getarraysize(.mvpPreBoss));
+						set .@mvpSelecionado, .mvpPreBoss[.@indice];
+						set .mvpCoin, .mvpPreBoss[.@indice+1];
+						break;
+					case 8:
+					case 9:
+						switch(.nivelDificuldade)
+						{
+							case 1:
+								set .@indice, F_Retorna_Random_Par(getarraysize(.mobFinalFacil));
+								set .@mvpSelecionado, .mobFinalFacil[.@indice];
+								set .mvpCoin, .mobFinalFacil[.@indice+1];
+								break;
+							case 2:
+								set .@indice, F_Retorna_Random_Par(getarraysize(.mobFinalMedio));
+								set .@mvpSelecionado, .mobFinalMedio[.@indice];
+								set .mvpCoin, .mobFinalMedio[.@indice+1];
+								break;
+							case 3:
+								set .@indice, F_Retorna_Random_Par(getarraysize(.mobFinalDificil));
+								set .@mvpSelecionado, .mobFinalDificil[.@indice];
+								set .mvpCoin, .mobFinalDificil[.@indice+1];
+								break;
+						}
+						break;
+					case 10:
+						set .@indice, F_Retorna_Random_Par(getarraysize(.mvpBossFinal));
+						set .@mvpSelecionado, .mvpBossFinal[.@indice];
+						set .mvpCoin, .mvpBossFinal[.@indice+1];
+						break;
+				}
+				break;
+			// Medio
+			case 2:
+				switch(.round)
+				{
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+					case 6:
+						set .@indice, F_Retorna_Random_Par(getarraysize(.mvpMedio));
+						set .@mvpSelecionado, .mvpMedio[.@indice];
+						set .mvpCoin, .mvpMedio[.@indice+1];
+						break;
+					case 7:
+						set .@indice, F_Retorna_Random_Par(getarraysize(.mvpPreBoss));
+						set .@mvpSelecionado, .mvpPreBoss[.@indice];
+						set .mvpCoin, .mvpPreBoss[.@indice+1];
+						break;
+					case 8:
+					case 9:
+						switch(.nivelDificuldade)
+						{
+							case 1:
+								set .@indice, F_Retorna_Random_Par(getarraysize(.mobFinalFacil));
+								set .@mvpSelecionado, .mobFinalFacil[.@indice];
+								set .mvpCoin, .mobFinalFacil[.@indice+1];
+								break;
+							case 2:
+								set .@indice, F_Retorna_Random_Par(getarraysize(.mobFinalMedio));
+								set .@mvpSelecionado, .mobFinalMedio[.@indice];
+								set .mvpCoin, .mobFinalMedio[.@indice+1];
+								break;
+							case 3:
+								set .@indice, F_Retorna_Random_Par(getarraysize(.mobFinalDificil));
+								set .@mvpSelecionado, .mobFinalDificil[.@indice];
+								set .mvpCoin, .mobFinalDificil[.@indice+1];
+								break;
+						}
+						break;
+					case 10:
+						set .@indice, F_Retorna_Random_Par(getarraysize(.mvpBossFinal));
+						set .@mvpSelecionado, .mvpBossFinal[.@indice];
+						set .mvpCoin, .mvpBossFinal[.@indice+1];
+						break;
+				}
+				break;
+			// Ninja
+			case 3:
+				switch(.round)
+				{
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+					case 6:
+						set .@indice, F_Retorna_Random_Par(getarraysize(.mvpDificil));
+						set .@mvpSelecionado, .mvpDificil[.@indice];
+						set .mvpCoin, .mvpDificil[.@indice+1];
+						break;
+					case 7:
+						set .@indice, F_Retorna_Random_Par(getarraysize(.mvpPreBoss));
+						set .@mvpSelecionado, .mvpPreBoss[.@indice];
+						set .mvpCoin, .mvpPreBoss[.@indice+1];
+						break;
+					case 8:
+					case 9:
+						switch(.nivelDificuldade)
+						{
+							case 1:
+								set .@indice, F_Retorna_Random_Par(getarraysize(.mobFinalFacil));
+								set .@mvpSelecionado, .mobFinalFacil[.@indice];
+								set .mvpCoin, .mobFinalFacil[.@indice+1];
+								break;
+							case 2:
+								set .@indice, F_Retorna_Random_Par(getarraysize(.mobFinalMedio));
+								set .@mvpSelecionado, .mobFinalMedio[.@indice];
+								set .mvpCoin, .mobFinalMedio[.@indice+1];
+								break;
+							case 3:
+								set .@indice, F_Retorna_Random_Par(getarraysize(.mobFinalDificil));
+								set .@mvpSelecionado, .mobFinalDificil[.@indice];
+								set .mvpCoin, .mobFinalDificil[.@indice+1];
+								break;
+						}
+						break;
+					case 10:
+						set .@indice, F_Retorna_Random_Par(getarraysize(.mvpBossFinal));
+						set .@mvpSelecionado, .mvpBossFinal[.@indice];
+						set .mvpCoin, .mvpBossFinal[.@indice+1];
+						break;
+				}
+				break;
+		}
+		return .@mvpSelecionado;
+	}
+	
+	// Incrementa a pontuação dos jogadores participantes que estiverem no mapa
+	function F_Somar_Zeny_Round
+	{
+		set .@len, getarraysize(.jogadoresaid);
+		set .@zeny, .round * 20000 * pow(2, .nivelDificuldade);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				attachrid(.jogadoresaid[.@i]);
+				getmapxy(.@map$, .@x, .@y, 0);
+				if (.@map$ == .mapaEvento1$ || .@map$ == .mapaEvento2$)
+				{
+					set .jogadoreszeny[.@i], .jogadoreszeny[.@i] + .@zeny; // Adicionar formula de pontuação
+				}
+				else
+				{
+					F_Mensagem_Player("Atenção " + strcharinfo(0) + ", jogadores fora da arena não recebem premiação do round em zeny.");
+					F_Mensagem_Player("Valor perdido: " + .@zeny + "z");
+				}
+				detachrid;
+			}
+		}
+		return;
+	}
+	
+	// Adiciona zeny para aos jogadores cadastrados
+	function F_Adiciona_Zeny
+	{
+		set .@len, getarraysize(.jogadoresaid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				attachrid(.jogadoresaid[.@i]);
+				if (F_Valida_Mapa())
+				{
+					set zeny, zeny + .jogadoreszeny[.@i];
+					F_Mensagem_Player("Você recebeu " + .jogadoreszeny[.@i] + "z referentes ao nível atingido no evento, parabéns!");
+					set .jogadoreszeny[.@i], 0;
+				}
+				detachrid;
+			}
+		}
+		return;
+	}
+	
+	// Adiciona coins para os jogadores cadastrados
+	function F_Adiciona_Coin
+	{
+		set .@len, getarraysize(.jogadoresaid);
+		set .@itemPremio, 0;
+		switch(.nivelDificuldade)
+		{
+			case 1: set .@itemPremio, 673; break;
+			case 2: set .@itemPremio, 675; break;
+			case 3: set .@itemPremio, 671; break;
+		}
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				attachrid(.jogadoresaid[.@i]);
+				if (F_Valida_Mapa())
+				{
+					F_Mensagem_Player("Você recebeu " + .jogadorescoin[.@i] + " coin(s) pelo(s) MVP(s) que matou e como prêmio final do evento, parabéns!");
+					getitem .@itemPremio, .jogadorescoin[.@i];
+					set .jogadorescoin[.@i], 0;
+				}
+				detachrid;
+			}
+		}
+		return;
+	}
+	
+	// Define vencedor nível
+	function F_Define_Vencedor
+	{
+		set .@len, getarraysize(.jogadoresaid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				attachrid(.jogadoresaid[.@i]);
+				if (F_Valida_Mapa())
+				{
+					set MSA_Nivel_Completo, .nivelDificuldade;
+				}
+				detachrid;
+			}
+		}
+		return;
+	}
+	
+	// Executa warpchar em cada jogador registrado
+	function F_Warp_Registrado
+	{
+		set .@mapaDestino$, getarg(0);
+		set .@x, getarg(1);
+		set .@y, getarg(2);
+		set .@len, getarraysize(.jogadorescid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				warpchar .@mapaDestino$, .@x, .@y, .jogadorescid[.@i];
+			}
+		}
+		return;
+	}
+	
+	// Define a quantidade de mob sumonada
+	function F_Quantidade_Mob
+	{
+		set .@qtSumonado, 0;
+		switch(.round)
+		{
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+				set .@qtSumonado, .round + (.nivelDificuldade * 2);
+				break;
+			case 7:
+				switch(.nivelDificuldade)
+				{
+					// Playground
+					case 1: set .@qtSumonado, 1; break;
+					// Medio
+					case 2: set .@qtSumonado, 2; break;
+					// Ninja
+					case 3: set .@qtSumonado, 3; break;
+				}
+				break;
+			case 8:
+				set .@qtSumonado, 30;
+				break;
+			case 9:
+				set .@qtSumonado, 40;
+				break;
+			case 10:
+				set .@qtSumonado, 1;
+				break;
+		}
+		return .@qtSumonado;
+	}
+	
+	// Retorna indice que representa o jogador nos vetores do evento através da rid
+	function F_Rid2_Indice
+	{
+		set .@rid, getarg(0);
+		set .@len, getarraysize(.jogadoresaid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (.jogadoresaid[.@i] == .@rid)
+				return .@i;
+		}
+		return -1;
+	}
+	
+	function F_Timer_AddSeconds
+	{
+		set .@tempo, getarg(0); // 120
+		set .@rawTime, .timerEventoMM * 60 + .timerEventoSS; // 310
+		set .@rawTime, .@rawTime + .@tempo; // 310 + 120
+		set .timerEventoMM, .@rawTime / 60;
+		set .timerEventoSS, .@rawTime % 60;
+		F_Mensagem_Evento("Checkpoint +" + .@tempo + " segundos adicionados - Tempo restante: " + F_Converte_Tempo_Str(.timerEventoMM * 60 + .timerEventoSS));
+		return;
+	}
+	
+	// Retorna o nome do nível selecionado
+	function F_Nivel_Str
+	{
+		set .@nivelDificuldade, getarg(0);
+		set .@nivelStr$, "";
+		switch(.@nivelDificuldade)
+		{
+			case 1:
+				set .@nivelStr$, "Playground";
+				break;
+			case 2:
+				set .@nivelStr$, "Normal";
+				break;
+			case 3:
+				set .@nivelStr$, "Ninja";
+				break;
+		}
+		return .@nivelStr$;
+	}
+	
+	// Retorna o nome do nível selecionado
+	function F_Nivel_CStr
+	{
+		set .@nivelDificuldade, getarg(0);
+		set .@nivelStr$, "";
+		switch(.@nivelDificuldade)
+		{
+			case 1:
+				set .@nivelStr$, "^6dbc3ePlayground^000000";
+				break;
+			case 2:
+				set .@nivelStr$, "^dbac52Normal^000000";
+				break;
+			case 3:
+				set .@nivelStr$, "^d22b10Ninja^000000";
+				break;
+		}
+		return .@nivelStr$;
+	}
+	
+	// Autoriza reentrada
+	function F_Autoriza_Entrada
+	{
+		return 0;
+//		if (getcharid(1) == .partyid && F_Rid2_Indice(getcharid(3)) >= 0)
+//		{
+//			mes "Você está entre os jogadores registrados da atual partida. Deseja entrar na arena?";
+//			next;
+//			menu "Sim:Não",-;
+//			switch(@menu)
+//			{
+//				case 1:
+//					if (.round < 8)
+//						warp .mapaEvento1$, 0, 0;
+//					else
+//						warp .mapaEvento2$, 0, 0;
+//					break;
+//				case 2:
+//					mes .@title$;
+//					break;
+//			}
+//		}
+//		return;
+	}
+	
+	// Remove jogadores do mapa e elimina todos os monstros
+	function F_Limpa_Mapa
+	{
+		mapwarp .mapaEvento1$, "prontera", 156, 179;
+		mapwarp .mapaEvento2$, "prontera", 156, 179;
+		killmonsterall .mapaEvento1$;
+		killmonsterall .mapaEvento2$;
+		return;
+	}
+	
+	function F_Seleciona_Premio
+	{
+		set .@itemid, 0;
+		switch(.nivelDificuldade)
+		{
+			case 1:
+				set .@itemid, .premioFacil[rand(getarraysize(.premioFacil))];
+				break;
+			case 2:
+				set .@itemid, .premioMedio[rand(getarraysize(.premioMedio))];
+				break;
+			case 3:
+				set .@itemid, .premioDificil[rand(getarraysize(.premioDificil))];
+				break;
+		}
+		return .@itemid;
+	}
+	
+	function F_Adiciona_Premio
+	{
+		set .@len, getarraysize(.jogadoresaid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin(.jogadoresaid[.@i]))
+			{
+				attachrid .jogadoresaid[.@i];
+				if (F_Valida_Mapa())
+				{
+					set .@itemid, F_Seleciona_Premio();
+					getitem .@itemid, 1;
+					F_Mensagem_Player("Adicionado premio pela conclusão do evento: " + getitemname(.@itemid));
+				}
+				detachrid;
+			}
+		}
+		return;
+	}
+	
+	function F_SoundEffectAll
+	{
+		set .@som$, getarg(0);
+		soundeffectall .@som$, 0, .mapaEvento1$, 0, 0, 300, 300;
+		soundeffectall .@som$, 0, .mapaEvento2$, 0, 0, 300, 300;
+		return;
+	}
+	
+	
+//|===============================================================================================================
+//|	NPC de Entrada
+//|===============================================================================================================
+OnNpcEntrada:
+	set .situacaoEvento, 1;
+	set .partyid, @partyid;
+	set .lideraid, @lideraid;
+	set .nivelDificuldade, @nivelDificuldade;
+	getpartymember .partyid, 1;
+	getpartymember .partyid, 2;
+	for(set .@i, 0; .@i < getarraysize($@partymemberaid); set .@i, .@i + 1)
+	{
+		if (isloggedin($@partymemberaid[.@i]))
+		{
+			set .jogadorescid[getarraysize(.jogadorescid)], $@partymembercid[.@i];
+			set .jogadoresaid[getarraysize(.jogadoresaid)], $@partymemberaid[.@i];
+		}
+	}
+	set .@rid, getcharid(3);
+	if (F_Valida_Time())
+	{
+		attachrid(.@rid);
+		mes getvariableofnpc(.title$, "MVP Survivor Arena");
+		mes "O evento será iniciado em 1 minuto. Somente o líder pode cancelar o evento.";
+		donpcevent "MSACore::OnPreparacaoEvento";
+	}
+	else
+	{
+		attachrid(.@rid);
+		mes getvariableofnpc(.title$, "MVP Survivor Arena");
+		mes "Seu time não possui os requisitos para o evento.";
+		mes "Minimo de " + .minJogadores + " e no máximo " + .maxJogadores + ", somente " + .maxClasseIgual + " tipos de classe iguais.";
+		//donpcevent "MSACore::OnReiniciarScript";
+	}
+	close2;
+	end;
+	
+OnCancelarEvento:
+	if (.situacaoEvento == 1 && .lideraid == getcharid(3) && .partyid == getcharid(1))
+	{
+		set .@rid, getcharid(3);
+		F_Mensagem_Time("Evento cancelado pelo líder (" + rid2name(.lideraid) + ")");
+		attachrid .@rid;
+		mes getvariableofnpc(.title$, "MVP Survivor Arena");
+		mes "Evento cancelado.";
+		donpcevent "MSACore::OnReiniciarScript";
+	}
+	else
+	{
+		mes "Não é possível cancelar o evento.";
+	}
+	close2;
+	end;
+	
+OnPreparacaoEvento:
+	set .idEvento, .idEvento + 1;
+	set .@idEventoAtual, .idEvento;
+	delwaitingroom;
+	waitingroom "Partida Criada", 0;
+	F_Mensagem_Time("O lider da party (" + rid2name(.lideraid) + ") criou uma nova partida no MVP Survidor Arena.");
+	F_Mensagem_Time("Todos os membros da party serão transportados para o mapa do evento em 1 minuto.");
+	sleep2 30000;
+	// Valida sessão
+	if (.@idEventoAtual == .idEvento && .situacaoEvento == 1)
+	{ 
+		F_Mensagem_Time("Os jogadores serão transportados em 30 segundos");
+		sleep2 20000;
+	}
+	for(set .@i, 0; .@i < 10 && .@idEventoAtual == .idEvento && .situacaoEvento == 1; set .@i, .@i + 1)
+	{
+		F_Mensagem_Time("Os jogadores serão transportados em " + (10 - .@i) + " segundo(s)");
+		sleep2 1000;
+	}
+	// Valisa sessão
+	if (.@idEventoAtual == .idEvento && F_Valida_Time() && .situacaoEvento == 1)
+	{
+		F_Warp_Registrado(.mapaEvento1$, 0, 0);
+		donpcevent "MSACore::OnEventStart";
+	}
+	else
+	{
+		donpcevent "MSACore::OnReiniciarScript";
+	}
+	end;
+	
+//|===============================================================================================================
+//|	Ranking
+//|===============================================================================================================
+OnCallRanking:
+	set .@len, getarraysize(.jogadoresaid);
+	if (.@len > 0)
+	{
+		mes "Nível: " + F_Nivel_CStr(.nivelDificuldade);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+			mes "^0002ff" + rid2name(.jogadoresaid[.@i]) + "^000000 - ^f600ff" + .jogadoresmvp[.@i] + " mvps^000000";
+	}
+	else
+	{
+		mes "^666666No momento não há nenhuma partida em andamento.^000000";
+	}
+	close;
+
+//|===============================================================================================================
+//|	Script Core
+//|===============================================================================================================
+OnEventStart:
+	delwaitingroom;
+	waitingroom "Partida Iniciada", 0;
+	F_Mensagem_Evento("Bem vindos ao MSACore.");
+	sleep2 5000;
+	F_Mensagem_Evento("Uma nova partida será iniciada em 25 segundos.");
+	sleep2 5000;
+	// Reseta timer.
+	set .timerEventoMM, 0;
+	set .timerEventoSS, 0;
+	switch(.nivelDificuldade)
+	{
+		case 1:
+			F_Mensagem_Evento("Nível de dificuldade selecionado: Playground");
+			sleep2 5000;
+			F_Mensagem_Evento("80% MVP Fácil - 20% MVP Médio - 0% MVP Dificil");
+			sleep2 5000;
+			F_Timer_AddSeconds(120);
+			F_Mensagem_Evento("Bonus inicial de tempo do nível Playground: 2 minutos");
+			sleep2 5000;
+			break;
+		case 2:
+			F_Mensagem_Evento("Nível de dificuldade selecionado: Normal");
+			sleep2 5000;
+			F_Mensagem_Evento("20% MVP Fácil - 60% MVP Médio - 20% MVP Dificil");
+			sleep2 5000;
+			F_Timer_AddSeconds(60);
+			F_Mensagem_Evento("Bonus inicial de tempo do nível Normal: 1 minuto");
+			sleep2 5000;
+			break;
+		case 3:
+			F_Mensagem_Evento("Nível de dificuldade selecionado: Ninja");
+			sleep2 5000;
+			F_Mensagem_Evento("0% MVP Fácil - 20% MVP Médio - 80% MVP Dificil");
+			sleep2 5000;
+			F_Timer_AddSeconds(40);
+			F_Mensagem_Evento("Bonus inicial de tempo do nível Ninja: 40 segundos");
+			sleep2 5000;
+			break;
+	}
+	sleep2 5000;
+	set .round, 0;
+	set .tempoInicioEvento, gettimetick(1);
+	set .situacaoEvento, 2;
+	donpcevent "MSACore::OnTimerStart";
+	donpcevent "MSACore::OnNovoRound";
+	end;
+	
+OnNovoRound:
+	F_Cura_Repara();
+	if (.situacaoEvento == 2)
+	{
+		set .round, .round + 1;
+		set .timerStop, 1;
+		set .mvpSelecionado, F_Seleciona_MVP();
+		set .flMvpRound, 1;
+		set .qtSumonado, F_Quantidade_Mob();
+		deletearray .mobxy[0], getarraysize(.mobxy);
+		killmonsterall .mapaEvento1$;
+		killmonsterall .mapaEvento2$;
+		if (.round > 1)
+		{
+			F_Mensagem_Evento("Round executado em: " + F_Converte_Tempo_Str(gettimetick(1) - .tempoInicioRound) + 
+				" / Tempo total: " + F_Converte_Tempo_Str(gettimetick(1) - .tempoInicioEvento));
+			F_Somar_Zeny_Round();
+			F_Timer_AddSeconds(30);
+		}
+		// Eventos especiais de cada round
+		set .flRoundWait, 0;
+		switch(.round)
+		{
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+				set .flRoundWait, 1;
+				set .@evento$, "MSACore::OnPreRound" + .round;
+				donpcevent .@evento$;
+				break;
+			case 11:
+				donpcevent "MSACore::OnEventoConcluido";
+				end;
+		}
+		donpcevent "MSA Ranking::OnAtualizaBalao";
+		while(.flRoundWait) { sleep2 1000; }
+		F_Mensagem_Evento("(>) Round " + .round + " / " + strmobinfo(2, .mvpSelecionado) + " (<)");
+		sleep2 10000;
+		set .tempoInicioRound, gettimetick(1);
+		set .@len, getarraysize(.mobxy);
+		set .@qtSumonado, .qtSumonado;
+		if (.round < 8)
+			set .@spawnMap$, .mapaEvento1$;
+		else
+			set .@spawnMap$, .mapaEvento2$;
+		for(set .@i, 0; .@qtSumonado > 0; set .@i, .@i + 2)
+		{
+			if (.@i >= .@len)
+				set .@i, 0;
+			monster .@spawnMap$, .mobxy[.@i], .mobxy[.@i+1], strmobinfo(2, .mvpSelecionado), .mvpSelecionado, 1, "MSACore::OnMVPDeath";
+			set .@qtSumonado, .@qtSumonado - 1;
+		}
+		set .timerStop, 0;
+	}
+	end;
+	
+//|===============================================================================================================
+//|	Eventos PreRound
+//|===============================================================================================================
+// Eventos antes de iniciar o Round 7
+OnPreRound7:
+	set .flRoundWait, 0;
+	end;
+	
+// Eventos antes de iniciar o Round 8
+OnPreRound8:
+	F_Mensagem_Evento("Parabéns, a primeira etapa do evento foi concluída!");
+	sleep2 5000;
+	F_Mensagem_Evento("Preparem-se para o desafio final.");
+	sleep2 5000;
+	mapwarp .mapaEvento1$, .mapaEvento2$, 0, 0;
+	set .flRoundWait, 0;
+	set .flMvpRound, 0;
+	end;
+	
+// Eventos antes de iniciar o Round 9
+OnPreRound9:
+	set .flRoundWait, 0;
+	set .flMvpRound, 0;
+	end;
+	
+// Eventos antes de iniciar o Round 10 - ROUND FINAL
+OnPreRound10:
+	setarray .mobxy, 49, 49;
+	enablenpc "MSABoss";
+	donpcevent "MSABoss::OnCastBoss";
+	sleep2 10000;
+	donpcevent "MSABoss::OnDisable";
+	set .flRoundWait, 0;
+	end;
+
+//|===============================================================================================================
+//|	Eventos de Controle
+//|===============================================================================================================
+// Quando um MVP é morto, passa p/ proximo round e contabiliza morte p/ o player
+OnMVPDeath:
+	set .@indice, F_Rid2_Indice(getcharid(3));
+	if (.@indice >= 0)
+	{
+		set .jogadorescoin[.@indice], .jogadorescoin[.@indice] + .mvpCoin;
+		if (.flMvpRound)
+		{
+			set .jogadoresmvp[.@indice], .jogadoresmvp[.@indice] + 1;
+			F_Mensagem_Player("MVP " + strmobinfo(2, .mvpSelecionado) + " eliminado! / Valor: " + .mvpCoin + "pc / Total: " + .jogadoresmvp[.@indice]);
+		}
+	}
+	set .qtSumonado, .qtSumonado - 1;
+	// Entrada no IF marca o termino do round.
+	if (.qtSumonado == 0)
+		donpcevent "MSACore::OnNovoRound";
+	end;
+	
+OnEventoConcluido:
+	// Somente quando o evento só poderá ser concluindo quando estiver em andamento (Situacao = 2)
+	if (.situacaoEvento == 2)
+	{
+		set .situacaoEvento, 3;
+		donpcevent "MSA Ranking::OnEventoConcluido";
+		sleep2 5000;
+		switch(.nivelDificuldade)
+		{
+			case 1:
+				F_Mensagem_Evento("Evento Concluído: Nível Playground");
+				break;
+			case 2:
+				F_Mensagem_Evento("Evento Concluído: Nível Normal");
+				break;
+			case 3:
+				F_Mensagem_Evento("Evento Concluído: Nível Ninja");
+				break;
+		}
+		sleep2 5000;
+		F_Adiciona_Coin();
+		sleep2 5000;
+		F_Define_Vencedor();
+		F_Mensagem_Evento("Não esqueçam de clicar no NPC MSA Trader para receber o prêmio.");
+		sleep2 5000;
+		donpcevent "MSACore::OnFimEvento";
+	}
+	end;
+	
+// Quando o timer expira
+OnTempoExpirado:
+	// Somente quando o evento estiver em andamento que o timer pode expirar (Situacao = 2)
+	if (.situacaoEvento == 2)
+	{
+		set .situacaoEvento, 4;
+		donpcevent "MSACore::OnFimEvento";
+	}
+	end;
+	
+// Quando não há mais jogadores no mapa
+OnMapaSemJogadores:
+	if (.situacaoEvento == 2)
+	{
+		set .situacaoEvento, 5;
+		donpcevent "MSACore::OnFimEvento";
+	}
+	end;
+	
+// Quando o evento termina, não importa o motivo todo evento terminado deve passar por aqui
+OnFimEvento:
+	F_Adiciona_Zeny();
+	switch(.situacaoEvento)
+	{
+		case 3:
+			F_Mensagem_Global("O evento foi concluído com sucesso, parabéns a todos os participantes!");
+			break;
+		case 4:
+		case 5:
+			F_Mensagem_Global("O evento não foi concluído, melhor sorte na próxima...");
+			break;
+		default:
+			F_Mensagem_Global("O evento não foi concluído.");
+			break;
+	}
+	donpcevent "MSACore::OnReiniciarScript";
+	end;
+//|===============================================================================================================
+//|	Controle TIMER de Checkpoint
+//|===============================================================================================================
+OnTimerStart:
+	set .timerStop, 1;
+	while (.timerStop) { sleep2 1000; }
+	while (.timerEventoMM + .timerEventoSS > 0 && .situacaoEvento == 2)
+	{
+		if (getmapusers(.mapaEvento1$) + getmapusers(.mapaEvento2$) == 0)
+		{
+			donpcevent "MSACore::OnMapaSemJogadores";
+		}
+		while (((.timerEventoMM > 0 && .timerEventoSS >= 0) || (.timerEventoMM == 0 && .timerEventoSS > 0)) && .situacaoEvento == 2)
+		{
+			sleep2 1000; // Sleep que controla o evento timer
+			set .timerEventoSS, .timerEventoSS - 1;
+			if (.timerEventoMM == 0 && .timerEventoSS <= 30 && .situacaoEvento == 2)
+			{
+				F_Mensagem_Evento("Restam apenas: " + F_Converte_Tempo_Str(.timerEventoMM * 60 + .timerEventoSS) + " segundo(s)");
+				if (.timerEventoSS == 30)
+				{
+					F_SoundEffectAll("30_seconds_remain.wav");
+				}
+				else if (.timerEventoSS == 20)
+				{
+					F_SoundEffectAll("20_seconds.wav");
+				}
+				else if (.timerEventoSS > 0 && .timerEventoSS <= 10)
+				{
+					F_SoundEffectAll("count_"+ .timerEventoSS +".wav");
+				}
+			}
+			while (.timerStop) { sleep2 1000; }
+		}
+		if (.timerEventoMM > 0 && .timerEventoMM <= 2 && .situacaoEvento == 2)
+		{
+			F_Mensagem_Evento("Atenção: " + .timerEventoMM + " minuto(s) restante(s)");
+			switch ((.timerEventoMM))
+			{
+				case 1:
+					F_SoundEffectAll("1_minute_remains.wav");
+					break;
+				case 2:
+					F_SoundEffectAll("2_minutes_remain.wav");
+					break;
+			}
+		}
+		set .timerEventoMM, .timerEventoMM - 1;
+		if (.timerEventoMM >= 0)
+			set .timerEventoSS, 59;
+		if (.timerEventoMM == -1)
+		{
+			F_SoundEffectAll("time_is_up.wav");
+		}
+	}
+	// Situação 3 define que o evento foi concluido
+	if (.situacaoEvento == 2)
+		donpcevent "MSACore::OnTempoExpirado";
+	end;
+//|===============================================================================================================
+//|	Inicialização do script
+//|===============================================================================================================
+OnInit:
+	set .idEvento, 0; // Variável que cria a identificação da partida
+OnReiniciarScript:
+	set .mapaEvento1$, "guild_vs5";
+	set .mapaEvento2$, "guild_vs4";
+	set .minJogadores, 0; // Numero mínimo de jogadores
+	set .maxJogadores, 8; // Número máximo de jogadores
+	set .maxClasseIgual, 3;
+	// Situações do Evento
+	// 1 - Aguardando jogadores
+	// 2 - Evento iniciado
+	// 3 - Evento concluído
+	// 4 - Evento perdido, tempo expirado ou algum outro objetivo não concluido
+	set .situacaoEvento, 0; // Situação que define os estágios do evento
+	set .nivelDificuldade, 0; // Nivel de dificuldade selecionado
+	set .lideraid, 0; // Lider da party que criou o evento
+	set .partyid, 0; // Armazena o party ID que está registrada no evento
+	set .round, 0; // Identifica o round atual, variavel incrementada no inicio de todo round
+	set .mvpSelecionado, 0; // Variavel que identifica o MVP selecionado
+	set .flRoundWait, 0; // Flag para identificar que o round está executando seus eventos e o script core deve aguardar
+	set .flMvpRound, 0; // Identifica se o round é round de MVP caso true
+	set .timerEventoMM, 0; // Variavel do countdown minutos
+	set .timerEventoSS, 0; // Variavel to countdown Segundos
+	set .timerStop, 0; // Paraliza coutdown quando = 1
+	set .mvpCoin, 0; // Quantidade de coins que o mvp selecionado deve dropar
+	deletearray .jogadoresaid[0], getarraysize(.jogadoresaid); // Armazena AID de jogadores registrados
+	deletearray .jogadorescid[0], getarraysize(.jogadorescid); // Armazena CID de jogadores registrados
+	deletearray .jogadoreszeny[0], getarraysize(.jogadoreszeny); // Armazena quantidade de zeny arrecadada ao long do evento
+	deletearray .jogadoresmvp[0], getarraysize(.jogadoresmvp); // Quantidade de MVPs derrotados
+	deletearray .jogadorescoin[0], getarraysize(.jogadorescoin); // Quantidade de coins recebidas de mvps derrotados
+	// MOB ARRAYS
+	// Indice 0 - MOB ID
+	// Indice 1 - Quantidade de poring coin que o MVP deverá dropar
+	setarray .mvpFacil,
+		1046, 1, // Doppelganger
+		1389, 1, // Dracula
+		1112, 1, // Drake
+		1418, 1, // Garm
+		1059, 1, // Mistress
+		1312, 1, // Turtle General
+		1150, 1, // Moonlight Flower
+		1251, 1; // Stormy Knight
+	setarray .mvpMedio,
+		1785, 2, // Atroce
+		1190, 2, // Orc Lord
+		1418, 2, // Evil Snake Lord
+		1685, 2, // Vesper
+		1373, 2, // Lord of the Dead
+		1658, 2, // Egnigem Cenia
+		1623, 2, // RSX-0806
+		1157, 2; // Pharaoh
+	setarray .mvpDificil,
+		1511, 3, // Amon Rá
+		1039, 3, // Baphomet
+		1272, 3, // Dark Lord
+		1719, 3, // Detardeurus
+		1765, 3, // Valkyrie
+		1734, 3; // Kiel D-01
+	setarray .mobFinalFacil,
+		1268, 0, // Bloody Knight
+		1203, 0, // Mysteltainn
+		1505, 0; // Loli Ruri
+	setarray .mobFinalMedio,
+		1702, 0, // Retribution
+		1701, 0, // Shelter
+		1870, 0; // Necromancer
+	setarray .mobFinalDificil,
+		1831, 0, // Salamander
+		1635, 0, // Eremes Guile
+		1636, 0; // Howard Alt-Eisen
+	setarray .mvpPreBoss,
+		1779, 4, // Ktullanux
+		1768, 4, // Gloom Under Night
+		1871, 4; // Fallen Bishop
+	setarray .mvpBossFinal,
+		1832, 5; // Ifrit
+	delwaitingroom;
+	donpcevent "MSA Ranking::OnReset";
+	donpcevent "MSA Trader::OnInit";
+	donpcevent "MVP Survivor Arena::OnEventoConcluido";
+	disablenpc "MSABoss";
+	awake "MSACore";
+	F_Limpa_Mapa();
+	end;
+}

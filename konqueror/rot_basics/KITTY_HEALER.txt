@@ -1,0 +1,65 @@
+prontera.gat,152,187,4	script	~Kitty Healer~	725,{
+	sc_end SC_POISON;
+	sc_end SC_SILENCE;
+	sc_end SC_CONFUSION;
+	sc_end SC_BLIND;
+	sc_end SC_BLEEDING;
+	sc_end SC_DPOISON;
+	sc_end SC_PROVOKE;
+	sc_end SC_QUAGMIRE;
+	sc_end SC_DECREASEAGI;
+	sc_end SC_AETERNA;
+	sc_end SC_HALLUCINATION;
+	sc_end SC_SLOWDOWN;
+	sc_end SC_STRIPWEAPON;
+	sc_end SC_STRIPSHIELD;
+	sc_end SC_STRIPARMOR;
+	sc_end SC_STRIPHELM;
+	sc_end SC_JOINTBEAT;
+	sc_end SC_CHANGEUNDEAD;
+	sc_end SC_MINDBREAKER;
+	sc_end SC_ORCISH;
+	if((readparam(5)<readparam(6)) || (readparam(7)<readparam(8))) {
+		cutin "job_black_hucke01",2;
+		mes "[^ED3C07Kitty Healer^000000]";
+		if(readparam(21)==0) mes "Você parece estar ferida, deseja um pouco de cura?";
+		if(readparam(21)==1) mes "Voce parece estar ferido, deseja um pouco de cura?";
+		next;
+		menu "Sim, por favor!",L_heal,"Não",L_exit;
+	}else
+		cutin "job_black_hucke03",2;
+		mes "[^ED3C07Kitty Healer^000000]";
+		mes "Err... vc parece estar bem.";
+		mes "Volte quando precisar de cura.";
+		close2;
+		cutin "",255;
+		end;
+
+L_exit:
+	cutin "job_black_hucke03",2;
+	mes "[^ED3C07Kitty Healer^000000]";
+	mes "Ok.. ok..";
+	close2;
+	cutin "",255;
+	end;
+
+L_heal:
+	cutin "job_black_hucke02",2;
+	percentheal 100,100;
+	specialeffect2 408;
+	specialeffect2 491;
+	mes "[^ED3C07Kitty Healer^000000]";
+	mes "Ai está. Tome mais cuidado!";
+	close2;
+	cutin "",255;
+	end;
+}
+
+izlude.gat,128,116,4	duplicate(~Kitty Healer~)	~Kitty Healer~#healer2	725
+pvp_y_room.gat,37,65,4	duplicate(~Kitty Healer~)	~Kitty Healer~#healer3	725
+pvp_y_room.gat,78,65,4	duplicate(~Kitty Healer~)	~Kitty Healer~#healer4	725
+rot_force.gat,109,101,6	duplicate(~Kitty Healer~)	~Kitty Healer~#healer5	725
+rot_force.gat,109,123,6	duplicate(~Kitty Healer~)	~Kitty Healer~#healer6	725
+que_job01,82,81,4	duplicate(~Kitty Healer~)	~Kitty Healer~#healer7	725
+bat_c01,58,99,6	duplicate(~Kitty Healer~)	~Kitty Healer~#healer8	725
+prontera,165,135,2	duplicate(~Kitty Healer~)	~Kitty Healer~#healer9	725

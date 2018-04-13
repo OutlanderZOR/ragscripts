@@ -1,0 +1,69 @@
+-	script	MVP Record	-1,{
+OnNPCKillEvent:
+	// Acoxambra
+	getmapxy(.@map$, .@x, .@y, 0);
+	if (.@map$ != "force_1-1" && .@map$ != "force_1-2" && .@map$ != "force_1-3" && .@map$ != "guild_vs4" && .@map$ != "guild_vs5")
+	{
+		switch(killedrid) 
+		{
+			case 1038:
+			case 1039:
+			case 1046:
+			case 1059:
+			case 1086:
+			case 1087:
+			case 1112:
+			case 1115:
+			case 1147:
+			case 1150:
+			case 1157:
+			case 1159:
+			case 1190:
+			case 1251:
+			case 1252:
+			case 1272:
+			case 1312:
+			case 1373:
+			case 1389:
+			case 1399:
+			case 1418:
+			case 1492:
+			case 1502:
+			case 1511:
+			case 1583:
+			case 1623:
+			case 1630:
+			case 1646:
+			case 1647:
+			case 1648:
+			case 1649:
+			case 1650:
+			case 1651:
+			case 1658:
+			case 1685:
+			case 1688:
+			case 1708:
+			case 1719:
+			case 1734:
+			case 1751:
+			case 1766:
+			case 1767:
+			case 1768:
+			case 1779:
+			case 1785:
+			case 1832:
+			case 1871:
+			case 1874:
+			case 1885:
+			case 1917:
+				query_sql "insert into rank_mvp (cid, mobid, dt_registro) values ("+getcharid(0)+", "+killedrid+", now())";
+				query_sql "select count(cid) "+
+						  "from rank_mvp "+
+						  "where dt_registro >= curdate() and cid = "+getcharid(0)+" "+
+						  "group by cid",.@nr_total;
+				announce "Parabéns! Este é o seu "+.@nr_total+"º MvP do dia!",3;
+				break;
+		}
+	}
+	end;
+}

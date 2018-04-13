@@ -1,0 +1,2 @@
+location.gat,100,100,0	shop	NewShop	90,512:500
+location.gat,100,100,0	shop	NewShop	90,512:500

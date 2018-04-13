@@ -1,0 +1,4 @@
+que_job01,91,83,4	script	Kafra#qjk	94,{
+	openstorage;
+	end;
+}

@@ -1,0 +1,25 @@
+function	script	F_SPAWN_CONFIG	{
+	set .@title$, "["+"^ff0000"+"Configuração de Spawn"+"^000000"+"]";
+	mes .@title$;
+	mes "Deseja alterar o seu modo de spawn nos mapas de PvP?";
+	mes " ";
+	next;
+	switch(select("Normal:Custom")) {
+		case 1:
+			set pvp_custom_spawn, 0;
+			break;
+		case 2:
+			set pvp_custom_spawn, 1;
+			mes .@title$;
+			mes "Informe as posições ^ff0000X^000000 e ^ff0000Y^000000 do spawn.";
+			mes "Informe ^ff0000X^000000";
+			input pvp_spawn_x;
+			mes "Informe ^ff0000Y^000000";
+			input pvp_spawn_y;
+			break;
+	}
+	next;
+	mes .@title$;
+	mes "Modo de spawn alterado.";
+	return;
+}

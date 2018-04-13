@@ -1,0 +1,35 @@
+* Funções necessárias:
+	- Ativar e desativar traders;
+	- Desativar trader quando houver modificações;
+	- Cadastrar trader;
+	- Remover trader (todos os premios relacionados);
+	- Cadastrar novo premio;
+	- Validar nome do premio: verifica se já não existe o nome cadastrado;
+	- Remover premio: remove todos os itens relacionados;
+	- Cadastrar item de premio;
+	- Remover item de premio;
+	- Validar quantidade de premios cadastrados;
+	- Cadastrar item de requerimento;
+	- Remover item de requerimento;
+	- Mover premio para outro trader;
+	- Mover todos os premios de um trader para outro;
+	- Remover registros de trade_log mais velhos que X dias;
+	- Remover registros de change_log mais velhos que X dias;
+	- Remove registros orfãos;
+
+
+
+* Variaveis globais:
+	- $pz_max_array_size: Capacidade máxima do vetor;
+	- $pz_allow_duplicated_name: Permite premios com nome repetido;
+	- $pz_trade_log: Gravação de log de trades;
+	- $pz_change_log: Gravação de log de alterações;
+	- $pz_trade_log_prune_age: Quantidade de dias para que o trade_log seja podado;
+	- $pz_change_log_prune_age: Quantidade de dias para que o change_log seja podado;
+	- $pz_clean_orphaned: Remove registros orfãos ao iniciar o script;
+	- $pz_admin_level: GM level do administrador, para cadastro de mantenedores;
+	- $pz_mantainer_level: GM level mínimo do mantenedor;
+	- $pz_page_size: Tamanho da pagina em quantidade de itens exibidos;
+
+* Variáveis de contexto:
+	- @trader_id: Identificar o trader, deve ser definida sempre quando executar scripts de modificação de premios do trader.

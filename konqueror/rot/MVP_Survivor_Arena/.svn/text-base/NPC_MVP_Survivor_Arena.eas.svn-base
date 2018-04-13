@@ -1,0 +1,192 @@
+//|      ___           ___           ___           ___                                                    ___     
+//|     /  /\         /  /\         /  /\         /  /\          ___            ___         ___          /  /\    
+//|    /  /::\       /  /::\       /  /::\       /  /::\        /__/\          /__/\       /  /\        /  /::\   
+//|   /  /:/\:\     /  /:/\:\     /  /:/\:\     /  /:/\:\       \  \:\         \__\:\     /  /:/       /  /:/\:\  
+//|  /  /:/  \:\   /  /::\ \:\   /  /::\ \:\   /  /::\ \:\       \__\:\        /  /::\   /  /:/       /  /::\ \:\ 
+//| /__/:/ \  \:\ /__/:/\:\_\:\ /__/:/\:\ \:\ /__/:/\:\_\:\      /  /::\    __/  /:/\/  /__/:/  ___  /__/:/\:\ \:\
+//| \  \:\  \__\/ \__\/~|::\/:/ \  \:\ \:\_\/ \__\/  \:\/:/     /  /:/\:\  /__/\/:/~~   |  |:| /  /\ \  \:\ \:\_\/
+//|  \  \:\          |  |:|::/   \  \:\ \:\        \__\::/     /  /:/__\/  \  \::/      |  |:|/  /:/  \  \:\ \:\  
+//|   \  \:\         |  |:|\/     \  \:\_\/        /  /:/     /__/:/        \  \:\      |__|:|__/:/    \  \:\_\/  
+//|    \  \:\        |__|:|~       \  \:\         /__/:/      \__\/          \__\/       \__\::::/      \  \:\    
+//|     \__\/         \__\|         \__\/         \__\/                                      ~~~~        \__\/    
+//|      ___           ___           ___                                                    ___                   
+//|     /  /\         /  /\         /  /\           ___         ___           ___          /  /\                  
+//|    /  /::\       /  /::\       /  /::\         /__/\       /  /\         /__/\        /  /::\                 
+//|   /__/:/\:\     /  /:/\:\     /  /:/\:\        \__\:\     /  /::\        \  \:\      /__/:/\:\                
+//|  _\_ \:\ \:\   /  /:/  \:\   /  /::\ \:\       /  /::\   /  /:/\:\        \__\:\    _\_ \:\ \:\               
+//| /__/\ \:\ \:\ /__/:/ \  \:\ /__/:/\:\_\:\   __/  /:/\/  /  /::\ \:\       /  /::\  /__/\ \:\ \:\              
+//| \  \:\ \:\_\/ \  \:\  \__\/ \__\/~|::\/:/  /__/\/:/~~  /__/:/\:\_\:\     /  /:/\:\ \  \:\ \:\_\/              
+//|  \  \:\_\:\    \  \:\          |  |:|::/   \  \::/     \__\/  \:\/:/    /  /:/__\/  \  \:\_\:\                
+//|   \  \:\/:/     \  \:\         |  |:|\/     \  \:\          \  \::/    /__/:/        \  \:\/:/                
+//|    \  \::/       \  \:\        |__|:|~       \__\/           \__\/     \__\/          \  \::/                 
+//|     \__\/         \__\/         \__\|                                                  \__\/                  
+//|
+//|===============================================================================================================
+//|
+//|				M V P    S U R V I V O R    A R E N A
+//|
+//|===============================================================================================================
+//|
+//| Módulo: NPC Apresentação
+//| Categoria: Evento
+//| Autor: Outlander
+//| Data: 12/01/2008
+//| SQL: Não
+//| 
+//|===============================================================================================================
+prontera,166,150,2	script	MVP Survivor Arena	768,{
+//|===============================================================================================================
+//|	Funções essenciais
+//|===============================================================================================================
+	// Cria menu
+	function F_Menu
+	{
+		next;
+		set .@len, getarraysize(.menu$);
+		set .@menu$, "";
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			set .@menu$, .@menu$ + .lo$ + .menu$[.@i] + .ro$ + ":";
+		}
+		deletearray .menu$[0], .@len;
+		menu .@menu$, -;
+		return @menu;
+	}
+	
+	// Conta membros online de uma party
+	// Retorna contagem de membros (INT)
+	function F_Conta_Party
+	{
+		set .@partyid, getarg(0);
+		getpartymember .@partyid, 2;
+		set .@count, 0;
+		set .@len, getarraysize($@partymemberaid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (isloggedin($@partymemberaid[.@i]))
+			{
+				set .@count, .@count + 1;
+			}
+		}
+		deletearray $@partymemberaid[0], getarraysize($@partymemberaid);
+		return .@count;
+	}
+	
+	// Verifica se ID já possui agendamento
+	function F_Valida_Agenda
+	{
+		set .@lideraid, getarg(0);
+		set .@len, getarraysize(.agenda);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			if (.agenda[.@i] == .@lideraid)
+				return 0;
+		}
+		return 1;
+	}
+	
+//|===============================================================================================================
+//|	NPC dialogo principal
+//|===============================================================================================================
+	
+	mes .title$;
+	mes "Bem vindo ao MVP Survivor Arena!";
+	setarray .menu$, "Criar partida", "Cancelar partida";
+	F_Menu();
+	mes .title$;
+	switch(@menu)
+	{
+		// Criar partida
+		case 1:
+			set @partyid, getcharid(1);
+			set @lideraid, getpartyleader(getcharid(1), 1);
+			if (@lideraid == getcharid(3))
+			{
+				mes "Selecione o nível de dificuldade.";
+				setarray .menu$, "Playground", "Normal", "Ninja";
+				F_Menu();
+				set @nivelDificuldade, @menu;
+				set .@partycount, F_Conta_Party(@partyid);
+				set .@minJogadores, getvariableofnpc(.minJogadores, "MSACore");
+				set .@maxJogadores, getvariableofnpc(.maxJogadores, "MSACore");
+				if (.@partycount >= .@minJogadores && .@partycount <= .@maxJogadores)
+				{
+					if (getvariableofnpc(.situacaoEvento, "MSACore") == 0)
+					{
+						doevent "MSACore::OnNpcEntrada";
+					}
+					else
+					{
+						mes "Já existe uma partida em andamento, deseja agendar sua partida?";
+						next;
+						menu "Sim:Não",-;
+						set .title$, "[MVP Survivor Arena]";
+						switch(@menu)
+						{
+							case 1:
+								if (F_Valida_Agenda(getcharid(3)))
+								{
+									set .agenda[getarraysize(.agenda)], getcharid(3);
+									set .partyid[getarraysize(.agenda)], @partyid;
+									set .lideraid[getarraysize(.agenda)], @lideraid;
+									set .nivelDificuldade[getarraysize(.agenda)], @nivelDificuldade;
+									mes "Evento agendado na posição " + getarraysize(.agenda) + " da fila.";
+								}
+								break;
+						}
+					}
+				}
+				else
+				{
+					mes "A party deve conter no mínimo " + .@minJogadores + " e no máximo " + .@maxJogadores + " onlines.";
+				}
+			}
+			else
+			{
+				mes "Somente o líder da party pode criar uma partida.";
+			}
+			break;
+			
+		// Cancelar partida
+		case 2:
+			mes "Deseja cancelar o evento?";
+			setarray .menu$, "Não", "Sim";
+			F_Menu();
+			switch(@menu)
+			{
+				case 1:
+					break;
+				case 2:
+					doevent "MSACore::OnCancelarEvento";
+					break;
+			}
+			break;
+	}
+	close2;
+	end;
+	
+OnEventoConcluido:
+	while(getarraysize(.agenda) && !isloggedin(.agenda[0]))
+	{
+		deletearray .agenda[0], 1;
+		deletearray .partyid[0], 1;
+		deletearray .lideraid[0], 1;
+		deletearray .nivelDificuldade[0], 1;
+	}
+	if (getarraysize(.agenda) && getvariableofnpc(.situacaoEvento, "MSACore") == 0)
+	{
+		attachrid .agenda[0];
+		doevent "MSACore::OnNpcEntrada";
+	}
+	end;
+	
+OnInit:
+	deletearray .agenda[0], getarraysize(.agenda);
+	deletearray .partyid[0], getarraysize(.agenda);
+	deletearray .lideraid[0], getarraysize(.agenda);
+	deletearray .nivelDificuldade[0], getarraysize(.agenda);
+	set .title$, "[MVP Survivor Arena]";
+	set .lo$, "^9d90a6(^a9a2ae*^9d90a6)^444246 ";
+	set .ro$, " ^9d90a6(^a9a2ae*^9d90a6)^000000";
+	end;
+}

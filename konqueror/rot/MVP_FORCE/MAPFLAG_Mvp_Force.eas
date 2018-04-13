@@ -1,0 +1,37 @@
+force_1-1	mapflag	noteleport
+force_1-2	mapflag	noteleport
+force_1-3	mapflag	noteleport
+que_job01	mapflag	noteleport
+
+force_1-1	mapflag	nowarp
+force_1-2	mapflag	nowarp
+force_1-3	mapflag	nowarp
+que_job01	mapflag	nowarp
+
+force_1-1	mapflag	nowarpto
+force_1-2	mapflag	nowarpto
+force_1-3	mapflag	nowarpto
+que_job01	mapflag	nowarpto
+
+force_1-1	mapflag	nosave	SavePoint
+force_1-2	mapflag	nosave	SavePoint
+force_1-3	mapflag	nosave	SavePoint
+que_job01	mapflag	nosave	SavePoint
+
+force_1-1	mapflag	nobranch
+force_1-2	mapflag	nobranch
+force_1-3	mapflag	nobranch
+que_job01	mapflag	nobranch
+
+force_1-1	mapflag	nomemo
+force_1-2	mapflag	nomemo
+force_1-3	mapflag	nomemo
+que_job01	mapflag	nomemo
+
+//force_1-1	mapflag	pvp
+//force_1-2	mapflag	pvp
+
+force_1-1	mapflag	noreturn
+force_1-2	mapflag	noreturn
+force_1-3	mapflag	noreturn
+que_job01	mapflag	noreturn

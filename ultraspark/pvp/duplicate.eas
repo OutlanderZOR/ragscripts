@@ -1,0 +1,15 @@
+rot_p_room,37,65,4	duplicate(Healer)	Healer Mark#p1	616
+rot_p_room,27,67,6	duplicate(Reparador)	Reparador Ryo#p1	869
+rot_p_room,40,56,0	duplicate(Essenciais)	Essenciais#p1	91
+rot_p_room,38,56,0	duplicate(Requerimentos)	Requerimentos#p1	702
+rot_p_room,36,56,0	duplicate(Munições)	Munições#p1	898
+rot_p_room,34,56,0	duplicate(Ingredientes)	Ingredientes#p1	542
+rot_p_room,49,72,4	duplicate(Kafra)	Kafra#p1	94
+
+rot_p_room,65,72,4	duplicate(Kafra)	Kafra#p2	94
+rot_p_room,78,65,4	duplicate(Healer)	Healer Mark#p2	616
+rot_p_room,88,67,3	duplicate(Reparador)	Reparador Ryo#p2	869
+rot_p_room,73,56,0	duplicate(Essenciais)	Essenciais#p2	91
+rot_p_room,75,56,0	duplicate(Requerimentos)	Requerimentos#p2	702
+rot_p_room,77,56,0	duplicate(Munições)	Munições#p2	898
+rot_p_room,79,56,0	duplicate(Ingredientes)	Ingredientes#p2	542

@@ -1,0 +1,197 @@
+-	script	Job_Change_Core	-1,{
+	end;
+	
+	function f_opt
+	{
+		set .@str$, getarg(0);
+		return "(^" + .color$ + ">^000000) " + .@str$ + " (^" + .color$ + "<^000000)";
+	}
+	
+OnJobChange:
+	set .@title$, "[^" + .color$ + @classe$ + "^000000]";
+	mes .@title$;
+	mes "Olá ^23a0f7" + strcharinfo(0) + "^000000, como vai?";
+	mes " ";
+	// Verificação Wanderer
+	if (Sex == 1 && @job_set == 4076)
+	{
+		mes "Infelizmente eu não posso te treinar. " +
+			"Essa classe é exclusiva para o sexo feminino.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	// Verificação Minstrel
+	if (Sex == 0 && @job_set == 4075)
+	{
+		mes "Infelizmente eu não posso te treinar." +
+			"Essa classe é exclusiva para o sexo masculino.";
+		close2;
+		cutin "",255;
+		end;
+	}
+	mes "Deseja mudar para a classe " + @classe$ + "?";
+	next;
+	switch(select(f_opt("Sim") + ":" + f_opt("Não")))
+	{
+		case 1:
+			jobchange @job_set;
+			percentheal 100,100;
+			mes .@title$;
+			mes "Pronto!";
+			mes "Caso mude de idéia, basta conversar com outro mestre.";
+			break;
+		case 2:
+			mes .@title$;
+			mes "Tudo bem.";
+			break;
+	}
+	close2;
+	cutin "",255;
+	end;
+	
+OnInit:
+	set .color$, "e09900";
+	end;
+}
+
+rot_intro2,93,107,6	script	Cavaleiro Rúnico#i1	470,{
+	cutin "3rd_rune_knight", 2;
+	set @classe$, "Cavaleiro Rúnico";
+	set @job_set, 4060;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,92,104,6	script	Arcano#i	465,{
+	cutin "3rd_wl_queen04", 2;
+	set @classe$, "Arcano";
+	set @job_set, 4061;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,91,101,6	script	Sentinela#i	832,{
+	cutin "3rd_ranger", 2;
+	set @classe$, "Sentinela";
+	set @job_set, 4062;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+rot_intro2,90,98,6	script	Arce Bispo#i	652,{
+	cutin "gl_heinrich2", 2;
+	//cutin "3rd_rg_heinrich02", 2;
+	set @classe$, "Arce Bispo";
+	set @job_set, 4063;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,89,95,6	script	Mecânico#i	923,{
+	cutin "3rd_mechanic", 2;
+	set @classe$, "Mecânico";
+	set @job_set, 4064;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,91,93,7	script	Sicário#i	467,{
+	cutin "gc_verkhasel01", 2;
+	set @classe$, "Sicário";
+	set @job_set, 4065;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,94,90,7	script	Guardião Real#i	653,{
+	cutin "3rd_rg_schmitt01", 2;
+	set @classe$, "Guardião Real";
+	set @job_set, 4073;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,96,88,0	script	Feiticeiro#i	754,{
+	cutin "3rd_scr_caracas01", 2;
+	set @classe$, "Feiticeiro";
+	set @job_set, 4074;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,100,88,0	script	Trovador#i	480,{
+	cutin "3rd_mins_song02", 2;
+	set @classe$, "Trovador";
+	set @job_set, 4075;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,103,88,0	script	Musa#i	646,{
+	cutin "3rd_wd_kimdancer01", 2;
+	set @classe$, "Musa";
+	set @job_set, 4076;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,106,88,0	script	Shura#i	483,{
+	cutin "3rd_sura_master", 2;
+	set @classe$, "Shura";
+	set @job_set, 4077;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,109,88,0	script	Bioquímico#i	865,{
+	cutin "3rd_gn_dbris04", 2;
+	set @classe$, "Bioquímico";
+	set @job_set, 4078;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,113,90,2	script	Renegado#i	481,{
+	cutin "3rd_sc_doomk03", 2;
+	set @classe$, "Renegado";
+	set @job_set, 4079;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,116,93,2	script	Super Aprendiz#i	729,{
+	set @classe$, "Super Aprendiz";
+	set @job_set, 23;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,115,104,4	script	Kage Master#i	588,{
+	cutin "job_ko01", 2;
+	set @classe$, "Kagerou/Oboro";
+	set @job_set, 4212;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,116,101,4	script	Espiritualista#i	510,{
+	set @classe$, "Espiritualista";
+	set @job_set, 4049;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,117,98,4	script	Mestre Taekwon#i	644,{
+	set @classe$, "Mestre Taekwon";
+	set @job_set, 4047;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}
+
+rot_intro2,118,95,4	script	Gunslinger#i	632,{
+	cutin "aca_gunb_01", 2;
+	set @classe$, "Gunslinger";
+	set @job_set, 24;
+	doevent"Job_Change_Core::OnJobChange";
+	end;
+}

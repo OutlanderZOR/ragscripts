@@ -1,0 +1,33 @@
+bat_b01,335,150,0	script	BlueTower	111,{
+	set .@TowerHP,getvariableofnpc(.TowerHP,"RoTBattlegrounds");
+	mes "Proteja a Torre!";
+	mes "HP: "+.@TowerHP;
+	close;
+OnExplode:
+	set .@TowerHP,getvariableofnpc(.TowerHP,"RoTBattlegrounds");
+	if (!rand(9)) {
+		mapannounce "bat_b01", "ATENÇÃO: A torre está sob ataque! HP RESTANTE: "+.@TowerHP,0,0xffa800;
+		soundeffectall "pam.wav",0,1,"bat_b01",0,0,400,400;
+	}
+	if (.@TowerHP < 500000) && (!.warningset) {
+		set .warningset, 1;
+		donpcevent "BlueTower::OnWarning";
+	} else if (.@TowerHP >= 500000) {
+		set .warningset, 0;
+	}
+	misceffect 183;
+	misceffect 563;
+end;
+OnWarning:
+	mapannounce "bat_b01", "ATENÇÃO!!! A TORRE ESTÁ COM POUCO HP RESTANTE!!!",0,0xffa800;
+	//soundeffectall "pam.wav",0,1,"bat_b01",0,0,400,400;
+	do {
+		soundeffectall "jupe_warning.wav",0,1,"bat_b01",298,126,341,165;
+		sleep(3900);
+	} while (getmapusers("bat_b01")) && (.warningset);
+	set .warningset, 0;
+end;
+OnInit:
+	set .warningset, 0;
+end;
+}

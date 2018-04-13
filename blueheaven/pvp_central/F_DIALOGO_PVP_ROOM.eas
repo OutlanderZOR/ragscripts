@@ -1,0 +1,50 @@
+function	script	F_DIALOGO_PVP_ROOM	{
+	set .@gat_name$, getarg(0);
+	set .@spawn_x, getarg(1);
+	set .@spawn_y, getarg(2);
+	set .@name$, getarg(3);
+	set .@ranked, getarg(4);
+	if (.@gat_name$ == "") end;
+	set .@title$, "[" + "^ff0000" + "PVP Room" + "^000000" + "]";
+	mes .@title$;
+	mes "Mapa: ^027ea2" + .@name$ + "^000000";
+	mes "Jogadores: ^027ea2" + getmapusers(.@gat_name$) + "^000000";
+	if (pvp_custom_spawn) {
+		mes "Spawn: ^ff0000Custom^000000 (" + pvp_spawn_x + "," + pvp_spawn_y + ")";
+	} else {
+		mes "Spawn: ^222222Normal^000000";
+	}
+	if (.@ranked) {
+		mes "Modo: ^ff0000Ranked^000000";
+	} else {
+		mes "Modo: ^222222Normal^000000";
+	}
+	next;
+	switch(select("Entrar:Configurar Spawn:Sair")) {
+		case 1:
+			if (.@ranked) {
+				// Debuffa o mané
+				callfunc("F_Debuff");
+			}
+			if (pvp_custom_spawn)
+			{
+				warp .@gat_name$, pvp_spawn_x, pvp_spawn_y;
+			} else {
+				switch(rand(5)) {
+					case 0: warp .@gat_name$, .@spawn_x, .@spawn_y; break;
+					case 1: warp .@gat_name$, .@spawn_x+7, .@spawn_y+7; break;
+					case 2: warp .@gat_name$, .@spawn_x+7, .@spawn_y-7; break;
+					case 3: warp .@gat_name$, .@spawn_x-7, .@spawn_y+7; break;
+					case 4: warp .@gat_name$, .@spawn_x-7, .@spawn_y-7; break;
+				}
+			}
+			break;
+		case 2:
+			callfunc("F_SPAWN_CONFIG");
+			break;
+		case 3:
+			break;
+	}
+	close2;
+	end;
+}

@@ -1,0 +1,24 @@
+pvp_y_room.gat,37,51,0	script	Rank de Classes 255#1	-1,{
+	set .@title$, "[^D3220E" + "Ranking de Classes - 255" + "^000000]";
+	
+	sleep 50;
+	
+	query_sql "select c.name, sum(fnc_total_pts(a.char_id)) total_pts "+
+	"from pvp a "+
+	"join `char` b on a.char_id = b.char_id "+
+	"join classes c on b.class = c.id "+
+	"group by b.class "+
+	"order by total_pts desc",@name$,@total_pts;
+	
+	mes .@title$;
+	set @i, 0;
+	do {
+		mes @i + "º - " + @name$[@i] + " - " + @total_pts;
+		set @i, @i + 1;
+	} while (@i < getarraysize(@name$));
+	close;
+	
+OnInit:
+	waitingroom "Rank - Classes",0;
+	end;
+}

@@ -1,0 +1,8 @@
+-	script	OnPCLogoutEvent	-1,{
+	// SQL Clean
+	query_sql "delete from map_users where acid = "+getcharid(3);
+	query_sql "delete from cutin where acid = "+getcharid(3);
+	// VAR Clean
+	set PC_CUTIN_THREAD_ACTIVE, 0;
+	end;
+}

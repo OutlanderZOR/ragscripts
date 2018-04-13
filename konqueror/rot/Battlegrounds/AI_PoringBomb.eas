@@ -1,0 +1,122 @@
+-	script	AI_PoringBomb	-1,{
+
+	
+	function	fncTalkOnDetect	{
+		switch(rand(200)) {
+			case 0: unittalk getarg(0), "Peguei... pegueiii !!"; break;
+			case 1: unittalk getarg(0), "!!!!!"; break;
+			case 2: unittalk getarg(0), "Alvo avistado!!"; break;
+			case 3: unittalk getarg(0), "Bombardeaarrr!!!"; break;
+			case 4: unittalk getarg(0), "É meu!!!"; break;
+			case 5: unittalk getarg(0), "~ tic tac tic tac tic tac ~"; break;
+			case 6: unittalk getarg(0), "Não vai fugir!"; break;
+			case 7: unittalk getarg(0), "Volte aqui vc é meu!"; break;
+			case 8: unittalk getarg(0), "Akakakakaka!! =D"; break;
+			case 9: unittalk getarg(0), "YYYYAAAAAA!!!!"; break;
+		}
+		return;
+	}
+	
+	function	fncTalkOnBombard	{
+		switch(rand(10)) {
+			case 0: unittalk getarg(0), "BOOOOOMMMM!!!"; break;
+			case 1: unittalk getarg(0), "BOOOOOOMMMMM!!!"; break;
+			case 2: unittalk getarg(0), "KABOOM!!!"; break;
+			case 3: unittalk getarg(0), "xD"; break;
+			case 4: unittalk getarg(0), ">=D"; break;
+			case 5: unittalk getarg(0), "LOL"; break;
+			case 6: unittalk getarg(0), "zivudeu"; break;
+			case 7: unittalk getarg(0), "noob!"; break;
+			case 8: unittalk getarg(0), "ahhh"; break;
+			case 9: unittalk getarg(0), "yey!!!"; break;
+		}
+		return;
+	}
+	
+	function	fncTalkOnDie	{
+		switch(rand(5)) {
+			case 0: unittalk getarg(0), "NOOO!!!!";
+			case 1: unittalk getarg(0), ">_<"; break;
+			case 2: unittalk getarg(0), "MERDA!!"; break;
+			case 3: unittalk getarg(0), "AHHHH!!!!"; break;
+			case 4: unittalk getarg(0), "GAHH..."; break;
+		}
+		return;
+	}
+	
+	// Script Entry Point - When an event from the script engine is received.
+	if(getarraysize(.@ai_action) == 4){ // Checks if the data is formatted correctly.
+		switch(.@ai_action[AI_ACTION_TYPE]){
+			case AI_ACTION_TYPE_DETECT: // We see something...
+				switch(.@ai_action[AI_ACTION_TAR_TYPE]){ // Check what have we here.
+					case AI_ACTION_TAR_TYPE_PC: // It's a player
+						fncTalkOnDetect(.@ai_action[AI_ACTION_SRC]);
+						//unitemote .@ai_action[AI_ACTION_SRC], e_gasp; // !
+						unitattack .@ai_action[AI_ACTION_SRC],.@ai_action[AI_ACTION_TAR];
+						getmobdata(.@ai_action[AI_ACTION_SRC], .@mobdata);
+						attachrid(.@ai_action[AI_ACTION_TAR]);
+						getmapxy(.@map$,.@x,.@y,0);
+						if (distance(.@mobdata[6],.@mobdata[7],.@x,.@y) <= 5) && (rand(10)<=3) {
+							switch(distance(.@mobdata[6],.@mobdata[7],.@x,.@y)) {
+								case 0: percentheal -99,0; break;
+								case 1: percentheal -90,0; break;
+								case 2: percentheal -80,0; break;
+								case 3: percentheal -70,0; break;
+								case 4: percentheal -60,0; break;
+								case 5: percentheal -50,0; break;	
+							}
+							detachrid;
+							fncTalkOnBombard(.@ai_action[AI_ACTION_SRC]);
+							movenpc "EFE_BombExplode",.@mobdata[6],.@mobdata[7];
+							//soundeffectall "mgexplo.wav",0,1,"bat_b01",.@mobdata[6]-15,.@mobdata[7]-15,.@mobdata[6]+15,.@mobdata[7]+15;
+							donpcevent "EFE_BombExplode::OnBombExplode";	
+							unitkill .@ai_action[AI_ACTION_SRC];
+						}
+						break;
+				}	
+				break;
+			case AI_ACTION_TYPE_KILL: // We eliminated the criminal
+				break;
+			case AI_ACTION_TYPE_UNLOCK: // Target lost :(
+				set .@IsEventActive, getvariableofnpc(.IsEventActive,"RoTBattlegrounds");
+				if (!.@IsEventActive) {
+					unitkill .@ai_action[AI_ACTION_SRC];
+				}
+				break;
+			case AI_ACTION_TYPE_DEAD: // We got killed :(
+				end;
+				set .@IsEventActive, getvariableofnpc(.IsEventActive,"RoTBattlegrounds");
+				getmobdata(.@ai_action[AI_ACTION_SRC], .@mobdata);
+				if (.@IsEventActive) && (.@mobdata[14]) {
+					donpcevent "RoTBattlegrounds::OnSetBombFlDefense";
+				}
+				break;
+			case AI_ACTION_TYPE_ATTACK: // Someone attacked us
+				getmobdata(.@ai_action[AI_ACTION_SRC], .@mobdata);
+				attachrid(.@ai_action[AI_ACTION_TAR]);
+				getmapxy(.@map$,.@x,.@y,0);
+				if (distance(.@mobdata[6],.@mobdata[7],.@x,.@y) <= 5) && (rand(10)<=3) {
+					switch(distance(.@mobdata[6],.@mobdata[7],.@x,.@y)) {
+						case 0: percentheal -99,0; break;
+						case 1: percentheal -90,0; break;
+						case 2: percentheal -80,0; break;
+						case 3: percentheal -70,0; break;
+						case 4: percentheal -60,0; break;
+						case 5: percentheal -50,0; break;
+					}
+				}
+				detachrid;
+				fncTalkOnDie(.@ai_action[AI_ACTION_SRC]);
+				movenpc "EFE_BombExplode",.@mobdata[6],.@mobdata[7];
+				//soundeffectall "mgexplo.wav",0,1,"bat_b01",.@mobdata[6]-15,.@mobdata[7]-15,.@mobdata[6]+15,.@mobdata[7]+15;
+				donpcevent "EFE_BombExplode::OnBombExplode";
+				unitkill .@ai_action[AI_ACTION_SRC];
+				break;
+		}
+	}
+	deletearray .@ai_action, getarraysize(.@ai_action); // Cleans up and frees up memory
+	end;
+
+end;
+
+}

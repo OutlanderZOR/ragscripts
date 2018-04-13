@@ -1,0 +1,26 @@
+-	script	Skills & Rental	-1,{
+	set .@resultado, 0;
+	set .@title$, "[" + "^ff9600" + "Skills & Rental" + "^000000" + "]";
+	mes .@title$;
+	mes "Olá, eu forneço skills de quest e aluguel de carts, falcões e pecos.";
+	mes "O que deseja?";
+	next;
+	switch(select("Aluguel de carts, falcões ou pecos:Skills de Quest")) {
+		case 1:
+			set .@resultado, callfunc("F_GET_RENTAL");
+			break;
+		case 2:
+			set .@resultado, callfunc("F_GET_QUEST_SKILLS");
+			break;
+	}
+	if (.@resultado == 0) {
+		mes .@title$;
+		mes "Por enquanto não posso te ajudar...";
+		mes "Aparentemente suas skills ou classe não são suficientes para a opção selecionada.";
+	}
+	close2;
+	end;
+}
+
+quiz_00,81,36,4	duplicate(Skills & Rental)	Skills & Rental#qsr01	843
+prontera,146,170,6	duplicate(Skills & Rental)	Skills & Rental#qsr02	843

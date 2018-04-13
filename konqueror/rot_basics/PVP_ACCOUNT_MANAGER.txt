@@ -1,0 +1,151 @@
+// VARIAVEL GLOBAL PC_Pvp_Account para verificação de existencia de conta
+
+pvp_y_room.gat,57,56,0	script	PvP Account	754,{
+	
+	set .@title$, "[^D3220EPvP Account Manager^000000]";
+	mes .@title$;
+	
+	if (PC_Pvp_Account==0) goto L_No_Account;
+	cutin "lhz_benkaistin01",2;
+	mes "Olá ^155BA2"+strcharinfo(0)+"^000000, o que deseja?";
+	next;
+	switch(select("< Ver minha pontuação Geral >","< Apagar minha conta de PvP >")) {
+		case 1: goto L_Status; break;
+		case 2: goto L_Delete; break;
+	}
+	close;
+	
+L_Status:
+	mes .@title$;
+	cutin "loading",2;
+
+	sleep2 1000;
+
+	query_sql "SELECT total_kills, total_mortes, total_kills_hoje, total_mortes_hoje,"+
+	"fnc_total_pts(char_id), fnc_total_pts_hoje(char_id), fnc_retorna_nota(char_id),"+
+	"mk_doublekill, mk_multikill, mk_ultrakill, mk_monsterkill, mk_unstoppable, mk_holyshit, mk_godlike, mk_wickedsick "+
+	"from pvp where char_id = "+getcharid(0), @total_kills, @total_mortes, @total_kills_hoje, @total_mortes_hoje,
+	@total_pts, @total_pts_hoje, @nota, 
+	@mk_doublekill, @mk_multikill, @mk_ultrakill, @mk_monsterkill, @mk_unstoppable, @mk_holyshit, @mk_godlike, @mk_wickedsick;
+	
+	cutin "",255;
+	
+	mes " - PONTUAÇÃO - ";
+	mes "Total Kills: " + @total_kills;
+	mes "Total Mortes: " + @total_mortes;
+	mes "Total Kills Hoje: " + @total_kills_hoje;
+	mes "Total Mortes Hoje: " + @total_mortes_hoje;
+	mes "Pontuação Geral: " + @total_pts;
+	mes "Pontuação Geral Hoje: " + @total_pts;
+	mes "Nota: " + @nota + "%";
+	mes " ";
+	mes " - MULTI KILLS - ";
+	mes "Double Kills: " + @mk_doublekill;
+	mes "Multi Kills: " + @mk_multikill;
+	mes "Ultra Kills: " + @mk_ultrakill;
+	mes "Monster Kills: " + @mk_monsterkill;
+	mes "Unstoppables: " + @mk_unstoppable;
+	mes "Holy Shits!: " + @mk_holyshit;
+	mes "GodLikes: " + @mk_godlike;
+	mes "WickedSicked: " + @mk_wickedsick;
+	close2;
+	cutin "",255;
+	end;
+	
+L_Delete:
+	query_sql "Select user_pass from login where account_id = "+getcharid(3),@user_pass$;
+	mes .@title$;
+	mes "Apagar conta de PvP";
+	next;
+	menu "Continuar",-,"Cancelar",L_Exit;
+	mes .@title$;
+	mes "Informe a senha de sua conta...";
+	input @try_pw$;
+	if (md5(@try_pw$) != @user_pass$) goto L_Wrong_Pass;
+	next;
+	mes .@title$;
+	mes "Deseja realmente remover a conta de PvP do personagem ^155BA2"+strcharinfo(0)+"^000000?";
+	next;
+	menu "Sim",-,"Não",L_Exit;
+	mes .@title$;
+	mes "Todos os dados de pontuação do pvp, feitos em seu personagem, serão perdidos PARA SEMPRE!";
+	next;
+	menu "Cancelar",L_Exit,"Apagar Conta de PvP",-;
+	
+	query_sql "delete low_priority from pvp where char_id = "+getcharid(0);
+	
+	set PC_Pvp_Account, 0;
+	
+	mes .@title$;
+	mes "Conta Removida!";
+	mes "Para acessar o PvP você deverá criar outra conta.";
+	close2;
+	cutin "",255;
+	end;
+
+L_Wrong_Pass:
+	mes "Senha inválida.";
+	close2;
+	cutin "",255;
+	end;
+
+L_Exit:	
+	mes .@title$;
+	mes "ok..";
+	close2;
+	cutin "",255;
+	end;
+	
+L_No_Account:
+	cutin "lhz_benkaistin04",2;
+	mes "Você ainda não tem uma conta de PvP ativa. As contas de PvP servem para armazenar seus recordes e pontuações.";
+	next;
+	mes .@title$;
+	mes "Deseja criar sua conta de PvP agora?";
+	mes "^D3220EOBS.:^000000 Só terão acesso ao pvp aqueles que tiverem uma conta de pvp.";
+	next;
+	menu "Sim",L_CriaConta,"Não",L_Noes;
+	
+L_Noes:
+	mes .@title$;
+	mes "Volte quando mudar de idéia..";
+	close2;
+	cutin "",255;
+	end;
+	
+L_CriaConta:
+	set @src_id,0;
+	query_sql "Select char_id from pvp where char_id = "+getcharid(0),@src_id;
+	if (@src_id != 0) goto L_Account_Exists;
+	query_sql "Insert Into pvp (char_id, name) VALUES ("+getcharid(0)+", '"+strcharinfo(0)+"')";
+	query_sql "Select char_id from pvp where char_id = "+getcharid(0),PC_Pvp_Account;
+	query_sql "update pvp set day_now = curdate() where char_id = "+PC_Pvp_Account;
+	mes .@title$;
+	if (PC_Pvp_Account==0) goto L_Creation_Error;
+	mes "Sua conta foi criada com sucesso. Agora você já poderá acessar as salas de PvP";
+	close2;
+	cutin "",255;
+	end;
+	
+	
+L_Creation_Error:
+	mes "Algum erro ocorreu durante a criação da conta... Relogue e tente novamente, se o problema persistir informe ao ADM.";
+	close2;
+	cutin "",255;
+	end;
+	
+L_Account_Exists:
+	mes .@title$;
+	mes "Já existe uma conta de PvP para o personagem ^155BA2"+strcharinfo(0)+"^000000.";
+	mes "Se esta informação não está correta, tente relogar ou informar ao ADM o problema.";
+	close2;
+	cutin "",255;
+	end;
+	
+	
+OnInit:
+	waitingroom "PvP Account Manager",0;
+	end;
+	
+end;
+}

@@ -1,0 +1,39 @@
+-	script	~Super Healer~	-1,{
+	// Cancela buffs negativos
+	sc_end SC_CURSE;
+	sc_end SC_POISON;
+	sc_end SC_SILENCE;
+	sc_end SC_CONFUSION;
+	sc_end SC_BLIND;
+	sc_end SC_BLEEDING;
+	sc_end SC_DPOISON;
+	sc_end SC_PROVOKE;
+	sc_end SC_QUAGMIRE;
+	sc_end SC_DECREASEAGI;
+	sc_end SC_AETERNA;
+	sc_end SC_HALLUCINATION;
+	sc_end SC_SLOWDOWN;
+	sc_end SC_STRIPWEAPON;
+	sc_end SC_STRIPSHIELD;
+	sc_end SC_STRIPARMOR;
+	sc_end SC_STRIPHELM;
+	sc_end SC_JOINTBEAT;
+	sc_end SC_CHANGEUNDEAD;
+	sc_end SC_MINDBREAKER;
+	sc_end SC_ORCISH;
+	
+	// Repara itens caso algum esteja quebrado.
+	if (getbrokenid(1) != NULL) {
+		atcommand "@repairall";
+	}
+	
+	// Cura se precisar.
+	if((readparam(5)<readparam(6)) || (readparam(7)<readparam(8))) {
+		percentheal 100,100;
+		specialeffect2 408;
+		specialeffect2 491;
+	}
+	end;
+}
+prontera,154,187,4	duplicate(~Super Healer~)	~Super Healer~#sh01	932
+quiz_00,60,36,4	duplicate(~Super Healer~)	~Super Healer~#sh02	932

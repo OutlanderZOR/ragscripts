@@ -1,0 +1,54 @@
+// ShortCut Block 1
+bat_b01,63,75,0	script	ShortCut_Block1	-1,10,10,{
+OnTouch:
+	percentheal -100,-100;
+	dispbottom("É proibido passar por esta área.");
+	movenpc "ShortCut_Block1",63,75;
+end;
+}
+// ShortCut Block 2
+bat_b01,63,108,0	script	ShortCut_Block2	-1,10,10,{
+OnTouch:
+	percentheal -100,-100;
+	dispbottom("É proibido passar por esta área.");
+	movenpc "ShortCut_Block2",63,108;
+end;
+}
+// Healer 1
+bat_b01.gat,332,133,2	script	RBG Kitty Healer#u	725,{
+	if((readparam(5)<readparam(6)) || (readparam(7)<readparam(8))) {
+		percentheal 100,100;
+		specialeffect2 408;
+	}
+}
+// Healer 2
+bat_b01.gat,332,166,2	script	RBG	Kitty Healer#u	725,{
+	if((readparam(5)<readparam(6)) || (readparam(7)<readparam(8))) {
+		percentheal 100,100;
+		specialeffect2 408;
+	}
+}
+
+bat_b01.gat,0,0,0	script	EFE_BombExplode	111,{
+	end;
+OnBombExplode:
+	misceffect 32;
+	misceffect 183;
+	//misceffect 225;
+	misceffect 262;
+	misceffect 563;
+	sleep(50);
+	movenpc "EFE_BombExplode",0,0;
+end;
+OnMobExplode:
+	misceffect 32;
+	sleep(50);
+	movenpc "EFE_BombExplode",0,0;
+end;
+}
+
+//=================================================================================================
+//=		LOJAS
+//=================================================================================================
+bat_b01,324,170,3	shop	RoT Battlegrounds Shop1	811,610:4000,525:500,505:5000,547:1650,662:1450,12032:1000,14540:20,14539:20,1767:3,1766:40,1756:3,1752:3,1065:100
+bat_b01,324,129,3	shop	RoT Battlegrounds Shop2	811,610:4000,525:500,505:5000,547:1650,662:1450,12032:1000,14540:20,14539:20,1767:3,1766:40,1756:3,1752:3,1065:100

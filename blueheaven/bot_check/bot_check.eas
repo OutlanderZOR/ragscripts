@@ -1,0 +1,19 @@
+-	script	OnPCLoadMapEvent	-1,{
+OnPCLoginEvent:
+	set pcbot, 1;
+	end;
+	
+OnPCLoadMapEvent:
+	if (pcbot) {
+		if (getgmlevel() <= 1) {
+			set pcbot, !callfunc("FNC_BotCheck");
+			query_sql "insert into botcheck (account_id, char_id, check_date, invalid_code) values ("+ getcharid(3) +", "+ getcharid(0) +", now(), "+ pcbot +");";
+			if (pcbot) {
+				atcommand "@kick " + strcharinfo(0);
+			}
+		} else {
+			set pcbot, 0;
+		}
+	}
+	end;
+}

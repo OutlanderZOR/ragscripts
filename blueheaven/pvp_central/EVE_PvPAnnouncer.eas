@@ -1,0 +1,10 @@
+-	script	EVE_PvPAnnouncer	-1,{
+
+OnMinute10:
+	set .@pontos, 0;
+	query_sql "select name, fnc_total_pts_hoje(char_id) from pvp "+
+			  "order by fnc_total_pts_hoje(char_id) desc limit 1", .@nome$, .@pontos;
+	if (.@pontos)
+		announce "PvP Announcer: Melhor jogador do dia ["+.@nome$+"] com ["+.@pontos+"] pontos!",0;
+	end;
+}

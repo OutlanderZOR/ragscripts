@@ -1,0 +1,30 @@
+pvp_y_room.gat,27,62,0	script	Sheriff	731,{
+	query_sql "select name from pvp where fnc_is_mw(char_id) = 1 order by fnc_mw_pos(char_id) LIMIT 3",.@name$;
+  	
+  	set .@title$, "[^D3220ESheriff^000000]";
+  	
+  	mes .@title$;
+  	if (.@name$ == "") {
+  		mes "Ainda não há nenhum player que esteja sendo procurado. Tente outra hora...";
+  	} else {
+  		mes "Procurados de Hoje são...";
+  		mes "1º - "+ .@name$[0];
+  		if (.@name$[1] != "") mes "2º - "+ .@name$[1];
+  		if (.@name$[2] != "") mes "3º - "+ .@name$[2];
+  		// TODO: criar loop c/ getarraysize nessa bosta -- agora to com preguiça
+  	}
+  	next;
+  	menu "Ok, fechar",-,"Mais Informações",L_Info;
+  	close;
+  	
+L_Info:
+	mes .@title$;
+	mes "Most Wanted são os jogadores que mataram uma grande quantidade de jogadores no dia e por isso são os mais procurados. "+
+	"Matando um MW você ganhará skulls e pontos extras, dependendo da posição do adversário. Caso você seja um MW, toda vez "+
+	"que morrer perderá um ponto a mais!";
+	next;
+	mes .@title$;
+	mes "A idéia do sistema de MW baseia-se em estimular jogadores com menos habilidades a se unirem contra os jogadores "+
+	"mais habilidosos.";
+	close;
+}

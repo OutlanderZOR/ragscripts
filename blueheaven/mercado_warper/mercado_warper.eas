@@ -1,0 +1,18 @@
+prontera,160,192,4	script	Mercado Warper#1	835,{
+	warp "izlude", 128, 147;
+	end;
+
+OnInit:
+	waitingroom "Mercado", 0;
+	end;
+}
+pvp_y_room,29,51,0	duplicate(Mercado Warper#1)	Mercado Warper#2	835
+	
+izlude,128,153,4	script	Mercado Warper#3	835,{
+	warp "prontera", 156, 180;
+	end;
+	
+OnInit:
+	waitingroom "Prontera", 0;
+	end;
+}

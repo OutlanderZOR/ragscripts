@@ -1,0 +1,32 @@
+prontera,142,164,6	script	News#rot	877,{
+	cutin "nyuang_1",2;
+	set @cursor, 0;
+	
+L_Select:
+	deletearray @data$[0], getarraysize(@data$);
+	deletearray @msg$[0], getarraysize(@msg$);
+	query_sql "select date, msg from news limit "+@cursor+", 1", @data$, @msg$;
+	
+	mes "[^ff0000"+@data$[0]+"^000000]";
+	mes @msg$[0];
+	next;
+	menu "Próximo >>",L_Next,"<< Voltar",L_Previous,"Sair",L_Exit;
+	
+L_Next:
+	set @cursor, @cursor + 1;
+	goto L_Select;
+	
+L_Previous:
+	set @cursor, @cursor - 1;
+	if (@cursor < 0) set @cursor, 0;
+	goto L_Select;
+	
+L_Exit:
+	close2;
+	cutin "",255;
+	end;
+	
+OnInit:
+	waitingroom "Atualizações", 0;
+	end;
+}

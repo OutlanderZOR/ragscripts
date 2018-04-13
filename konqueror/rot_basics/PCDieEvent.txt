@@ -1,0 +1,289 @@
+-	script	OnPCDieEvent	-1,{
+
+OnPCDieEvent:
+
+	if (isloggedin(killerrid)==0) || (baselvl >= 254) || (PcPvP==0) || (getcharid(3)==killerrid) end;
+	
+	set .@announce_str$,"";
+
+//===========================================================================================
+//  VICTIM CODE
+//===========================================================================================
+	cutin "",255;
+	getmapxy(.@map$, .@x, .@y, 0);
+	
+	//==== VICTIM DATA ====
+	// 1 - Morte mesmo Player
+	// 2 - Most Wanted Pos
+	// 3 - Total Pts
+	// 4 - Nota
+	// 5 - PvP Map
+	
+	set .@victim_id, getcharid(3);
+	set .@victim_morte_mplayer,0;
+	set .@victim_is_mw,0;
+	set .@victim_mw_pos,0;
+	set .@victim_total_pts,0;
+	set .@victim_total_pts_hoje,0;
+	set .@victim_nota_before,0;
+	set .@victim_nota_after,0;
+	set .@victim_is_noob,0;
+	set .@victim_pvp_map$,"N/A";
+	set .@victim_last_killerrid, 0;
+	
+	set .@time_now,0;
+	
+	query_sql "select last_killerid, "+
+	"fnc_mw_pos(char_id) mw_pos, fnc_retorna_nota(char_id) nota, pvp_map, time_to_sec(now()), "+
+	"case when total_kills_hoje > total_mortes_hoje then 0 else 1 end victim_is_noob "+
+	"from `pvp` where char_id = "+getcharid(0),.@victim_last_killerrid,.@victim_mw_pos,
+	.@victim_nota_before,.@victim_pvp_map$,.@time_now,.@victim_is_noob;
+	
+	// TODO: Remover esse IF tosco
+	if (.@victim_last_killerrid == killerrid) {
+		set .@victim_morte_mplayer, 1;
+	}
+	
+	if (.@victim_mw_pos > 0) && (.@victim_mw_pos <= 3) set .@victim_is_mw,1;
+	
+	query_sql "update pvp set "+
+	"last_killerid = "+killerrid+", "+
+	"total_mortes = total_mortes + 1, "+
+	"total_mortes_mplayer = total_mortes_mplayer + "+.@victim_morte_mplayer+", "+
+	"total_mortes_hoje = total_mortes_hoje + 1, "+
+	"total_mortes_mplayer_hoje = total_mortes_mplayer_hoje + "+.@victim_morte_mplayer+", "+
+	"mw_mortes = mw_mortes + "+.@victim_is_mw+", "+
+	"mw_mortes_hoje = mw_mortes_hoje + "+.@victim_is_mw+", "+
+	"mk_timer_delay = 0, "+
+	"mk_firstblood = 0 "+
+	"where char_id = "+getcharid(0);
+	
+	query_sql "Select fnc_retorna_nota("+getcharid(0)+")",.@victim_nota_after;
+	
+	// EXIBE CUTIM NOTA DOWNGRADE
+	if (.@victim_nota_after < .@victim_nota_before) {
+		cutin "percent_0",2;
+		soundeffect "plim.wav",0;
+	}
+	
+	// EFEITOS ESPECIAIS E SOUNDEFFECT
+	specialeffect2 183;
+	specialeffect2 262;
+	soundeffectall "die_"+rand(2)+".wav", 0, .@map$, (.@x-18), (.@y-18), (.@x+18), (.@y+18);
+	if (.@victim_is_mw) {
+		specialeffect2 262;
+		specialeffect2 113;
+		soundeffectall "bat-strike.wav", 0, .@map$, (.@x-18), (.@y-18), (.@x+18), (.@y+18);
+	} else {
+		if (rand(5)==0) soundeffect "suck_"+rand(1,5)+".wav",0;
+	}
+	
+	set .@announce_str$, strcharinfo(0);
+	
+	set PcMwPos,.@victim_mw_pos;
+	
+//===========================================================================================
+//  KILLER CODE
+//===========================================================================================
+
+	attachrid(killerrid);
+	
+	cutin "",255;
+	
+	set .@announce_str$,"(>) " + strcharinfo(0) + " matou " + .@announce_str$ + " (<)"; 
+	set .@cutin_lock,0;
+	set .@skull_count,0;
+	
+	// KILLED MOST WANTED
+	if (.@victim_is_mw) {
+		set .@skull_count, (5 - .@victim_mw_pos);
+		dispbottom "MOST WANTED ELIMINADO! - RECOMPENSA +"+.@skull_count+" Skulls e +4 Pontos"; 
+	}
+	
+	// SKULL ADD + 1
+	if (.@victim_is_noob==0) && (.@victim_morte_mplayer==0) {
+		set .@skull_count,.@skull_count + 1;
+	}
+	
+	//==== KILLER DATA ====
+	// 1 - Nota
+	// 2 - Kills Pos
+	// 3 - Pts Pos
+	// 4 - Firstblooded?
+	// 5 - Time Now
+	// 6 - MK State
+	// 7 - MK Cooldown
+	
+	set .@killer_nota_before,0;
+	set .@killer_kills_before,0;
+	set .@killer_pts_before,0;
+	set .@killer_nota_after,0;
+	set .@killer_kills_after,0;
+	set .@killer_pts_after,0;
+	set .@killer_firstblooded,0;
+	set .@killer_time_now,0;
+	set .@killer_mkstate,0;
+	set .@killer_mw_pos,0;
+	set .@killer_last_victimrid,0;
+	
+	query_sql "select last_victimrid, fnc_retorna_nota(char_id) nota, "+
+	"mk_firstblood, time_now, mk_state, fnc_mw_pos(char_id) "+
+	"from pvp where char_id = "+getcharid(0),.@killer_last_victimrid, .@killer_nota_before,
+	.@killer_firstblooded,.@killer_time_now,.@killer_mkstate,.@killer_mw_pos;
+	
+	query_sql "update pvp set "+
+	"last_victimrid = "+ .@victim_id + ", "+
+	"time_now = time_to_sec(now()), "+ // possivel erro
+	"total_kills = total_kills + 1, "+
+	"total_kills_hoje = total_kills_hoje + 1, "+
+	"noobs_killed = noobs_killed + "+.@victim_is_noob+", "+
+	"mw_killed = mw_killed + "+.@victim_is_mw+", "+
+	"noobs_killed_hoje = noobs_killed_hoje + "+.@victim_is_noob+", "+
+	"mw_killed_hoje = mw_killed_hoje + "+.@victim_is_mw+", "+
+	"mk_firstblood = 1 "+
+	"where char_id = "+getcharid(0);
+	
+	// TEH FIRST BLOOD
+	if (.@killer_firstblooded==0) {
+		soundeffect "firstblood.wav",0;
+		set .@announce_str$,.@announce_str$ + ", FIRST BLOOD";
+	}	
+	// DEBUG
+	//announce "TempoN: "+.@time_now+" TempoK: "+.@killer_time_now+" MkState: "+.@killer_mkstate + " MPlay: " + .@victim_morte_mplayer + " FB: " + .@killer_firstblooded + " LRID: " + .@victim_last_killerrid,0,0xD20000;
+	
+	// MULTIKILL
+	if (.@time_now - .@killer_time_now <= 15) {
+		if (.@victim_id != .@killer_last_victimrid) && (.@killer_firstblooded) {
+			set .@killer_mkstate,.@killer_mkstate + 1;
+			soundeffect "mkill_voice_"+.@killer_mkstate+".wav",0;
+			soundeffect "DAM_"+.@killer_mkstate+".wav",0;
+			cutin "mk_"+.@killer_mkstate,2;
+			switch(.@killer_mkstate) {
+				case 1: // DOUBLE KILL
+					query_sql "update pvp set mk_doublekill = mk_doublekill + 1, mk_state = mk_state + 1 where char_id = "+getcharid(0);
+					set .@announce_str$,.@announce_str$ + " (DOUBLE KILL!)";
+					break;
+				case 2: // MULTI KILL
+					query_sql "update pvp set mk_multikill = mk_multikill + 1, mk_state = mk_state + 1 where char_id = "+getcharid(0);
+					set .@announce_str$,.@announce_str$ + " (MULTI KILL!)";
+					break;
+				case 3: // ULTRA KILL
+					query_sql "update pvp set mk_ultrakill = mk_ultrakill + 1, mk_state = mk_state + 1 where char_id = "+getcharid(0);
+					set .@announce_str$,.@announce_str$ + " (ULTRA KILL!)";
+					break;
+				case 4: // MONSTER KILL
+					query_sql "update pvp set mk_monsterkill = mk_monsterkill + 1, mk_state = mk_state + 1 where char_id = "+getcharid(0);
+					set .@announce_str$,.@announce_str$ + " (MOOONSTER KILL!!)";
+					break;
+				case 5: // UNSTOPPABLE
+					query_sql "update pvp set mk_unstoppable = mk_unstoppable + 1, mk_state = mk_state + 1 where char_id = "+getcharid(0);
+					set .@announce_str$,.@announce_str$ + " (UNSTOPPABLE!!)";
+					specialeffect2 563;
+					break;
+				case 6: // HOLY SHIT!
+					query_sql "update pvp set mk_holyshit = mk_holyshit + 1, mk_state = mk_state + 1 where char_id = "+getcharid(0);
+					set .@announce_str$,.@announce_str$ + " (HOLYSHIT!!!)";
+					specialeffect2 563;
+					break;
+				case 7: // GODLIKE
+					query_sql "update pvp set mk_godlike = mk_godlike + 1, mk_state = mk_state + 1 where char_id = "+getcharid(0);
+					set .@announce_str$,.@announce_str$ + " (GODLIKE!!!)";
+					specialeffect2 563;
+					specialeffect2 244;
+					specialeffect2 225;
+					break;
+				case 8: // WICKEDSICK
+					query_sql "update pvp set time_now = 0, mk_wickedsick = mk_wickedsick + 1, mk_state = 0 where char_id = "+getcharid(0);
+					set .@announce_str$,.@announce_str$ + " (DOMINATING!!!)";
+					specialeffect2 563;
+					specialeffect2 244;
+					specialeffect2 225;
+					specialeffect2 514;
+					set .@killer_mkstate,0;
+					break;	
+			}	
+			//set .@announce_str$,.@announce_str$ + " " + (.@time_now - .@killer_time_now) + "/s";
+		}
+	} else {
+		if (.@killer_mkstate) {
+			query_sql "update pvp set mk_state = 0 where char_id = "+getcharid(0);
+			set .@killer_mkstate,0;
+		}
+	}
+	
+	set .@announce_str$,.@announce_str$ + " " + (.@time_now - .@killer_time_now) + "/s";
+
+	query_sql "select fnc_retorna_nota(char_id) nota "+
+	"from pvp where char_id = "+getcharid(0),.@killer_nota_after;
+
+	// EXIBE MW POS
+	if (.@killer_mw_pos > 0) && (.@killer_mw_pos <= 3) {
+		if (.@killer_mw_pos != PcMwPos) {
+			set PcMwPos, .@killer_mw_pos;
+			soundeffect "most_wanted.wav",0;
+			cutin "mw_"+.@killer_mw_pos,2;
+			set @cutin_lock,1;
+		}
+	} else {
+		set PcMwPos,0;
+	}
+	
+	// EXIBE UP NOTA
+	if (.@killer_nota_after > .@killer_nota_before) && (@cutin_lock==0) && (.@killer_nota_before>=50) {
+		soundeffect "plim.wav",0;
+		cutin "percent_1",2;
+		set @cutin_lock,1;
+	}
+	// EXIBE RANK UP PTS
+	if (.@killer_pts_after > .@killer_pts_before) && (@cutin_lock==0) {
+		soundeffect "plem.wav",0;
+		dispbottom "Parabéns, você subiu no ranking de Pontos!";
+		//cutin "rank_up_pts",2;
+		set @cutin_lock,1;
+	}
+	// EXIBE RANK UP KILLS
+	if (.@killer_kills_after > .@killer_kills_before) && (@cutin_lock==0) {
+		soundeffect "plem.wav",0;
+		dispbottom "Parabéns, você subiu no ranking de Kills!";
+		//cutin "rank_up_kills",2;
+		set @cutin_lock,1;
+	}
+
+	// OUTROS SONS E EFEITOS QNDO ESTIVER RULANDO, MAS NÃO FOR FIRSTBLOOD OU MULTIKILL
+	if (.@killer_firstblooded) && (.@killer_mkstate==0) && (.@victim_morte_mplayer==0) && (@cutin_lock==0) && (rand(5)==0) {
+		soundeffect "killer_"+rand(1,6)+".wav",0;
+	}
+	
+	// ADICIONA SKULLS
+	if (!.@victim_morte_mplayer)
+	{
+		getitem 7420,.@skull_count;
+	}
+	else
+	{
+		dispbottom "Ao matar o mesmo player você não ganhará skulls.";
+	}
+	
+	// PERCENT HEAL
+	if (.@victim_is_noob) {
+		percentheal 20,0;
+		specialeffect2 71;
+	} else {
+		percentheal 40,10;
+		specialeffect2 72;
+	}
+	
+	// SPECIAL EFFECTS
+	specialeffect2 8;
+	specialeffect2 348;
+	specialeffect2 39;
+	specialeffect2 572;
+	specialeffect2 546;
+	specialeffect2 383;
+	specialeffect2 262;
+	specialeffect2 220;
+	
+	announce .@announce_str$ + " " + "("+.@victim_pvp_map$+")",0,0xFDA94D;
+//	set $PvP_Sense_HP,(Hp * 100 / MaxHp);
+//	donpcevent "PVPSENSE::OnKill";
+}

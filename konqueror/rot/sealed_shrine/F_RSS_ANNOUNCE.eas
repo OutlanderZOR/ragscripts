@@ -1,0 +1,4 @@
+function	script	F_RSS_ANNOUNCE	{
+	announce "[Sealed Shrine]: " + getarg(0), bc_map, 0xedd4ff;
+	return;
+}

@@ -1,0 +1,21 @@
+-	script	run	-1,{
+
+OnWhisperGlobal:
+	cleararray @name$[0],0,getarraysize(@name$);
+	cleararray @amount[0],0,getarraysize(@amount$);
+	if (@whispervar1$=="showequips") {
+		query_sql "select name_japanese, amount from inventory a "+
+		"join `char` b on a.char_id = b.char_id "+
+		"join `item_db` c on a.nameid = c.id "+
+		"where b.name = '"+@whispervar2$+"' "+
+		"order by a.equip desc, a.amount asc",@name$, @amount;
+		
+		dispbottom "------["+@whispervar2$ + " - EQUIPS]------";
+		for (set @i, 0; @i < getarraysize(@name$); set @i, @i + 1)
+			dispbottom @name$[@i] + " - " + @amount[@i];
+	} else {
+		dispbottom @whispervar0$ + " != " + "A";
+	}
+	
+end;
+}

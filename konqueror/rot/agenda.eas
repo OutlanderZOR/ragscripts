@@ -1,0 +1,7 @@
+prontera,142,168,6	script	Agenda	892,{
+	set .@title$, "[^ff0000WoE^000000]";
+	mes .@title$;
+	mes "Quarta-feira: 20:30 às 22:00";
+	mes "Sábado: 20:30 às 22:00";
+	close;
+}

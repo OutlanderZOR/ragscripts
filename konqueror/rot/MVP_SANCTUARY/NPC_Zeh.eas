@@ -1,0 +1,17 @@
+rot_force,96,126,6	script	Zé o Mercador	807,{
+	set .@title$, "[^844e01Zé Mercador^000000]";
+	mes .@title$;
+	mes "E ai, o que deseja?";
+	next;
+	menu "Quero comprar",L_SHOP,"Nada não...",L_EXIT;
+
+L_SHOP:
+	close2;
+	callshop "ROT_SAN_ZEH", 0;
+	end;
+
+L_EXIT:
+	mes .@title$;
+	mes "Flw ae.";
+	close;
+}

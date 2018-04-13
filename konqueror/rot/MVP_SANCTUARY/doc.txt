@@ -1,0 +1,51 @@
+= MVP Sanctuary =
+
+Mapa que reune todos os MVPs para facilitar a caçada de itens.
+O mapa deverá dispor de NPCs para cura, conserto de itens,
+mini-bases com kafras e savepoints.
+
+== NPCs ==
+
+ * Seu Zé (96, 126, 6);
+ * Furunculo (103, 117, 1);
+ * Filha do Zé (106, 123, 2)
+
+== Quests ==
+
+=== Seu Zé, o Mercador ===
+
+Descrição: O jogador deverá matar 10 antonios espalhados
+pelo mapa em um determinado tempo.
+
+Premio: O jogador que concluir o evento ganhará
+50 yggdrasil berry.
+
+OBS1.: O script deverá lidar com a situação em que
+jogadores que não fazem parte da quests matam o
+antonio, neste caso o script deverá sumonar outro antobio.
+
+
+== Mercado ==
+
+=== Seu Zé, o Mercador ===
+
+ * Speed Potion;
+ * Authoritative Badge;
+ * Panacea;
+ * Green Potion;
+ * White Potion;
+ * Alice Card;
+ * Abysmal Knight Card;
+ * Mistress Card;
+ * Gold
+
+=== Furunculo ===
+
+ * Composite Bow[4];
+ * Pike[4];
+ * Blade[4];
+ * Jur[4];
+ * Rod[4];
+ * Mace[4];
+ * Guard[4];
+

@@ -1,0 +1,18 @@
+-	script	OnNPCKillEvent	-1,{
+OnNPCKillEvent:
+	// Registra kill de mvp caso o ID do monstro seja um ID de MVP.
+	for(set .@i, 0; .@i < getarraysize(.mvps); set .@i, .@i + 1) {
+		if (killedrid == .mvps[.@i]) {
+			query_sql "insert into mvpkill (mobid, charid, killdate) values ("+ killedrid +", "+ getcharid(0) +", now());";
+			break;
+		}
+	}
+	end;
+	
+	
+OnInit:
+	// Carrega em memória os IDs dos MVPs.
+	deletearray .mvps[0], getarraysize(.mvps);
+	query_sql "SELECT id FROM mob_db where mexp <> 0", .mvps;
+	end;
+}

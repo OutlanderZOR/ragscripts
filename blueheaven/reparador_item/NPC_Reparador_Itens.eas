@@ -1,0 +1,25 @@
+-	script	Repair Blacksmith	86,{
+	set .@title$, "["+"^ad250a"+"Reparador de Itens"+"^000000"+"]";
+	mes .@title$;
+	if (1 || getgmlevel()) {
+		if(getbrokenid(1)==NULL) {
+			mes "Todos seus itens estão em perfeitas condições, volte quando precisar...";
+		} else {
+			mes "Qual item deseja reparar?";
+			set @choice,select(getitemname(getbrokenid(1)),getitemname(getbrokenid(2)),
+				getitemname(getbrokenid(3)),getitemname(getbrokenid(4)),getitemname(getbrokenid(5)),
+				getitemname(getbrokenid(6)),getitemname(getbrokenid(7)),getitemname(getbrokenid(8)),
+				getitemname(getbrokenid(9)),getitemname(getbrokenid(10)));
+			repair(@choice);
+			mes "Pronto!";
+		}
+	} else {
+		mes "Sinto muito, mas este serviço é exclusivo para usuários VIP";
+	}
+	close;
+}
+morocc,152,97,4	duplicate(Repair Blacksmith)	Repair Blacksmith#rp02	86
+geffen,109,69,4	duplicate(Repair Blacksmith)	Repair Blacksmith#rp03	86
+payon,177,104,4	duplicate(Repair Blacksmith)	Repair Blacksmith#rp04	86
+izlude,134,93,2	duplicate(Repair Blacksmith)	Repair Blacksmith#rp05	86
+quiz_00,52,36,4	duplicate(Repair Blacksmith)	Repair Blacksmith#rp06	86

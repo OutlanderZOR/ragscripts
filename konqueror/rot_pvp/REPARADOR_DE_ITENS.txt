@@ -1,0 +1,23 @@
+pvp_y_room.gat,27,67,0	script	Reparador de Itens	86,{
+	if(getbrokenid(1)==NULL) goto L_NOREPAIR;
+	set @choice,select(getitemname(getbrokenid(1)),getitemname(getbrokenid(2)),
+		getitemname(getbrokenid(3)),getitemname(getbrokenid(4)),getitemname(getbrokenid(5)),
+		getitemname(getbrokenid(6)),getitemname(getbrokenid(7)),getitemname(getbrokenid(8)),
+		getitemname(getbrokenid(9)),getitemname(getbrokenid(10)));
+	repair(@choice);
+	mes "tudo ok..";
+	close;
+	end;
+
+L_NOREPAIR:
+	end;
+
+OnInit:
+	waitingroom "Reparador de Itens",0;
+	end;
+}
+
+pvp_y_room.gat,27,67,0	duplicate(Reparador de Itens)	Reparador de Itens#bobi1	86
+//pvp_y_room.gat,123,119,0	duplicate(Reparador de Itens)	Reparador de Itens#bobi2	86
+rot_force.gat,104,94,4	duplicate(Reparador de Itens)	Reparador de Itens#bobi3	86
+bat_c01,58,92,6	duplicate(Reparador de Itens)	Reparador de Itens#bobi4	86

@@ -1,0 +1,4 @@
+-	script	OnPCLoginEvent	-1,{
+	atcommand "@main";
+	end;
+}

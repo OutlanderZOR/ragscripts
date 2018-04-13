@@ -1,0 +1,14 @@
+prontera,146,141,6	script	Mvp Sanctuary	811,{
+	set .@title$, "[^844e01Mvp Sanctuary^000000]";
+	mes .@title$;
+	mes "MVPS!!! MVPS e MVPS!! =O";
+	mes "Deseja ir?";
+	menu "Sim",L_SIM,"Não",L_EXIT;
+	
+L_SIM:
+	savepoint "rot_force",118,113;
+	warp "rot_force",118,113;
+	end;
+L_EXIT:
+	close;
+}

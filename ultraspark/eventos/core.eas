@@ -1,0 +1,181 @@
+-	script	Event_Core	-1,{
+	end;
+	
+	function f_get_min_tick
+	{
+		return gettimetick(0) / 1000 / 60;
+	}
+	
+	function f_announce
+	{
+		set .@str$, getarg(0);
+		announce .@str$, bc_all;
+		return;
+	}
+	
+	
+OnInit:
+	set .FATOR_MINUTO, 60 * 1000;
+	
+	set .EVT_CONST_CACADA_TESOURO, 1;
+	set .EVT_CONST_SOBREVIVER_MORRER, 2;
+	set .EVT_CONST_CORRIDA_SEM_FIM, 3;
+	set .EVT_CONST_CACADA_HARDCORE, 4;
+	
+	// Mapas do evento Caçada do Tesouro
+	setarray .evt_ect_map$, "rot_farm01",
+							"rot_farm02",
+							"rot_farm03",
+							"rot_farm04";
+	
+	// Variavel que armazena o mapa selecionado no evento Caçada do Tesouro
+	set .evt_ect_mapa_selecionado$, "";
+	
+	// Armazena o ID do evento em execução.
+	// * Segue lista de eventos por ID
+	// [1] - Caçada do Tesouro
+	// [2] - Sobreviver ou Morrer
+	// [3] - Corrida da Torre sem Fim
+	// [4] - Caçada Hardcore
+	set .evt_id_atual, 0;
+	// Variavel de controle para seleção aleatória.
+	set .evt_id_maximo, 4;
+	// Flag que define se o evento já foi iniciado e permite a entrada dos jogadores.
+	set .evt_iniciado, 0;
+	// Duração do evento em MINUTOS.
+	set .evt_duracao, 0;
+	// Flag que define se ocorreu algum erro durante a inicialização do evento
+	// Se for verdadeiro o evento não deve ser acessível e novos eventos não serão iniciados
+	set .evt_erro, 0;
+
+	// Nome oficial dos eventos relacionados aos seus respectivos IDs.
+	setarray .evt_nome$, "N/A",
+						 "Caçada do Tesouro",
+						 "Sobreviver ou Morrer",
+						 "Corrida da Torre sem Fim",
+						 "Caçada Hardcore";
+	
+	// armazena o minuto da ultima execução em server ticks
+	// No OnInit armazena o minuto que o script é iniciado para que caso ocorra
+	// um reloadscript no servidor os eventos não iniciem de imediato.
+	set .evt_ultima_execucao, f_get_min_tick();
+	
+	// Define o intervalo em minutos entre execuções de eventos.
+	set .evt_intervalo_execucao, 0; // default: 60
+	end;
+	
+OnMinute00:
+OnMinute10:
+OnMinute20:
+OnMinute30:
+OnMinute40:
+OnMinute50:
+	// Algum erro ocorreu durante o processo de eventos.
+	// O inicio de novos eventos deve permanecer desativado para que eventos defeituosos
+	// não prejudiquem a estabilidade do servidor
+	if (.evt_erro)
+		end;
+	// Verifica se não há evento atual em execução e se o intervalo é válido
+	if (!.evt_id_atual && f_get_min_tick()-.evt_ultima_execucao > .evt_intervalo_execucao)
+		donpcevent "Event_Core::OnIniciarNovoEvento";
+	end;
+	
+OnIniciarNovoEvento:
+	set .evt_id_atual, rand(1,.evt_id_maximo);
+	f_announce("Atenção, um novo evento será iniciado!");
+	sleep 5000;
+	f_announce("O evento selecionado foi [" + .evt_nome$[.evt_id_atual] + "]");
+	sleep 5000;
+	f_announce("Jogadores interessados dirijam-se a central de eventos");
+	sleep 5000;
+	
+	// Chama agendador para controlar a duração do evento
+	donpcevent "Event_Core::OnAgendador";
+	
+	// Chama label respectiva de cada evento
+	if (.evt_id_atual == .EVT_CONST_CACADA_TESOURO)
+		donpcevent "Event_Core::OnInitEvtCacadaTesouro";
+	else if (.evt_id_atual == .EVT_CONST_SOBREVIVER_MORRER)
+		donpcevent "Event_Core::OnInitEvtSobrevMorrer";
+	else if (.evt_id_atual == .EVT_CONST_CORRIDA_SEM_FIM)
+		donpcevent "Event_Core::OnInitEvtCorridaSemFim";
+	else if (.evt_id_atual == .EVT_CONST_CACADA_HARDCORE)
+		donpcevent "Event_Core::OnInitEvtCacadaHarcore";
+	else
+	{
+		// O evento selecionado não foi devidamente definido
+		// reseta as variaveis para que seja possível iniciar um novo evento
+		// na proxima iteração
+		goto OnFinalizarEvento;
+	}
+	end;
+	
+OnFinalizarEvento:
+	if (.evt_id_atual)
+	{
+		// Se houver evento atual reseta variaveis de controle.
+		set .evt_id_atual, 0;
+		set .evt_ultima_execucao, f_get_min_tick();
+		set .evt_duracao, 0;
+	}
+	end;
+	
+OnAgendador:
+	set .@count, 0;
+	while(!.evt_iniciado)
+	{
+		sleep 1000;
+		set .@count, .@count + 1;
+		// Tolerancia máxima do agendador é de 5 minutos.
+		if (.@count == 300)
+		{
+			// Algo deu errado, define variavel de erro.
+			set .evt_erro, 1;
+			end;
+		}
+	}
+	// Dorme por 10 minutos a menos para avisar o fim do evento.
+	set .sleep_agendador, (.evt_duracao - 10) * .FATOR_MINUTO;
+	sleep .sleep_agendador;
+	f_announce("Faltam 10 minutos para o término do evento.");
+	sleep 5 * .FATOR_MINUTO;
+	f_announce("Restam apenas 5 minutos para o término do evento.");
+	sleep 1 * .FATOR_MINUTO;
+	f_announce("1 minuto restante para o término do evento.");
+	donpcevent "Event_Core::OnFinalizarEvento";
+	end;
+	
+OnInitEvtCacadaTesouro:
+	set .evt_duracao, 30;
+	
+	// Sorteio de mapa do evento.
+	set .evt_ect_mapa_selecionado$, .evt_ect_map$[rand(0,getarraysize(.evt_ect_map$)-1)];
+	
+	// Libera entrada e inicialização do agendador
+	set .evt_iniciado, 1;
+	end;
+
+OnInitEvtSobrevMorrer:
+	set .evt_duracao, 30;
+	
+	// Libera entrada e inicialização do agendador
+	set .evt_iniciado, 1;
+	end;
+
+OnInitEvtCorridaSemFim:
+	set .evt_duracao, 30;
+	
+	// Libera entrada e inicialização do agendador
+	set .evt_iniciado, 1;
+	end;
+
+OnInitEvtCacadaHarcore:
+	set .evt_duracao, 30;
+	
+	// Libera entrada e inicialização do agendador
+	set .evt_iniciado, 1;
+	end;
+	
+OnEvtEntrada:
+	end;
+}

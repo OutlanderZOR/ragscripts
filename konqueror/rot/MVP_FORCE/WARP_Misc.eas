@@ -1,0 +1,20 @@
+force_1-3,11,68,0	script	Cucow	800,{
+	warp "que_job01",68,91;
+	end;
+}
+
+force_1-3,100,191,4	script	Valkyrie#fex	811,{
+	mes "Deseja realmente sair?";
+	next;
+	menu "Não",L_Nao,"Sim",-;
+	warp "prontera",156,180;
+	savepoint "prontera",156,180;
+	end;
+
+L_Nao:
+	close2;
+	end;
+	
+OnInit:
+	waitingroom "Saida",0;
+}

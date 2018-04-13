@@ -1,0 +1,223 @@
+-	shop	SHOP_DAGGER	100,512:15
+-	shop	SHOP_ONE_HANDED_SWORD	100,512:15
+-	shop	SHOP_TWO_HANDED_SWORD	100,512:15
+-	shop	SHOP_ONE_HANDED_SPEAR	100,512:15
+-	shop	SHOP_TWO_HANDED_SPEAR	100,512:15
+-	shop	SHOP_ONE_HANDED_AXE	100,512:15
+-	shop	SHOP_TWO_HANDED_AXE	100,512:15
+-	shop	SHOP_MACE	100,512:15
+-	shop	SHOP_WAND_STAFF	100,512:15
+-	shop	SHOP_BOW	100,512:15
+-	shop	SHOP_CLAW_FIST	100,512:15
+-	shop	SHOP_MUSICAL_INSTRUMENT	100,512:15
+-	shop	SHOP_WHIP	100,512:15
+-	shop	SHOP_BOOK	100,512:15
+-	shop	SHOP_KATAR	100,512:15
+-	shop	SHOP_GUN	100,512:15
+-	shop	SHOP_SHURIKEN	100,512:15
+-	shop	SHOP_ARMOR	100,512:15
+-	shop	SHOP_ACCESSORY	100,512:15
+-	shop	SHOP_GARMENT	100,512:15
+-	shop	SHOP_FOOTGEAR	100,512:15
+-	shop	SHOP_HEADGEAR	100,512:15
+
+
+
+izlude,101,138,5	script	Daggers	747,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_DAGGER", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_DAGGER");
+	end;
+}
+
+izlude,102,139,5	script	NPC_SHOP_ONE_HANDED_SW	733,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_ONE_HANDED_SWORD", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_ONE_HANDED_SWORD");
+	end;
+}
+
+izlude,103,140,5	script	NPC_SHOP_TWO_HANDED_SW	734,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_TWO_HANDED_SWORD", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_TWO_HANDED_SWORD");
+	end;
+}
+
+izlude,104,141,5	script	NPC_SHOP_ONE_HANDED_SP	708,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_ONE_HANDED_SPEAR", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_ONE_HANDED_SPEAR");
+	end;
+}
+
+izlude,105,142,5	script	NPC_SHOP_TWO_HANDED_SP	767,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_TWO_HANDED_SPEAR", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_TWO_HANDED_SPEAR");
+	end;
+}
+
+izlude,106,143,5	script	NPC_SHOP_ONE_HANDED_AX	52,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_ONE_HANDED_AXE", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_ONE_HANDED_AXE");
+	end;
+}
+
+izlude,107,144,5	script	NPC_SHOP_TWO_HANDED_AX	107,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_TWO_HANDED_AXE", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_TWO_HANDED_AXE");
+	end;
+}
+
+izlude,108,145,5	script	NPC_SHOP_MACE	753,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_MACE", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_MACE");
+	end;
+}
+
+izlude,109,146,5	script	NPC_SHOP_WAND_STAFF	735,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_WAND_STAFF", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_WAND_STAFF");
+	end;
+}
+
+izlude,110,147,5	script	NPC_SHOP_BOW	727,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_BOW", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_BOW");
+	end;
+}
+
+izlude,111,148,5	script	NPC_SHOP_CLAW_FIST	746,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_CLAW_FIST", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_CLAW_FIST");
+	end;
+}
+
+izlude,112,149,5	script	NPC_SHOP_MUSICAL_INSTR	741,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_MUSICAL_INSTRUMENT", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_MUSICAL_INSTRUMENT");
+	end;
+}
+
+izlude,113,150,5	script	NPC_SHOP_WHIP	724,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_WHIP", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_WHIP");
+	end;
+}
+
+izlude,114,151,5	script	NPC_SHOP_BOOK	743,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_BOOK", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_BOOK");
+	end;
+}
+
+izlude,115,152,5	script	NPC_SHOP_KATAR	725,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_KATAR", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_KATAR");
+	end;
+}
+
+izlude,116,153,5	script	NPC_SHOP_GUN	900,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_GUN", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_GUN");
+	end;
+}
+
+izlude,117,154,5	script	NPC_SHOP_SHURIKEN	898,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_SHURIKEN", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_SHURIKEN");
+	end;
+}
+
+izlude,121,160,6	script	NPC_SHOP_ARMOR	752,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_ARMOR", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_ARMOR");
+	end;
+}
+
+izlude,121,163,6	script	NPC_SHOP_ACCESSORY	729,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_ACCESSORY", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_ACCESSORY");
+	end;
+}
+
+izlude,121,166,6	script	NPC_SHOP_GARMENT	108,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_GARMENT", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_GARMENT");
+	end;
+}
+
+izlude,121,169,6	script	NPC_SHOP_FOOTGEAR	809,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_FOOTGEAR", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_FOOTGEAR");
+	end;
+}
+
+izlude,121,172,0	script	NPC_SHOP_HEADGEAR	704,{
+	callfunc("F_SHOP_ADMIN", .shopid);
+	callshop "SHOP_HEADGEAR", 0;
+	end;
+OnInit:
+	set .shopid, callfunc("F_LOAD_SHOP", "SHOP_HEADGEAR");
+	end;
+}
+

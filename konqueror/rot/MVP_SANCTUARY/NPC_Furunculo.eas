@@ -1,0 +1,8 @@
+rot_force,103,117,1	script	Furunculo	870,{
+	set .@title$, "[^844e01Furunculo^000000]";
+	mes .@title$;
+	mes "As melhores armas do mundo estão aqui! =DDD";
+	close2;
+	callshop "ROT_SAN_WPN", 0;
+	end;
+}

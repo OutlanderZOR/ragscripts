@@ -1,0 +1,12 @@
+-	script	AI_Emperium	-1,{
+	// Script Entry Point - When an event from the script engine is received.
+	if(getarraysize(.@ai_action) == 4){ // Checks if the data is formatted correctly.
+		switch(.@ai_action[AI_ACTION_TYPE]){
+			case AI_ACTION_TYPE_DEAD: // We got killed :(
+				donpcevent "RoTBattlegrounds::OnEmpBreak";
+				break;
+		}
+	}
+	deletearray .@ai_action, getarraysize(.@ai_action); // Cleans up and frees up memory
+	end;
+}

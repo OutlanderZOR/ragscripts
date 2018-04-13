@@ -1,0 +1,45 @@
+// gl_dun02
+
+rot_trea01,0,0,0,0	monster	Majoruros	2518,35,0,0,0
+rot_trea01,0,0,0,0	monster	Gargoyle	2500,10,0,0,0
+
+// nif_fild01
+
+rot_trea02,0,0,0,0	monster	Disguise	2521,10,0,0,0
+rot_trea02,0,0,0,0	monster	Disguise	2521,15,300000,120000,0
+rot_trea02,227,253,20,20	monster	Dullahan	2520,3,1800000,1200000,0
+rot_trea02,0,0,0,0	monster	Dullahan	2520,6,0,0,0
+rot_trea02,0,0,0,0	monster	Gibbet	2519,5,0,0,0
+rot_trea02,0,0,0,0	monster	Heirozoist	2523,5,0,0,0
+rot_trea02,0,0,0,0	monster	Quve	2522,15,0,0,0
+
+// alde_dun02
+
+rot_trea03,0,0,0,0	monster	High Orc	2514,50,0,0,0
+rot_trea03,0,0,0,0	monster	Orc Archer	2508,10,0,0,0
+rot_trea03,0,0,0,0	monster	Brilight	2513,10,0,0,0
+rot_trea03,0,0,0,0	monster	Arclouze	2510,10,0,0,0
+
+// gef_fild14
+
+rot_trea04,0,0,0,0	monster	Orc Lady	2516,15,0,0,0
+rot_trea04,0,0,0,0	boss_monster	Orc Hero	2506,1,3600000,600000,1
+rot_trea04,0,0,0,0	monster	Orc Warrior	2501,5,0,0,0
+rot_trea04,0,0,0,0	monster	Orc Archer	2508,15,0,0,0
+rot_trea04,0,0,0,0	monster	High Orc	2514,60,0,0,0
+
+// gl_prison
+
+rot_trea05,0,0,0,0	monster	Injustice	2515,10,0,0,0
+rot_trea05,0,0,0,0	monster	Hunter Fly	2503,5,0,0,0
+rot_trea05,0,0,0,0	monster	Zombie Prisoner	2511,25,0,0,0
+rot_trea05,0,0,0,0	monster	Rybio	2512,7,0,0,0
+
+// moc_pryd04
+
+rot_trea06,0,0,0,0	monster	Mummy	2505,15,0,0,0
+rot_trea06,0,0,0,0	monster	Ancient Mummy	2517,2,0,0,0
+rot_trea06,0,0,0,0	monster	Isis	2502,30,150000,75000,0
+rot_trea06,0,0,0,0	monster	Mimic	2509,5,600000,300000,1
+rot_trea06,0,0,0,0	boss_monster	Osiris	2504,1,3600000,600000,0
+rot_trea06,0,0,0,0	monster	Matyr	2507,10,0,0,0

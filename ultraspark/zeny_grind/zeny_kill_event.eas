@@ -1,0 +1,675 @@
+-	script	zeny_kill_event	-1,{
+	end;
+	
+	function f_zeny_bonus
+	{
+		// Calcula bonus de zeny
+		set @mob_kill_count, @mob_kill_count + 1;
+		if ((@zeny_bonus == 4 && @mob_kill_count > 499) // 500 kills
+			|| (@zeny_bonus == 3 && @mob_kill_count > 299) // 300 kills
+			|| (@zeny_bonus == 2 && @mob_kill_count > 169) // 170 kills
+			|| (@zeny_bonus == 1 && @mob_kill_count > 69) // 70 kills
+			|| (@zeny_bonus == 0 && @mob_kill_count > 24)) // 25 kills
+		{
+			dispbottom "O bonus de zeny aumenta a quantidade de zeny recebida por monstro.";
+			dispbottom "O bonus é perdido ao morrer ou trocar de mapa.";
+			set @zeny_bonus, @zeny_bonus + 1;
+			cutin "bonus_zeny_x"+@zeny_bonus,2;
+			soundeffect "zeny_bonus.wav",0;
+		}
+		return (1+(@zeny_bonus/4));
+	}
+	
+// TODO: transformar isso para item drop	
+OnNPCKillEvent:
+	set .@Zeny, 0;
+	switch(killedrid)
+	{
+		case 1713: set .@Zeny, .@Zeny + 324; break;	// Acidus
+		case 1716: set .@Zeny, .@Zeny + 216; break;	// Acidus
+		case 1757: set .@Zeny, .@Zeny + 342; break;	// Acidus
+		case 1759: set .@Zeny, .@Zeny + 234; break;	// Acidus
+		case 1769: set .@Zeny, .@Zeny + 102; break;	// Agav
+		case 1786: set .@Zeny, .@Zeny + 84; break;	// Agav
+		case 1193: set .@Zeny, .@Zeny + 48; break;	// Alarm
+		case 1476: set .@Zeny, .@Zeny + 48; break;	// Alarm
+		case 1818: set .@Zeny, .@Zeny + 12; break;	// Alarm
+		case 1275: set .@Zeny, .@Zeny + 42; break;	// Alice
+		case 1521: set .@Zeny, .@Zeny + 42; break;	// Alice
+		case 1735: set .@Zeny, .@Zeny + 246; break;	// Alicel
+		case 1739: set .@Zeny, .@Zeny + 234; break;	// Alicel
+		case 1736: set .@Zeny, .@Zeny + 216; break;	// Aliot
+		case 1740: set .@Zeny, .@Zeny + 192; break;	// Aliot
+		case 1737: set .@Zeny, .@Zeny + 72; break;	// Aliza
+		case 1746: set .@Zeny, .@Zeny + 66; break;	// Aliza
+		case 1271: set .@Zeny, .@Zeny + 24; break;	// Alligator
+		case 1301: set .@Zeny, .@Zeny + 102; break;	// Am Mut
+		case 1511: set .@Zeny, .@Zeny + 4176; break;	// Amon Ra
+		case 1699: set .@Zeny, .@Zeny + 90; break;	// Ancient Mimic
+		case 1297: set .@Zeny, .@Zeny + 156; break;	// Ancient Mummy
+		case 1522: set .@Zeny, .@Zeny + 156; break;	// Ancient Mummy
+		case 1593: set .@Zeny, .@Zeny + 78; break;	// Ancient Mummy
+		case 2019: set .@Zeny, .@Zeny + 1122; break;	// Ancient Tree
+		case 1305: set .@Zeny, .@Zeny + 126; break;	// Ancient Worm
+		case 1567: set .@Zeny, .@Zeny + 126; break;	// Ancient Worm
+		case 1096: set .@Zeny, .@Zeny + 174; break;	// Angeling
+		case 1568: set .@Zeny, .@Zeny + 174; break;	// Angeling
+		case 1766: set .@Zeny, .@Zeny + 492; break;	// Angeling
+		case 1206: set .@Zeny, .@Zeny + 78; break;	// Anolian
+		case 1488: set .@Zeny, .@Zeny + 66; break;	// Anolian
+		case 1098: set .@Zeny, .@Zeny + 162; break;	// Anubis
+		case 1365: set .@Zeny, .@Zeny + 186; break;	// Apocalypse
+		case 2016: set .@Zeny, .@Zeny + 96; break;	// Aqua Elemental
+		case 1388: set .@Zeny, .@Zeny + 426; break;	// Archangeling
+		case 1668: set .@Zeny, .@Zeny + 132; break;	// Archdam
+		case 1684: set .@Zeny, .@Zeny + 54; break;	// Archdam
+		case 1285: set .@Zeny, .@Zeny + 204; break;	// Archer Guardian
+		case 1194: set .@Zeny, .@Zeny + 42; break;	// Arclouse
+		case 1477: set .@Zeny, .@Zeny + 42; break;	// Arclouse
+		case 1654: set .@Zeny, .@Zeny + 66; break;	// Armaia
+		case 1660: set .@Zeny, .@Zeny + 60; break;	// Armaia
+		case 1641: set .@Zeny, .@Zeny + 876; break;	// Assassin Cross Eremes
+		case 1647: set .@Zeny, .@Zeny + 4986; break;	// Assassin Cross Eremes
+		case 1800: set .@Zeny, .@Zeny + 876; break;	// Assassin Cross Eremes
+		case 1806: set .@Zeny, .@Zeny + 4986; break;	// Assassin Cross Eremes
+		case 1315: set .@Zeny, .@Zeny + 102; break;	// Assaulter
+		case 1364: set .@Zeny, .@Zeny + 48; break;	// Assaulter
+		case 1785: set .@Zeny, .@Zeny + 2382; break;	// Atroce
+		case 1796: set .@Zeny, .@Zeny + 144; break;	// Aunoe
+		case 1882: set .@Zeny, .@Zeny + 30; break;	// Baba Yaga
+		case 1518: set .@Zeny, .@Zeny + 126; break;	// Bacsojin
+		case 1630: set .@Zeny, .@Zeny + 1074; break;	// Bacsojin
+		case 1689: set .@Zeny, .@Zeny + 1074; break;	// Bacsojin
+		case 1867: set .@Zeny, .@Zeny + 264; break;	// Banshee
+		case 1868: set .@Zeny, .@Zeny + 264; break;	// Banshee
+		case 1974: set .@Zeny, .@Zeny + 330; break;	// Banshee Master
+		case 1039: set .@Zeny, .@Zeny + 2514; break;	// Baphomet
+		case 1399: set .@Zeny, .@Zeny + 4440; break;	// Baphomet
+		case 1848: set .@Zeny, .@Zeny + 186; break;	// Baphomet
+		case 1897: set .@Zeny, .@Zeny + 2514; break;	// Baphomet
+		case 1101: set .@Zeny, .@Zeny + 48; break;	// Baphomet Jr.
+		case 1431: set .@Zeny, .@Zeny + 48; break;	// Baphomet Jr.
+		case 1729: set .@Zeny, .@Zeny + 48; break;	// Baphomet Jr.
+		case 1905: set .@Zeny, .@Zeny + 42; break;	// Barricade
+		case 1102: set .@Zeny, .@Zeny + 30; break;	// Bathory
+		case 1525: set .@Zeny, .@Zeny + 30; break;	// Bathory
+		case 1819: set .@Zeny, .@Zeny + 30; break;	// Bathory
+		case 1873: set .@Zeny, .@Zeny + 21630; break;	// Beelzebub
+		case 1874: set .@Zeny, .@Zeny + 23502; break;	// Beelzebub
+		case 1633: set .@Zeny, .@Zeny + 66; break;	// Beholder
+		case 1975: set .@Zeny, .@Zeny + 180; break;	// Beholder Master
+		case 1367: set .@Zeny, .@Zeny + 72; break;	// Blazer
+		case 1598: set .@Zeny, .@Zeny + 72; break;	// Blazzer
+		case 1408: set .@Zeny, .@Zeny + 24; break;	// Bloody Butterfly
+		case 1526: set .@Zeny, .@Zeny + 24; break;	// Bloody Butterfly
+		case 1268: set .@Zeny, .@Zeny + 438; break;	// Bloody Knight
+		case 1569: set .@Zeny, .@Zeny + 438; break;	// Bloody Knight
+		case 1795: set .@Zeny, .@Zeny + 5388; break;	// Bloody Knight
+		case 1507: set .@Zeny, .@Zeny + 156; break;	// Bloody Murderer
+		case 1934: set .@Zeny, .@Zeny + 78; break;	// Blue Flower
+		case 2068: set .@Zeny, .@Zeny + 2496; break;	// Boitata
+		case 1904: set .@Zeny, .@Zeny + 8376; break;	// Bomb Poring
+		case 1830: set .@Zeny, .@Zeny + 492; break;	// Bow Guardian
+		case 2024: set .@Zeny, .@Zeny + 1020; break;	// Bradium Golem
+		case 2049: set .@Zeny, .@Zeny + 324; break;	// Bradium Golem
+		case 1692: set .@Zeny, .@Zeny + 18; break;	// Breeze
+		case 1211: set .@Zeny, .@Zeny + 30; break;	// Brilight
+		case 1839: set .@Zeny, .@Zeny + 186; break;	// Byorgue
+		case 1949: set .@Zeny, .@Zeny + 2364; break;	// Camp Guardian
+		case 1950: set .@Zeny, .@Zeny + 1188; break;	// Camp Guardian
+		case 1267: set .@Zeny, .@Zeny + 30; break;	// Carat
+		case 1742: set .@Zeny, .@Zeny + 30; break;	// Carat
+		case 1307: set .@Zeny, .@Zeny + 396; break;	// Cat o' Nine Tails
+		case 1300: set .@Zeny, .@Zeny + 120; break;	// Caterpillar
+		case 1987: set .@Zeny, .@Zeny + 1158; break;	// Centipede
+		case 1999: set .@Zeny, .@Zeny + 84; break;	// Centipede Larva
+		case 1283: set .@Zeny, .@Zeny + 138; break;	// Chimera
+		case 1456: set .@Zeny, .@Zeny + 138; break;	// Chimera
+		case 1519: set .@Zeny, .@Zeny + 72; break;	// Chung E
+		case 1631: set .@Zeny, .@Zeny + 72; break;	// Chung E
+		case 1513: set .@Zeny, .@Zeny + 84; break;	// Civil Servant
+		case 1269: set .@Zeny, .@Zeny + 66; break;	// Clock
+		case 1528: set .@Zeny, .@Zeny + 66; break;	// Clock
+		case 1270: set .@Zeny, .@Zeny + 120; break;	// Clock Tower Manager
+		case 1527: set .@Zeny, .@Zeny + 120; break;	// Clock Tower Manager
+		case 1976: set .@Zeny, .@Zeny + 234; break;	// Cobalt Mineral
+		case 1901: set .@Zeny, .@Zeny + 24; break;	// Condor
+		case 1738: set .@Zeny, .@Zeny + 42; break;	// Constant
+		case 1937: set .@Zeny, .@Zeny + 42; break;	// Constant
+		case 1992: set .@Zeny, .@Zeny + 1032; break;	// Cornus
+		case 1293: set .@Zeny, .@Zeny + 90; break;	// Creamy Fear
+		case 1514: set .@Zeny, .@Zeny + 60; break;	// Dancing Dragon
+		case 1609: set .@Zeny, .@Zeny + 60; break;	// Dancing Dragon
+		case 1985: set .@Zeny, .@Zeny + 24; break;	// Dandelion Member
+		case 1260: set .@Zeny, .@Zeny + 90; break;	// Dark Frame
+		case 1448: set .@Zeny, .@Zeny + 90; break;	// Dark Frame
+		case 1302: set .@Zeny, .@Zeny + 690; break;	// Dark Illusion
+		case 1605: set .@Zeny, .@Zeny + 690; break;	// Dark Illusion
+		case 1272: set .@Zeny, .@Zeny + 3252; break;	// Dark Lord
+		case 2015: set .@Zeny, .@Zeny + 72; break;	// Dark Pinguicula
+		case 1198: set .@Zeny, .@Zeny + 648; break;	// Dark Priest
+		case 2023: set .@Zeny, .@Zeny + 972; break;	// Dark Shadow
+		case 2027: set .@Zeny, .@Zeny + 972; break;	// Dark Shadow
+		case 1529: set .@Zeny, .@Zeny + 990; break;	// Dark Snake Lord
+		case 1698: set .@Zeny, .@Zeny + 96; break;	// Deathword
+		case 1384: set .@Zeny, .@Zeny + 102; break;	// Deleter
+		case 1385: set .@Zeny, .@Zeny + 102; break;	// Deleter
+		case 1378: set .@Zeny, .@Zeny + 48; break;	// Demon Pungus
+		case 1983: set .@Zeny, .@Zeny + 216; break;	// Depraved Orc Spirit
+		case 1719: set .@Zeny, .@Zeny + 5406; break;	// Detale
+		case 1817: set .@Zeny, .@Zeny + 52038; break;	// Detale
+		case 1108: set .@Zeny, .@Zeny + 72; break;	// Deviace
+		case 1571: set .@Zeny, .@Zeny + 60; break;	// Deviace
+		case 1582: set .@Zeny, .@Zeny + 216; break;	// Deviling
+		case 1767: set .@Zeny, .@Zeny + 492; break;	// Deviling
+		case 1109: set .@Zeny, .@Zeny + 42; break;	// Deviruchi
+		case 1433: set .@Zeny, .@Zeny + 42; break;	// Deviruchi
+		case 1730: set .@Zeny, .@Zeny + 42; break;	// Deviruchi
+		case 1822: set .@Zeny, .@Zeny + 42; break;	// Deviruchi
+		case 1382: set .@Zeny, .@Zeny + 102; break;	// Diabolic
+		case 1669: set .@Zeny, .@Zeny + 126; break;	// Dimik
+		case 1670: set .@Zeny, .@Zeny + 150; break;	// Dimik
+		case 1671: set .@Zeny, .@Zeny + 210; break;	// Dimik
+		case 1672: set .@Zeny, .@Zeny + 186; break;	// Dimik
+		case 1673: set .@Zeny, .@Zeny + 198; break;	// Dimik
+		case 1506: set .@Zeny, .@Zeny + 42; break;	// Disguise
+		case 1046: set .@Zeny, .@Zeny + 1098; break;	// Doppelganger
+		case 1731: set .@Zeny, .@Zeny + 100398; break;	// Doppelganger
+		case 1966: set .@Zeny, .@Zeny + 30; break;	// Doppelganger
+		case 2013: set .@Zeny, .@Zeny + 48; break;	// Draco
+		case 2014: set .@Zeny, .@Zeny + 36; break;	// Draco Egg
+		case 1389: set .@Zeny, .@Zeny + 1752; break;	// Dracula
+		case 1530: set .@Zeny, .@Zeny + 1752; break;	// Dracula
+		case 1721: set .@Zeny, .@Zeny + 102; break;	// Dragon Egg
+		case 1321: set .@Zeny, .@Zeny + 54; break;	// Dragon Tail
+		case 1112: set .@Zeny, .@Zeny + 900; break;	// Drake
+		case 1380: set .@Zeny, .@Zeny + 72; break;	// Driller
+		case 1781: set .@Zeny, .@Zeny + 36; break;	// Drosera
+		case 1493: set .@Zeny, .@Zeny + 54; break;	// Dryad
+		case 1504: set .@Zeny, .@Zeny + 102; break;	// Dullahan
+		case 2018: set .@Zeny, .@Zeny + 1998; break;	// Duneyrr
+		case 1770: set .@Zeny, .@Zeny + 150; break;	// Echio
+		case 1787: set .@Zeny, .@Zeny + 144; break;	// Echio
+		case 1115: set .@Zeny, .@Zeny + 294; break;	// Eddga
+		case 1377: set .@Zeny, .@Zeny + 132; break;	// Elder
+		case 1573: set .@Zeny, .@Zeny + 132; break;	// Elder
+		case 1288: set .@Zeny, .@Zeny + 264; break;	// Emperium
+		case 1957: set .@Zeny, .@Zeny + 27552; break;	// Entweihen Crothen
+		case 1635: set .@Zeny, .@Zeny + 234; break;	// Eremes
+		case 1655: set .@Zeny, .@Zeny + 78; break;	// Erend
+		case 1661: set .@Zeny, .@Zeny + 72; break;	// Erend
+		case 1412: set .@Zeny, .@Zeny + 54; break;	// Evil Cloud Hermit
+		case 1531: set .@Zeny, .@Zeny + 54; break;	// Evil Cloud Hermit
+		case 1117: set .@Zeny, .@Zeny + 78; break;	// Evil Druid
+		case 1435: set .@Zeny, .@Zeny + 78; break;	// Evil Druid
+		case 1418: set .@Zeny, .@Zeny + 1086; break;	// Evil Snake Lord
+		case 1205: set .@Zeny, .@Zeny + 132; break;	// Executioner
+		case 1487: set .@Zeny, .@Zeny + 132; break;	// Executioner
+		case 1383: set .@Zeny, .@Zeny + 42; break;	// Explosion
+		case 1532: set .@Zeny, .@Zeny + 42; break;	// Explosion
+		case 1371: set .@Zeny, .@Zeny + 96; break;	// Fake Angel
+		case 1871: set .@Zeny, .@Zeny + 7464; break;	// Fallen Bishop
+		case 1797: set .@Zeny, .@Zeny + 144; break;	// Fanat
+		case 1714: set .@Zeny, .@Zeny + 156; break;	// Ferus
+		case 1717: set .@Zeny, .@Zeny + 114; break;	// Ferus
+		case 1758: set .@Zeny, .@Zeny + 180; break;	// Ferus
+		case 1760: set .@Zeny, .@Zeny + 126; break;	// Ferus
+		case 1869: set .@Zeny, .@Zeny + 66; break;	// Flame Skull
+		case 1319: set .@Zeny, .@Zeny + 90; break;	// Freezer
+		case 1594: set .@Zeny, .@Zeny + 90; break;	// Freezer
+		case 1823: set .@Zeny, .@Zeny + 90; break;	// Freezer
+		case 1887: set .@Zeny, .@Zeny + 90; break;	// Freezer
+		case 1753: set .@Zeny, .@Zeny + 222; break;	// Frus
+		case 1762: set .@Zeny, .@Zeny + 174; break;	// Frus
+		case 1317: set .@Zeny, .@Zeny + 90; break;	// Fur Seal
+		case 1533: set .@Zeny, .@Zeny + 90; break;	// Fur Seal
+		case 1309: set .@Zeny, .@Zeny + 138; break;	// Gajomart
+		case 1391: set .@Zeny, .@Zeny + 60; break;	// Galapago
+		case 1783: set .@Zeny, .@Zeny + 54; break;	// Galion
+		case 1791: set .@Zeny, .@Zeny + 54; break;	// Galion
+		case 1592: set .@Zeny, .@Zeny + 36; break;	// Gangster
+		case 1933: set .@Zeny, .@Zeny + 1536; break;	// Garden Watcher
+		case 1252: set .@Zeny, .@Zeny + 828; break;	// Garm
+		case 1515: set .@Zeny, .@Zeny + 102; break;	// Garm Baby
+		case 1606: set .@Zeny, .@Zeny + 102; break;	// Garm Baby
+		case 1824: set .@Zeny, .@Zeny + 102; break;	// Garm Baby
+		case 1888: set .@Zeny, .@Zeny + 96; break;	// Garm Baby
+		case 1778: set .@Zeny, .@Zeny + 84; break;	// Gazeti
+		case 1681: set .@Zeny, .@Zeny + 426; break;	// Gemini-S58
+		case 1368: set .@Zeny, .@Zeny + 54; break;	// Geographer
+		case 1590: set .@Zeny, .@Zeny + 54; break;	// Geographer
+		case 1120: set .@Zeny, .@Zeny + 192; break;	// Ghostring
+		case 1576: set .@Zeny, .@Zeny + 192; break;	// Ghostring
+		case 1036: set .@Zeny, .@Zeny + 36; break;	// Ghoul
+		case 1423: set .@Zeny, .@Zeny + 36; break;	// Ghoul
+		case 1303: set .@Zeny, .@Zeny + 90; break;	// Giant Hornet
+		case 1604: set .@Zeny, .@Zeny + 90; break;	// Giant Hornet
+		case 1304: set .@Zeny, .@Zeny + 78; break;	// Giant Spider
+		case 1186: set .@Zeny, .@Zeny + 24; break;	// Giant Whisper
+		case 1599: set .@Zeny, .@Zeny + 24; break;	// Giant Whisper
+		case 1503: set .@Zeny, .@Zeny + 48; break;	// Gibbet
+		case 1387: set .@Zeny, .@Zeny + 54; break;	// Gig
+		case 1768: set .@Zeny, .@Zeny + 3558; break;	// Gloom Under Night
+		case 1372: set .@Zeny, .@Zeny + 66; break;	// Goat
+		case 1299: set .@Zeny, .@Zeny + 102; break;	// Goblin Leader
+		case 1539: set .@Zeny, .@Zeny + 102; break;	// Goblin Leader
+		case 1086: set .@Zeny, .@Zeny + 624; break;	// Golden Thief Bug
+		case 1885: set .@Zeny, .@Zeny + 1062; break;	// Gopinich
+		case 1369: set .@Zeny, .@Zeny + 54; break;	// Grand Peco
+		case 1929: set .@Zeny, .@Zeny + 16470; break;	// Great Demon Baphomet
+		case 1687: set .@Zeny, .@Zeny + 42; break;	// Green Iguana
+		case 1632: set .@Zeny, .@Zeny + 54; break;	// Gremlin
+		case 1381: set .@Zeny, .@Zeny + 96; break;	// Grizzly
+		case 1259: set .@Zeny, .@Zeny + 150; break;	// Gryphon
+		case 1447: set .@Zeny, .@Zeny + 150; break;	// Gryphon
+		case 1907: set .@Zeny, .@Zeny + 456; break;	// Guardian Stone
+		case 1908: set .@Zeny, .@Zeny + 456; break;	// Guardian Stone
+		case 1311: set .@Zeny, .@Zeny + 90; break;	// Gullinbursti
+		case 1990: set .@Zeny, .@Zeny + 21468; break;	// Hardrock Mammoth
+		case 1376: set .@Zeny, .@Zeny + 132; break;	// Harpy
+		case 1636: set .@Zeny, .@Zeny + 372; break;	// Harword
+		case 2071: set .@Zeny, .@Zeny + 24; break;	// Headless Mule
+		case 1318: set .@Zeny, .@Zeny + 90; break;	// Heater
+		case 1600: set .@Zeny, .@Zeny + 90; break;	// Heater
+		case 1977: set .@Zeny, .@Zeny + 186; break;	// Heavy Metaling
+		case 1978: set .@Zeny, .@Zeny + 630; break;	// Hell Apocalips
+		case 1872: set .@Zeny, .@Zeny + 972; break;	// Hell Fly
+		case 1866: set .@Zeny, .@Zeny + 54; break;	// Hell Poodle
+		case 1626: set .@Zeny, .@Zeny + 1020; break;	// Hellion Revenant
+		case 1213: set .@Zeny, .@Zeny + 36; break;	// High Orc
+		case 1439: set .@Zeny, .@Zeny + 36; break;	// High Orc
+		case 1643: set .@Zeny, .@Zeny + 1014; break;	// High Priest Magaleta
+		case 1649: set .@Zeny, .@Zeny + 5568; break;	// High Priest Magaleta
+		case 1802: set .@Zeny, .@Zeny + 1014; break;	// High Priest Magaleta
+		case 1808: set .@Zeny, .@Zeny + 5568; break;	// High Priest Magaleta
+		case 1645: set .@Zeny, .@Zeny + 876; break;	// High Wizard Katrinn
+		case 1651: set .@Zeny, .@Zeny + 4632; break;	// High Wizard Katrinn
+		case 1804: set .@Zeny, .@Zeny + 876; break;	// High Wizard Katrinn
+		case 1810: set .@Zeny, .@Zeny + 4632; break;	// High Wizard Katrinn
+		case 1989: set .@Zeny, .@Zeny + 414; break;	// Hillslion
+		case 1998: set .@Zeny, .@Zeny + 414; break;	// Hillslion
+		case 1773: set .@Zeny, .@Zeny + 108; break;	// Hodremlin
+		case 1035: set .@Zeny, .@Zeny + 24; break;	// Hunter Fly
+		case 1422: set .@Zeny, .@Zeny + 24; break;	// Hunter Fly
+		case 1720: set .@Zeny, .@Zeny + 1698; break;	// Hydro
+		case 1756: set .@Zeny, .@Zeny + 1698; break;	// Hydro
+		case 1813: set .@Zeny, .@Zeny + 11238; break;	// Hydro
+		case 1512: set .@Zeny, .@Zeny + 66; break;	// Hyegun
+		case 1612: set .@Zeny, .@Zeny + 66; break;	// Hyegun
+		case 1510: set .@Zeny, .@Zeny + 42; break;	// Hylozoist
+		case 2069: set .@Zeny, .@Zeny + 24; break;	// Iara
+		case 1777: set .@Zeny, .@Zeny + 228; break;	// Ice Titan
+		case 1788: set .@Zeny, .@Zeny + 204; break;	// Ice Titan
+		case 1832: set .@Zeny, .@Zeny + 30468; break;	// Ifrit
+		case 1837: set .@Zeny, .@Zeny + 234; break;	// Imp
+		case 1492: set .@Zeny, .@Zeny + 750; break;	// Incantation Samurai
+		case 1542: set .@Zeny, .@Zeny + 684; break;	// Incantation Samurai
+		case 1918: set .@Zeny, .@Zeny + 966; break;	// Incarnation of Morroc
+		case 1919: set .@Zeny, .@Zeny + 498; break;	// Incarnation of Morroc
+		case 1920: set .@Zeny, .@Zeny + 600; break;	// Incarnation of Morroc
+		case 1921: set .@Zeny, .@Zeny + 690; break;	// Incarnation of Morroc
+		case 1922: set .@Zeny, .@Zeny + 3906; break;	// Incarnation of Morroc
+		case 1923: set .@Zeny, .@Zeny + 2406; break;	// Incarnation of Morroc
+		case 1924: set .@Zeny, .@Zeny + 3756; break;	// Incarnation of Morroc
+		case 1925: set .@Zeny, .@Zeny + 4752; break;	// Incarnation of Morroc
+		case 1516: set .@Zeny, .@Zeny + 54; break;	// Increase Soil
+		case 1374: set .@Zeny, .@Zeny + 180; break;	// Incubus
+		case 1580: set .@Zeny, .@Zeny + 180; break;	// Incubus
+		case 1257: set .@Zeny, .@Zeny + 36; break;	// Injustice
+		case 1446: set .@Zeny, .@Zeny + 36; break;	// Injustice
+		case 1772: set .@Zeny, .@Zeny + 36; break;	// Isilla
+		case 1029: set .@Zeny, .@Zeny + 42; break;	// Isis
+		case 1722: set .@Zeny, .@Zeny + 12; break;	// Jakk
+		case 1131: set .@Zeny, .@Zeny + 66; break;	// Joker
+		case 1437: set .@Zeny, .@Zeny + 66; break;	// Joker
+		case 1072: set .@Zeny, .@Zeny + 48; break;	// Kaho
+		case 1406: set .@Zeny, .@Zeny + 54; break;	// Kapha
+		case 1543: set .@Zeny, .@Zeny + 54; break;	// Kapha
+		case 1833: set .@Zeny, .@Zeny + 534; break;	// Kasa
+		case 1835: set .@Zeny, .@Zeny + 534; break;	// Kasa
+		case 1639: set .@Zeny, .@Zeny + 240; break;	// Katrinn
+		case 1896: set .@Zeny, .@Zeny + 240; break;	// Katrinn
+		case 1656: set .@Zeny, .@Zeny + 54; break;	// Kavac
+		case 1662: set .@Zeny, .@Zeny + 48; break;	// Kavac
+		case 1132: set .@Zeny, .@Zeny + 108; break;	// Khalitzburg
+		case 1438: set .@Zeny, .@Zeny + 108; break;	// Khalitzburg
+		case 1733: set .@Zeny, .@Zeny + 1512; break;	// Kiel
+		case 1734: set .@Zeny, .@Zeny + 4248; break;	// Kiel D-01
+		case 1294: set .@Zeny, .@Zeny + 84; break;	// Killer Mantis
+		case 1286: set .@Zeny, .@Zeny + 198; break;	// Knight Guardian
+		case 1219: set .@Zeny, .@Zeny + 282; break;	// Knight of Abyss
+		case 1893: set .@Zeny, .@Zeny + 282; break;	// Knight of the Abyss
+		case 1251: set .@Zeny, .@Zeny + 1068; break;	// Knight of Windstorm
+		case 1838: set .@Zeny, .@Zeny + 84; break;	// Knocker
+		case 1296: set .@Zeny, .@Zeny + 108; break;	// Kobold Leader
+		case 1548: set .@Zeny, .@Zeny + 108; break;	// Kobold Leader
+		case 1587: set .@Zeny, .@Zeny + 36; break;	// Kraben
+		case 1691: set .@Zeny, .@Zeny + 48; break;	// Kraben
+		case 1779: set .@Zeny, .@Zeny + 15822; break;	// Ktullanux
+		case 1980: set .@Zeny, .@Zeny + 1644; break;	// Kubkin
+		case 1688: set .@Zeny, .@Zeny + 1434; break;	// Lady Tanee
+		case 1366: set .@Zeny, .@Zeny + 234; break;	// Lava Golem
+		case 1549: set .@Zeny, .@Zeny + 234; break;	// Lava Golem
+		case 1306: set .@Zeny, .@Zeny + 126; break;	// Leib Olmai
+		case 1517: set .@Zeny, .@Zeny + 42; break;	// Li Me Mang Ryang
+		case 1410: set .@Zeny, .@Zeny + 36; break;	// Live Peach Tree
+		case 1550: set .@Zeny, .@Zeny + 36; break;	// Live Peach Tree
+		case 1505: set .@Zeny, .@Zeny + 204; break;	// Loli Ruri
+		case 1892: set .@Zeny, .@Zeny + 204; break;	// Lolo Ruri
+		case 1640: set .@Zeny, .@Zeny + 1908; break;	// Lord Knight Seyren
+		case 1646: set .@Zeny, .@Zeny + 8214; break;	// Lord Knight Seyren
+		case 1799: set .@Zeny, .@Zeny + 1908; break;	// Lord Knight Seyren
+		case 1805: set .@Zeny, .@Zeny + 8214; break;	// Lord Knight Seyren
+		case 1373: set .@Zeny, .@Zeny + 4068; break;	// Lord of Death
+		case 1876: set .@Zeny, .@Zeny + 618180; break;	// Lord of the Dead
+		case 1994: set .@Zeny, .@Zeny + 678; break;	// Luciola Vespa
+		case 1637: set .@Zeny, .@Zeny + 354; break;	// Magaleta
+		case 1836: set .@Zeny, .@Zeny + 48; break;	// Magmaring
+		case 1310: set .@Zeny, .@Zeny + 156; break;	// Majoruros
+		case 1045: set .@Zeny, .@Zeny + 18; break;	// Marc
+		case 1426: set .@Zeny, .@Zeny + 18; break;	// Marc
+		case 1969: set .@Zeny, .@Zeny + 18; break;	// Marc
+		case 1889: set .@Zeny, .@Zeny + 288; break;	// Marozka's Guard
+		case 1144: set .@Zeny, .@Zeny + 12; break;	// Marse
+		case 1551: set .@Zeny, .@Zeny + 12; break;	// Marse
+		case 1884: set .@Zeny, .@Zeny + 78; break;	// Mavka
+		case 1886: set .@Zeny, .@Zeny + 78; break;	// Mavka
+		case 1147: set .@Zeny, .@Zeny + 738; break;	// Maya
+		case 1289: set .@Zeny, .@Zeny + 384; break;	// Maya Purple
+		case 1148: set .@Zeny, .@Zeny + 96; break;	// Medusa
+		case 1749: set .@Zeny, .@Zeny + 144; break;	// Medusa
+		case 1274: set .@Zeny, .@Zeny + 36; break;	// Megalith
+		case 1793: set .@Zeny, .@Zeny + 36; break;	// Megalith
+		case 1264: set .@Zeny, .@Zeny + 72; break;	// Merman
+		case 1451: set .@Zeny, .@Zeny + 60; break;	// Merman
+		case 1585: set .@Zeny, .@Zeny + 42; break;	// Mime Monkey
+		case 1191: set .@Zeny, .@Zeny + 48; break;	// Mimic
+		case 1474: set .@Zeny, .@Zeny + 48; break;	// Mimic
+		case 1614: set .@Zeny, .@Zeny + 72; break;	// Mineral
+		case 1292: set .@Zeny, .@Zeny + 156; break;	// Mini Demon
+		case 1149: set .@Zeny, .@Zeny + 48; break;	// Minorous
+		case 1461: set .@Zeny, .@Zeny + 48; break;	// Minorous
+		case 1059: set .@Zeny, .@Zeny + 960; break;	// Mistress
+		case 1404: set .@Zeny, .@Zeny + 24; break;	// Miyabi Ningyo
+		case 1552: set .@Zeny, .@Zeny + 24; break;	// Miyabi Ningyo
+		case 1313: set .@Zeny, .@Zeny + 90; break;	// Mobster
+		case 1851: set .@Zeny, .@Zeny + 72; break;	// Mobster
+		case 1674: set .@Zeny, .@Zeny + 432; break;	// Monemus
+		case 1150: set .@Zeny, .@Zeny + 426; break;	// Moonlight Flower
+		case 1814: set .@Zeny, .@Zeny + 168; break;	// Moonlight Flower
+		case 1041: set .@Zeny, .@Zeny + 24; break;	// Mummy
+		case 1393: set .@Zeny, .@Zeny + 24; break;	// Mummy
+		case 1262: set .@Zeny, .@Zeny + 288; break;	// Mutant Dragon
+		case 1449: set .@Zeny, .@Zeny + 288; break;	// Mutant Dragon
+		case 1203: set .@Zeny, .@Zeny + 168; break;	// Mysteltainn
+		case 1485: set .@Zeny, .@Zeny + 168; break;	// Mysteltainn
+		case 1993: set .@Zeny, .@Zeny + 666; break;	// Naga
+		case 2047: set .@Zeny, .@Zeny + 186; break;	// Naga
+		case 1956: set .@Zeny, .@Zeny + 37128; break;	// Naght Sieger
+		case 1870: set .@Zeny, .@Zeny + 420; break;	// Necromancer
+		case 1988: set .@Zeny, .@Zeny + 48; break;	// Nepenthes
+		case 1963: set .@Zeny, .@Zeny + 72; break;	// New Year Doll
+		case 2022: set .@Zeny, .@Zeny + 21864; break;	// Nidhoggr's Shadow
+		case 1379: set .@Zeny, .@Zeny + 126; break;	// Nightmare Terror
+		case 1554: set .@Zeny, .@Zeny + 126; break;	// Nightmare Terror
+		case 1180: set .@Zeny, .@Zeny + 54; break;	// Nine Tail
+		case 1471: set .@Zeny, .@Zeny + 54; break;	// Nine Tail
+		case 1715: set .@Zeny, .@Zeny + 30; break;	// Novus
+		case 1718: set .@Zeny, .@Zeny + 36; break;	// Novus
+		case 1700: set .@Zeny, .@Zeny + 444; break;	// Observation
+		case 1615: set .@Zeny, .@Zeny + 72; break;	// Obsidian
+		case 1189: set .@Zeny, .@Zeny + 24; break;	// Orc Archer
+		case 1473: set .@Zeny, .@Zeny + 24; break;	// Orc Archer
+		case 1087: set .@Zeny, .@Zeny + 2274; break;	// Orc Hero
+		case 1850: set .@Zeny, .@Zeny + 840; break;	// Orc Hero
+		case 1190: set .@Zeny, .@Zeny + 1788; break;	// Orc Lord
+		case 1982: set .@Zeny, .@Zeny + 132; break;	// Orc Sniper
+		case 1038: set .@Zeny, .@Zeny + 756; break;	// Osiris
+		case 1849: set .@Zeny, .@Zeny + 498; break;	// Osiris
+		case 1295: set .@Zeny, .@Zeny + 324; break;	// Owl Baron
+		case 1320: set .@Zeny, .@Zeny + 138; break;	// Owl Duke
+		case 2010: set .@Zeny, .@Zeny + 1014; break;	// Ox
+		case 1308: set .@Zeny, .@Zeny + 90; break;	// Panzer Goblin
+		case 1500: set .@Zeny, .@Zeny + 24; break;	// Parasite
+		case 1555: set .@Zeny, .@Zeny + 24; break;	// Parasite
+		case 1154: set .@Zeny, .@Zeny + 60; break;	// Pasana
+		case 1464: set .@Zeny, .@Zeny + 60; break;	// Pasana
+		case 1216: set .@Zeny, .@Zeny + 48; break;	// Penomena
+		case 1441: set .@Zeny, .@Zeny + 48; break;	// Penomena
+		case 1314: set .@Zeny, .@Zeny + 102; break;	// Permeter
+		case 1601: set .@Zeny, .@Zeny + 102; break;	// Permeter
+		case 1155: set .@Zeny, .@Zeny + 42; break;	// Petite
+		case 1156: set .@Zeny, .@Zeny + 36; break;	// Petite
+		case 1465: set .@Zeny, .@Zeny + 42; break;	// Petite
+		case 1466: set .@Zeny, .@Zeny + 36; break;	// Petite
+		case 1157: set .@Zeny, .@Zeny + 2754; break;	// Pharaoh
+		case 1202: set .@Zeny, .@Zeny + 144; break;	// Phendark
+		case 1484: set .@Zeny, .@Zeny + 144; break;	// Phendark
+		case 1664: set .@Zeny, .@Zeny + 66; break;	// Photon Cannon
+		case 1665: set .@Zeny, .@Zeny + 60; break;	// Photon Cannon
+		case 1666: set .@Zeny, .@Zeny + 66; break;	// Photon Cannon
+		case 1667: set .@Zeny, .@Zeny + 60; break;	// Photon Cannon
+		case 1683: set .@Zeny, .@Zeny + 42; break;	// Photon Cannon
+		case 1724: set .@Zeny, .@Zeny + 90; break;	// Photon Cannon
+		case 1159: set .@Zeny, .@Zeny + 324; break;	// Phreeoni
+		case 2021: set .@Zeny, .@Zeny + 126; break;	// Phylla
+		case 1930: set .@Zeny, .@Zeny + 10140; break;	// Piamette
+		case 1947: set .@Zeny, .@Zeny + 1860; break;	// Piamette
+		case 1995: set .@Zeny, .@Zeny + 60; break;	// Pinguicula
+		case 1616: set .@Zeny, .@Zeny + 36; break;	// Pitman
+		case 1693: set .@Zeny, .@Zeny + 54; break;	// Plasma
+		case 1694: set .@Zeny, .@Zeny + 36; break;	// Plasma
+		case 1695: set .@Zeny, .@Zeny + 42; break;	// Plasma
+		case 1696: set .@Zeny, .@Zeny + 36; break;	// Plasma
+		case 1697: set .@Zeny, .@Zeny + 42; break;	// Plasma
+		case 1402: set .@Zeny, .@Zeny + 24; break;	// Poison Toad
+		case 1556: set .@Zeny, .@Zeny + 24; break;	// Poison Toad
+		case 1625: set .@Zeny, .@Zeny + 24; break;	// Porcellio
+		case 1502: set .@Zeny, .@Zeny + 48036; break;	// Pori Pori
+		case 1847: set .@Zeny, .@Zeny + 51912; break;	// Poring
+		case 1894: set .@Zeny, .@Zeny + 360; break;	// Pouring
+		case 1865: set .@Zeny, .@Zeny + 150; break;	// Ragged Zombie
+		case 2017: set .@Zeny, .@Zeny + 1536; break;	// Rata
+		case 1657: set .@Zeny, .@Zeny + 42; break;	// Rawrel
+		case 1663: set .@Zeny, .@Zeny + 36; break;	// Rawrel
+		case 1163: set .@Zeny, .@Zeny + 78; break;	// Raydric
+		case 1467: set .@Zeny, .@Zeny + 78; break;	// Raydric
+		case 1276: set .@Zeny, .@Zeny + 36; break;	// Raydric Archer
+		case 1453: set .@Zeny, .@Zeny + 36; break;	// Raydric Archer
+		case 1935: set .@Zeny, .@Zeny + 78; break;	// Red Flower
+		case 1682: set .@Zeny, .@Zeny + 54; break;	// Removal
+		case 1702: set .@Zeny, .@Zeny + 282; break;	// Retribution
+		case 2020: set .@Zeny, .@Zeny + 108; break;	// Rhyncho
+		case 1195: set .@Zeny, .@Zeny + 66; break;	// Rideword
+		case 1478: set .@Zeny, .@Zeny + 66; break;	// Rideword
+		case 1782: set .@Zeny, .@Zeny + 24; break;	// Roween
+		case 1794: set .@Zeny, .@Zeny + 24; break;	// Roween
+		case 1623: set .@Zeny, .@Zeny + 2184; break;	// RSX 0806
+		case 2026: set .@Zeny, .@Zeny + 1662; break;	// Runaway Dandelion Member
+		case 1201: set .@Zeny, .@Zeny + 84; break;	// Rybio
+		case 1483: set .@Zeny, .@Zeny + 84; break;	// Rybio
+		case 1981: set .@Zeny, .@Zeny + 132; break;	// Safeguard Chief
+		case 1831: set .@Zeny, .@Zeny + 1086; break;	// Salamander
+		case 1834: set .@Zeny, .@Zeny + 1260; break;	// Salamander
+		case 1916: set .@Zeny, .@Zeny + 35616; break;	// Satan Morroc
+		case 1323: set .@Zeny, .@Zeny + 72; break;	// Sea Otter
+		case 1774: set .@Zeny, .@Zeny + 72; break;	// Seeker
+		case 1634: set .@Zeny, .@Zeny + 432; break;	// Seyren
+		case 1895: set .@Zeny, .@Zeny + 432; break;	// Seyren
+		case 2076: set .@Zeny, .@Zeny + 972; break;	// Shadow of Deception
+		case 2077: set .@Zeny, .@Zeny + 972; break;	// Shadow of Illusion
+		case 2078: set .@Zeny, .@Zeny + 1152; break;	// Shadow of Pleasure
+		case 1984: set .@Zeny, .@Zeny + 162; break;	// Shaman Cargalache
+		case 1638: set .@Zeny, .@Zeny + 204; break;	// Shecil
+		case 1723: set .@Zeny, .@Zeny + 102; break;	// Shecil Damon
+		case 1701: set .@Zeny, .@Zeny + 264; break;	// Shelter
+		case 1401: set .@Zeny, .@Zeny + 90; break;	// Shinobi
+		case 1560: set .@Zeny, .@Zeny + 90; break;	// Shinobi
+		case 1776: set .@Zeny, .@Zeny + 24; break;	// Siroma
+		case 1754: set .@Zeny, .@Zeny + 576; break;	// Skeggiold
+		case 1755: set .@Zeny, .@Zeny + 654; break;	// Skeggiold
+		case 1763: set .@Zeny, .@Zeny + 318; break;	// Skeggiold
+		case 1764: set .@Zeny, .@Zeny + 360; break;	// Skeggiold
+		case 1290: set .@Zeny, .@Zeny + 102; break;	// Skeleton General
+		case 1196: set .@Zeny, .@Zeny + 60; break;	// Skeleton Prisoner
+		case 1479: set .@Zeny, .@Zeny + 60; break;	// Skeleton Prisoner
+		case 1752: set .@Zeny, .@Zeny + 234; break;	// Skogul
+		case 1761: set .@Zeny, .@Zeny + 186; break;	// Skogul
+		case 1386: set .@Zeny, .@Zeny + 72; break;	// Sleeper
+		case 1644: set .@Zeny, .@Zeny + 744; break;	// Sniper Shecil
+		case 1650: set .@Zeny, .@Zeny + 3768; break;	// Sniper Shecil
+		case 1803: set .@Zeny, .@Zeny + 744; break;	// Sniper Shecil
+		case 1809: set .@Zeny, .@Zeny + 3768; break;	// Sniper Shecil
+		case 1775: set .@Zeny, .@Zeny + 96; break;	// Snowier
+		case 1170: set .@Zeny, .@Zeny + 18; break;	// Sohee
+		case 1703: set .@Zeny, .@Zeny + 186; break;	// Solace
+		case 1287: set .@Zeny, .@Zeny + 84; break;	// Soldier Guardian
+		case 1316: set .@Zeny, .@Zeny + 108; break;	// Solider
+		case 1602: set .@Zeny, .@Zeny + 108; break;	// Solider
+		case 1322: set .@Zeny, .@Zeny + 66; break;	// Spring Rabbit
+		case 1278: set .@Zeny, .@Zeny + 114; break;	// Stalactic Golem
+		case 1215: set .@Zeny, .@Zeny + 24; break;	// Stem Worm
+		case 1440: set .@Zeny, .@Zeny + 24; break;	// Stem Worm
+		case 1207: set .@Zeny, .@Zeny + 72; break;	// Sting
+		case 1489: set .@Zeny, .@Zeny + 72; break;	// Sting
+		case 1065: set .@Zeny, .@Zeny + 72; break;	// Strouf
+		case 1968: set .@Zeny, .@Zeny + 72; break;	// Strouf
+		case 1370: set .@Zeny, .@Zeny + 168; break;	// Succubus
+		case 1829: set .@Zeny, .@Zeny + 1158; break;	// Sword Guardian
+		case 1899: set .@Zeny, .@Zeny + 1158; break;	// Sword Guardian
+		case 1584: set .@Zeny, .@Zeny + 54; break;	// Tamruan
+		case 1596: set .@Zeny, .@Zeny + 54; break;	// Tamruan
+		case 1583: set .@Zeny, .@Zeny + 438; break;	// Tao Gunka
+		case 1986: set .@Zeny, .@Zeny + 762; break;	// Tatacho
+		case 1997: set .@Zeny, .@Zeny + 762; break;	// Tatacho
+		case 1622: set .@Zeny, .@Zeny + 84; break;	// Teddy Bear
+		case 1991: set .@Zeny, .@Zeny + 11340; break;	// Tendrillion
+		case 1405: set .@Zeny, .@Zeny + 120; break;	// Tengu
+		case 1563: set .@Zeny, .@Zeny + 120; break;	// Tengu
+		case 1708: set .@Zeny, .@Zeny + 1704; break;	// Thanatos
+		case 1705: set .@Zeny, .@Zeny + 456; break;	// Thanatos Despero
+		case 1710: set .@Zeny, .@Zeny + 456; break;	// Thanatos Despero
+		case 1707: set .@Zeny, .@Zeny + 372; break;	// Thanatos Dolor
+		case 1712: set .@Zeny, .@Zeny + 372; break;	// Thanatos Dolor
+		case 1706: set .@Zeny, .@Zeny + 408; break;	// Thanatos Maero
+		case 1711: set .@Zeny, .@Zeny + 408; break;	// Thanatos Maero
+		case 1704: set .@Zeny, .@Zeny + 462; break;	// Thanatos Odium
+		case 1709: set .@Zeny, .@Zeny + 462; break;	// Thanatos Odium
+		case 1890: set .@Zeny, .@Zeny + 1062; break;	// The Immortal Koshei
+		case 1375: set .@Zeny, .@Zeny + 102; break;	// The Paper
+		case 1960: set .@Zeny, .@Zeny + 25308; break;	// Thorn of Magic
+		case 1961: set .@Zeny, .@Zeny + 25308; break;	// Thorn of Purification
+		case 1959: set .@Zeny, .@Zeny + 1788; break;	// Thorn of Recovery
+		case 1958: set .@Zeny, .@Zeny + 25446; break;	// Thorny Skeleton
+		case 1204: set .@Zeny, .@Zeny + 150; break;	// Tirfing
+		case 1486: set .@Zeny, .@Zeny + 150; break;	// Tirfing
+		case 1089: set .@Zeny, .@Zeny + 0; break;	// Toad
+		case 1875: set .@Zeny, .@Zeny + 198; break;	// Tristan III
+		case 1312: set .@Zeny, .@Zeny + 1608; break;	// Turtle General
+		case 1618: set .@Zeny, .@Zeny + 180; break;	// Ungoliant
+		case 1883: set .@Zeny, .@Zeny + 66; break;	// Uzhas
+		case 1092: set .@Zeny, .@Zeny + 12; break;	// Vagabond Wolf
+		case 1765: set .@Zeny, .@Zeny + 5010; break;	// Valkyrie
+		case 1891: set .@Zeny, .@Zeny + 5010; break;	// Valkyrie
+		case 1751: set .@Zeny, .@Zeny + 10740; break;	// Valkyrie Randgris
+		case 1771: set .@Zeny, .@Zeny + 42; break;	// Vanberk
+		case 1675: set .@Zeny, .@Zeny + 114; break;	// Venatu
+		case 1676: set .@Zeny, .@Zeny + 90; break;	// Venatu
+		case 1677: set .@Zeny, .@Zeny + 96; break;	// Venatu
+		case 1678: set .@Zeny, .@Zeny + 90; break;	// Venatu
+		case 1679: set .@Zeny, .@Zeny + 96; break;	// Venatu
+		case 1032: set .@Zeny, .@Zeny + 30; break;	// Verit
+		case 1685: set .@Zeny, .@Zeny + 3288; break;	// Vesper
+		case 1390: set .@Zeny, .@Zeny + 114; break;	// Violy
+		case 1208: set .@Zeny, .@Zeny + 54; break;	// Wander Man
+		case 1490: set .@Zeny, .@Zeny + 54; break;	// Wander Man
+		case 1617: set .@Zeny, .@Zeny + 78; break;	// Waste Stove
+		case 1624: set .@Zeny, .@Zeny + 66; break;	// Waste Stove
+		case 1653: set .@Zeny, .@Zeny + 54; break;	// Whikebain
+		case 1659: set .@Zeny, .@Zeny + 48; break;	// Whikebain
+		case 1642: set .@Zeny, .@Zeny + 1668; break;	// Whitesmith Harword
+		case 1648: set .@Zeny, .@Zeny + 6846; break;	// Whitesmith Harword
+		case 1801: set .@Zeny, .@Zeny + 1668; break;	// Whitesmith Harword
+		case 1807: set .@Zeny, .@Zeny + 6846; break;	// Whitesmith Harword
+		case 1416: set .@Zeny, .@Zeny + 108; break;	// Wicked Nymph
+		case 1564: set .@Zeny, .@Zeny + 108; break;	// Wicked Nymph
+		case 1413: set .@Zeny, .@Zeny + 24; break;	// Wild Ginseng
+		case 1565: set .@Zeny, .@Zeny + 24; break;	// Wild Ginseng
+		case 1931: set .@Zeny, .@Zeny + 12354; break;	// Wish Maiden
+		case 1880: set .@Zeny, .@Zeny + 48; break;	// Wood Goblin
+		case 1497: set .@Zeny, .@Zeny + 66; break;	// Wooden Golem
+		case 2008: set .@Zeny, .@Zeny + 14232; break;	// Woomawang
+		case 2009: set .@Zeny, .@Zeny + 8016; break;	// Woomawang
+		case 1917: set .@Zeny, .@Zeny + 34584; break;	// Wounded Morroc
+		case 1192: set .@Zeny, .@Zeny + 60; break;	// Wraith
+		case 1475: set .@Zeny, .@Zeny + 60; break;	// Wraith
+		case 1291: set .@Zeny, .@Zeny + 198; break;	// Wraith Dead
+		case 1566: set .@Zeny, .@Zeny + 198; break;	// Wraith Dead
+		case 1936: set .@Zeny, .@Zeny + 78; break;	// Yellow Flower
+		case 1652: set .@Zeny, .@Zeny + 84; break;	// Ygnizem
+		case 1658: set .@Zeny, .@Zeny + 984; break;	// Ygnizem
+		case 1948: set .@Zeny, .@Zeny + 84; break;	// Ygnizem
+		case 1967: set .@Zeny, .@Zeny + 30; break;	// Ygnizem
+		case 1200: set .@Zeny, .@Zeny + 72; break;	// Zherlthsh
+		case 1482: set .@Zeny, .@Zeny + 72; break;	// Zherlthsh
+		case 1298: set .@Zeny, .@Zeny + 96; break;	// Zombie Master
+		case 1197: set .@Zeny, .@Zeny + 66; break;	// Zombie Prisoner
+		case 1480: set .@Zeny, .@Zeny + 66; break;	// Zombie Prisoner
+		case 1864: set .@Zeny, .@Zeny + 234; break;	// Zombie Slaughter
+		case 1979: set .@Zeny, .@Zeny + 282; break;	// Zukadam
+	}
+	if (!.@Zeny) // Se monstro não vale zeny, termina execução
+		set .@Zeny, 10;
+	if (!getcharid(1)) // Se não tiver em party
+		set Zeny, Zeny + .@Zeny * f_zeny_bonus();
+	else
+	{
+		deletearray .@partyaid[0], getarraysize(.@partyaid);
+		getpartymember getcharid(1),2;
+		copyarray .@partyaid[0],$@partymemberaid[0],getarraysize($@partymemberaid);
+		detachrid;
+		set .@split, 0;
+		set .@size, getarraysize(.@partyaid);
+		set .@i, 0;
+		while(.@i < .@size)
+		{
+			if (isloggedin(.@partyaid[.@i]))
+				set .@split, .@split + 1;
+			set .@i, .@i + 1;
+		}
+		set .@i, 0;
+		while(.@i < .@size)
+		{
+			if (isloggedin(.@partyaid[.@i]))
+			{
+				attachrid(.@partyaid[.@i]);
+				set Zeny, Zeny + .@Zeny * f_zeny_bonus() / .@split * (1+(.@split / 4));
+				detachrid;
+			}
+			set .@i, .@i + 1;
+		}
+	}
+	end;
+	
+OnPCDieEvent:
+		if (@zeny_bonus)
+			dispbottom "Ao morrer você perde o bonus de zeny.";
+		set @mob_kill_count, 0;
+		set @zeny_bonus, 0;
+		end;
+	
+OnPCLoadMapEvent:
+	getmapxy(.@cur_map$,.@cur_x,.@cur_y,0);
+	if (@last_map$ != .@cur_map$ || @loadevent_set == 0)
+	{
+		// Ao logar @loadevent_set zerá sempre zero, forçando a atualização do mapa atual.
+		set @loadevent_set, 1;
+		
+		if (@zeny_bonus)
+			dispbottom "Mudando de mapa você perde o bonus de zeny.";
+		set @last_map$, .@cur_map$;
+		set @mob_kill_count, 0;
+		set @zeny_bonus, 0;
+	}
+	end;
+}

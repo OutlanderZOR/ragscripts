@@ -1,0 +1,514 @@
+//|                         ___           ___                     ___           ___                               
+//|                        /  /\         /  /\      ___          /  /\         /  /\                              
+//|                       /  /:/        /  /:/     /__/\        /  /::\       /  /::\                             
+//|                      /  /:/        /  /:/      \  \:\      /  /:/\:\     /  /:/\:\                            
+//|                     /  /:/        /  /:/        \__\:\    /  /::\ \:\   /  /::\ \:\                           
+//|                    /__/:/     /\ /__/:/         /  /::\  /__/:/\:\_\:\ /__/:/\:\_\:\                          
+//|                    \  \:\    /:/ \  \:\        /  /:/\:\ \__\/~|::\/:/ \__\/  \:\/:/                          
+//|                     \  \:\  /:/   \  \:\      /  /:/__\/    |  |:|::/       \__\::/                           
+//|                      \  \:\/:/     \  \:\    /__/:/         |  |:|\/        /  /:/                            
+//|                       \  \::/       \  \:\   \__\/          |__|:|~        /__/:/                             
+//|                        \__\/         \__\/                   \__\|         \__\/                              
+//|                         ___                         ___           ___           ___                           
+//|                        /  /\          ___          /  /\         /  /\         /  /\                          
+//|                       /  /::\        /  /\        /  /::\       /  /::\       /  /:/                          
+//|                      /__/:/\:\      /  /::\      /  /:/\:\     /  /:/\:\     /  /:/                           
+//|                     _\_ \:\ \:\    /  /:/\:\    /  /::\ \:\   /  /::\ \:\   /  /::\____                       
+//|                    /__/\ \:\ \:\  /  /::\ \:\  /__/:/\:\_\:\ /__/:/\:\_\:\ /__/:/\:::::\                      
+//|                    \  \:\ \:\_\/ /__/:/\:\_\:\ \__\/  \:\/:/ \__\/~|::\/:/ \__\/~|:|~~~~                      
+//|                     \  \:\_\:\   \__\/  \:\/:/      \__\::/     |  |:|::/     |  |:|                          
+//|                      \  \:\/:/        \  \::/       /  /:/      |  |:|\/      |  |:|                          
+//|                       \  \::/          \__\/       /__/:/       |__|:|~       |__|:|                          
+//|                        \__\/                       \__\/         \__\|         \__\|                          
+//|===============================================================================================================
+//|
+//|				S Q L    W A R P E R
+//|
+//|===============================================================================================================
+//|
+//| Módulo: Script Core
+//| Categoria: Utilidades
+//| Autor: Outlander
+//| Data: 30/09/2012
+//| SQL: Sim
+//| 
+//|===============================================================================================================
+-	script	Warper_Core	-1,{
+end;
+//|===============================================================================================================
+//|	Funções essenciais
+//|===============================================================================================================
+	function f_cutin_padrao
+	{
+		cutin "kafra_09",2;
+		return;
+	}
+	
+	function f_cutin_pessoal
+	{
+		cutin "kafra_08",2;
+		return;
+	}
+
+	function f_color
+	{
+		set .@str$, getarg(0);
+		set .@color$, getarg(1);
+		return "^"+.@color$+.@str$+"^000000";
+	}
+	
+	// Monta string de opção do menu
+	function f_opt
+	{
+		set .@str$, getarg(0);
+		return f_color("(*) ", .color_p$) + .@str$ + f_color(" (*)", .color_p$);
+	}
+	
+	function f_opt_p
+	{
+		set .@str$, getarg(0);
+		return f_color("(*) ", .color_e$) + .@str$ + f_color(" (*)", .color_e$);
+	}
+	
+	function f_opt_v
+	{
+		set .@str$, getarg(0);
+		return f_color("<< ", "7FB015") + .@str$;
+	}
+	
+	function f_opt_s
+	{
+		set .@str$, getarg(0);
+		return "" + f_color(">", "DEC000") + " " + .@str$;
+	}
+	
+	function f_opt_u
+	{
+		set .@str$, getarg(0);
+		return "" + f_color(">", "F20000") + " " + .@str$;
+	}
+	
+	function f_sex
+	{
+		set .@str_m$, getarg(0);
+		set .@str_f$, getarg(1);
+		return (Sex?.@str_m$:.@str_f$);
+	}
+	
+	function f_destaque
+	{
+		set .@str$, getarg(0);
+		return "^d80505" + .@str$ + "^000000";
+	}
+	
+	function f_player_name
+	{
+		return "^23a0f7" + strcharinfo(0) + "^000000";
+	}
+	
+	function f_warp
+	{
+		set wpr_ultimo_id, getarg(0);
+		set wpr_ultimo_map$, getarg(1);
+		set wpr_ultimo_name$, getarg(2);
+		set wpr_ultimo_x, getarg(3);
+		set wpr_ultimo_y, getarg(4);
+		query_sql "update `warper_map` set `count` = `count` + 1 where `id_map` = " + wpr_ultimo_id;
+		warp wpr_ultimo_map$, wpr_ultimo_x, wpr_ultimo_y;
+		return 1;
+	}
+	
+	function f_favoritos_remover
+	{
+		set .@id_user_favorite, getarg(0);
+		query_sql ("delete from warper_user_favorite where id_user_favorite = "+.@id_user_favorite);
+		return 1;
+	}
+
+	function f_mapa_existe
+	{
+		set .@map$, escape_sql(getarg(0));
+		query_sql "select 1 from warper_map where enabled and map = '"+.@map$+"'", .@existe;
+		return .@existe;
+	}
+	
+	function f_favoritos_adicionar
+	{
+		set .@map$, escape_sql(getarg(0));
+		query_sql "INSERT INTO `warper_user_favorite` (`id_account`,`id_map`) "+
+				  "select "+getcharid(3)+", a.id_map "+
+				  "from `warper_map` a "+
+				  "where a.`enabled` "+
+				  "and a.`map` = '" + .@map$ + "'";
+		return 1;
+	}
+	
+	function f_selecionar_acessado
+	{
+		query_sql "SELECT "+
+				  "`id_map`, "+
+				  "`map`, "+
+				  "`name`, "+
+				  "`count` "+
+				  "FROM `warper_map` a "+
+				  "where a.`enabled` "+
+				  "order by `count` desc "+
+				  "limit 0, 10", .@id_map, .@map$, .@name$, .@count;
+		set .@size, getarraysize(.@id_map);
+		set .@i, 0;
+		set .@menu_str$, "";
+		while(.@i < .@size)
+		{
+			set .@menu_str$, .@menu_str$ + f_opt_s(.@name$[.@i]) + " [" + f_destaque(.@map$[.@i]) + "]:";
+			set .@i, .@i + 1;
+		}
+		set .@menu_str$, f_opt_v("Voltar") + ":" + delchar(.@menu_str$, getstrlen(.@menu_str$)-1);
+		set .@index, select(.@menu_str$)-2;
+		if (.@size > 0 && .@index >= 0 && .@index < .@size)
+			return .@id_map[.@index];
+		else
+			return 0;
+	}
+	
+	function f_favoritos_count
+	{
+		query_sql "select count(*) "+
+				  "from warper_user_favorite "+
+				  "where id_account = "+getcharid(3), .@count;
+		return .@count;
+	}
+	
+	function f_warp_acessado
+	{
+		set .@id_map, getarg(0);
+		query_sql "SELECT "+
+				  "a.`map`, "+
+				  "a.`name`, "+
+				  "a.`default_x`, "+
+				  "a.`default_y` "+
+				  "FROM `warper_map` a "+
+				  "where a.`enabled` "+
+				  "and a.`id_map` = "+.@id_map, .@map$, .@name$, .@x, .@y;
+		return f_warp(.@id_map, .@map$, .@name$, .@x, .@y);
+	}
+	
+	function f_selecionar_favorito
+	{
+		query_sql "SELECT  "+
+				  "a.`id_user_favorite`, "+
+				  "b.`map`, "+
+				  "b.`name` "+
+				  "FROM `warper_user_favorite` a "+
+				  "join `warper_map` b on a.`id_map` = b.`id_map` "+
+				  "where b.`enabled` "+
+				  "and a.`id_account` = "+getcharid(3), .@id_user_favorite, .@map$, .@name$;
+		set .@size, getarraysize(.@id_user_favorite);
+		set .@i, 0;
+		set .@menu_str$, "";
+		while(.@i < .@size)
+		{
+			set .@menu_str$, .@menu_str$ + f_opt_s(.@name$[.@i]) + " [" + f_destaque(.@map$[.@i]) + "]:";
+			set .@i, .@i + 1;
+		}
+		set .@menu_str$, f_opt_v("Voltar") + ":" + delchar(.@menu_str$, getstrlen(.@menu_str$)-1);
+		set .@index, select(.@menu_str$)-2;
+		if (.@size > 0 && .@index >= 0 && .@index < .@size)
+			return .@id_user_favorite[.@index];
+		else
+			return 0;
+	}
+	
+	function f_warp_favorito
+	{
+		set .@id_user_favorite, getarg(0);
+		query_sql "SELECT "+
+				  "a.`id_map`, "+
+				  "b.`map`, "+
+				  "b.`name`, "+
+				  "b.`default_x`, "+
+				  "b.`default_y` "+
+				  "FROM `warper_user_favorite` a "+
+				  "join `warper_map` b on a.id_map = b.id_map "+
+				  "where b.enabled "+
+				  "and a.`id_user_favorite` = "+.@id_user_favorite, .@id_map, .@map$, .@name$, .@x, .@y;
+		return f_warp(.@id_map, .@map$, .@name$, .@x, .@y);
+	}
+	
+//|===============================================================================================================
+//|	Inicialização de variáveis
+//|===============================================================================================================
+OnInit:
+	// Variaveis Warper Padrão
+	set .color_p$, "ff7200";
+	set .title_p$, "[" + f_color("Waper Padrão",.color_p$) + "]";
+	
+	// Variáveis Warper Pessoal
+	set .color_e$, "05a4ae";
+	set .title_e$, "[" + f_color("Warper Pessoal",.color_e$) + "]";
+	
+	set .limite_favoritos, 10;
+	end;
+	
+//|===============================================================================================================
+//| Warper Padrão
+//|===============================================================================================================
+OnWarperPadrao:
+	f_cutin_padrao();
+	set .@id_grupo_selecionado, 0;
+	mes .title_p$;
+	mes "Selecione o mapa ou categoria desejada.";
+	
+//|---------------------------------------------------------------------------------------------------------------
+//| Loop de seleção cascateada de grupos
+//|---------------------------------------------------------------------------------------------------------------
+L_Selecionar_Grupo:
+	
+	deletearray .@id[0], getarraysize(.@id);
+	deletearray .@name$[0], getarraysize(.@name$);
+	deletearray .@ismap[0], getarraysize(.@ismap);
+	deletearray .@map$[0], getarraysize(.@map$);
+	
+	query_sql   "select " +
+				"a.`id_map_group` id,  " +
+				"	a.`name`,  " +
+				"	0 ismap, " +
+				"	'' map " +
+				"from `warper_map_group` a " +
+				"where a.`enabled` and a.`id_map_group_parent` " + (.@id_grupo_selecionado ? " = " +.@id_grupo_selecionado : " is null") + " " +
+				"UNION ALL " +
+				"select  " +
+				"	a.`id_map` id,  " +
+				"	a.`name`,  " +
+				"	1 ismap, " +
+				"	a.map " +
+				"from `warper_map` a " +
+				"where a.`enabled` and a.`id_map_group`" + (.@id_grupo_selecionado ? " = " +.@id_grupo_selecionado : " is null") + " " +
+				(.@id_grupo_selecionado?"order by `name` asc":""), .@id, .@name$, .@ismap, .@map$;
+	
+	set .@size, getarraysize(.@name$);
+	set .@i, 0;
+	set .@menu_str$, "";
+	while(.@i < .@size)
+	{
+		set .@menu_str$, .@menu_str$ + (.@id_grupo_selecionado?f_opt_s(.@name$[.@i]):f_opt(.@name$[.@i])) + (getstrlen(.@map$)>0?" [" + f_destaque(.@map$[.@i]) + "]":"") + ":";
+		set .@i, .@i + 1;
+	}
+	set .@menu_str$, (.@id_grupo_selecionado?f_opt_v("Voltar para o menu principal"):f_opt_u("Ultimo mapa ["+f_destaque(wpr_ultimo_map$)+"]"))+":" + delchar(.@menu_str$, getstrlen(.@menu_str$)-1);
+	set .@index, select(.@menu_str$)-2;
+	
+	
+	if (.@index == -1)
+	{
+		if (!.@id_grupo_selecionado)
+		{	
+			if (wpr_ultimo_map$ == "")
+			{
+				mes " ";
+				mes f_destaque("Mapa inválido.");
+				mes "Se é a primeira vez usando o NPC, evite a opção " + f_destaque("último mapa");
+			}
+			else
+			{
+				// Ultimo warp, só aparece quando está no root do menu
+				f_warp(wpr_ultimo_id, wpr_ultimo_map$, wpr_ultimo_name$, wpr_ultimo_x, wpr_ultimo_y);
+				end;
+			}
+		}
+		next;
+		goto OnWarperPadrao;
+	}
+	
+	// Decide warp para o mapa
+	if (.@ismap[.@index])
+	{
+		query_sql "SELECT "+
+				  "`id_map`, "+
+				  "`map`, "+
+				  "`name`, "+
+				  "`enabled`, "+
+				  "`default_x`, "+
+				  "`default_y` "+
+				  "FROM `warper_map` a "+
+				  "where a.`id_map` = " + .@id[.@index] + " " +
+				  "order by `name` asc", .@map_id, .@map_gat$, .@map_name$, .@map_enabled, .@map_x, .@map_y;
+		goto L_Confirmar_Mapa;
+	}
+	else
+		set .@id_grupo_selecionado, .@id[.@index];
+	goto L_Selecionar_Grupo;
+	
+//|---------------------------------------------------------------------------------------------------------------
+//| Confirmação da seleção de mapas, mais opções de spawn
+//|---------------------------------------------------------------------------------------------------------------	
+L_Confirmar_Mapa:
+	next;
+	mes .title_p$;
+	mes "Mapa: " + f_destaque(.@map_name$);
+	mes "Warp: " + f_destaque(.@map_gat$);
+	mes "Jogadores: " + f_destaque(getmapusers(.@map_gat$));
+	mes " ";
+	mes "Deseja ir para o mapa selecionado?";
+	next;
+	switch(select(f_opt("Sim, transporte normal") + ":" + f_opt("Sim, transporte aleatório") + ":" + f_opt("Sim, ir para membro do grupo") + ":" + f_opt_v("Não, voltar para o menu")))
+	{
+		// Sim, transporte normal
+		case 1:
+			f_warp(.@map_id,.@map_gat$,.@map_name$,.@map_x,.@map_y);
+			end;
+			
+		// Sim, transporte aleatório
+		case 2:
+			f_warp(.@map_id,.@map_gat$,.@map_name$,.@map_x,.@map_y);
+			end;
+			
+		// Sim, transporte para membro do grupo
+		case 3:
+			if (getcharid(1))
+			{
+				deletearray .@party_aid, getarraysize(.@party_aid);
+				getpartymember getcharid(1);
+				copyarray .@party_aid[0], $@partymemberaid[0], getarraysize($@partymemberaid);
+				set .@size, getarraysize(.@party_aid);
+				set .@i, 0;
+				while(.@i < .@size)
+				{
+					if (isloggedin(.@party_aid[.@i]))
+					{
+						set .@src_aid, getcharid(3);
+						detachrid;
+						attachrid(.@party_aid[.@i]);
+						getmapxy(.@map$, .@x, .@y, 0);
+						detachrid;
+						attachrid(.@src_aid);
+						if (.@map$ == .@map_gat$)
+						{
+							f_warp(.@map_id,.@map_gat$,.@map_name$,.@map_x,.@map_y);
+							end;
+						}
+					}
+					set .@i, .@i + 1;
+				}
+				mes "Nenhum membro do grupo foi encontrado no mapa selecionado.";
+			}
+			else
+				mes "Você não está em nenhum grupo.";
+			goto L_Confirmar_Mapa;
+			
+		// Não, voltar para o menu
+		case 4:
+			next;
+			break;
+	}
+	goto L_Selecionar_Grupo;
+	end;
+
+//|===============================================================================================================
+//|	Warper Pessoal
+//|===============================================================================================================
+OnWarperPessoal:
+	f_cutin_pessoal();
+	mes .title_e$;
+	mes "Olá " + f_player_name() + ".";
+	mes " ";
+	mes "Selecione a opção desejada.";
+//	next;
+OnWarperPessoalMenu:
+	switch(select(f_opt_p("Mapas favoritos") + ":" + f_opt_p("Mapas mais acessados") + ":" + f_opt_p("Gerenciar favoritos") + ":" + f_opt_u("Sair")))
+	{
+		// Mapas favoritos
+		case 1:
+			set .@id_user_favorite, f_selecionar_favorito();
+			if (.@id_user_favorite)
+				f_warp_favorito(.@id_user_favorite);
+			else
+				goto OnWarperPessoalMenu;
+			break;
+		// Mapas mais acessados
+		case 2:
+			set .@id_map, f_selecionar_acessado();
+			if (.@id_map)
+				f_warp_acessado(.@id_map);
+			else
+				goto OnWarperPessoalMenu;
+			break;
+		// Gerenciar favoritos
+		case 3:
+			next;
+			mes .title_e$;
+			mes "Selecione uma opção.";
+			next;
+			switch(select(f_opt_p("Adicionar mapa favorito") + ":" + f_opt_p("Remover mapa favorito") + ":" + f_opt_v("Voltar")))
+			{
+				// Adicionar mapa favorito
+				case 1:
+					mes .title_e$;
+					if (f_favoritos_count()>=.limite_favoritos)
+					{
+						mes "Não é possível adicionar mais favoritos, limite máximo de " + f_destaque(.limite_favoritos + " mapas") + " " +
+							"por conta.";
+						next;
+						goto OnWarperPessoal;
+					}
+					mes "Digite o nome "+f_destaque("real")+" do mapa.";
+					mes " ";
+					mes "Exemplo 1: " + f_destaque("nif_fild01");
+					mes "Exemplo 2: " + f_destaque("lhz_dun02");
+					input .@novo_map$;
+					next;
+					mes .title_e$;
+					if (!f_mapa_existe(.@novo_map$))
+					{
+						mes "O mapa " + f_destaque(.@novo_map$) + " não está disponível.";
+						mes " ";
+						mes "Só é possível adicionar mapas disponíveis no NPC.";
+						next;
+						goto OnWarperPessoal;
+					}
+					f_favoritos_adicionar(.@novo_map$);
+					mes "Mapa adicionado.";
+					break;
+				
+				// Remover mapa favorito
+				case 2:
+					mes .title_e$;
+					mes "Selecione o mapa para remover.";
+					next;
+					set .@id_user_favorite, f_selecionar_favorito();
+					mes .title_e$;
+					if (.@id_user_favorite)
+					{
+						if (f_favoritos_remover(.@id_user_favorite))
+							mes "Mapa removido.";
+						else
+							mes "Não foi possível remover o mapa selecionado.";
+					}
+					break;
+				case 3:
+					break;
+			}
+			next;
+			goto OnWarperPessoal;
+			
+		// Sair
+		case 4:
+			break;
+	}
+	close2;
+	cutin "", 255;
+	end;
+}
+
+
+//|===============================================================================================================
+//|	NPCs de chamada
+//|===============================================================================================================
+
+-	script	Waper Padrão	-1,{
+	doevent "Warper_Core::OnWarperPadrao";
+	end;
+}
+
+-	script	Waper Pessoal	-1,{
+	doevent "Warper_Core::OnWarperPessoal";
+	end;
+}

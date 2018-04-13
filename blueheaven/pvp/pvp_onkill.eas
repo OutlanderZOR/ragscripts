@@ -1,0 +1,208 @@
+-	script	PVP_ONKILL	-1,{
+	
+	// Persiste IDs de ultimos killers
+	function F_Last_Killer {
+		if (getarraysize(pvp_killersid) >= $pvp_array_size) {
+			// Caso o vetor esteja no tamanho máximo, remove da primeira posição um elemento.
+			deletearray pvp_killersid[0], 1;
+		}
+		// Adiciona elemento na última posição disponível.
+		set pvp_killersid[getarraysize(pvp_killersid)], getarg(0);
+		return;
+	}
+	
+	// Persiste IDs de vitimas distintas que são resetados caso o jogador morra.
+	function F_Dk_Distinct_Victims {
+		set .@victimid, getarg(0);
+		set .@exists, 0;
+		set .@count, getarraysize(pvp_dk_victims);
+		for(set .@i, 0; .@i < .@count; set .@i, .@i + 1) {
+			if (pvp_dk_victims[.@i] == .@victimid) {
+				// A vitima já existe na lista de vitimas.
+				set .@exists, 1;
+				break;
+			}
+		}
+		if (!.@exists) {
+			// Vitima não existe, vamos adiciona-lo. =D
+			if (getarraysize(pvp_dk_victims) >= $pvp_array_size) {
+				deletearray pvp_dk_victims[0], 1;
+				deletearray pvp_dk_victims_tick[0], 1;
+			}
+			set pvp_dk_victims[getarraysize(pvp_dk_victims)], getarg(0);
+			set pvp_dk_victims_tick[getarraysize(pvp_dk_victims)], gettimetick(0);
+		}
+		return !.@exists;
+	}
+	
+	function F_Dk_Distinct_Victims_Reset {
+		deletearray pvp_dk_victims[0], getarraysize(pvp_dk_victims);
+		deletearray pvp_dk_victims_tick[0], getarraysize(pvp_dk_victims_tick);
+		return;
+	}
+	
+	// Valida se o intervalo está dentro do número de elementos do vetor de vitimas.
+	function F_Dk_Distinct_Victims_Valid_Interval {
+		set .@elements, getarg(0);
+		set .@interval, getarg(1);
+		set .@count, getarraysize(pvp_dk_victims);
+		set .@valid_interval, .@count >= 2 && (pvp_dk_victims_tick[.@count-1] / 1000 - pvp_dk_victims_tick[.@count-.@elements] / 1000) <= .@interval;
+		if (.@valid_interval && .@elements == 18) F_Dk_Distinct_Victims_Reset();
+		return .@valid_interval;
+	}
+	
+	// Persiste IDs de vitimas distintas que são resetados caso o jogador morra.
+	function F_Mk_Distinct_Victims {
+		set .@victimid, getarg(0);
+		set .@exists, 0;
+		set .@count, getarraysize(pvp_mk_victims);
+		for(set .@i, 0; .@i < .@count; set .@i, .@i + 1) {
+			if (pvp_mk_victims[.@i] == .@victimid) {
+				// A vitima já existe na lista de vitimas.
+				set .@exists, 1;
+				break;
+			}
+		}
+		if (!.@exists) {
+			// Vitima não existe, vamos adiciona-lo. =D
+			if (getarraysize(pvp_mk_victims) >= $pvp_array_size) {
+				deletearray pvp_mk_victims[0], 1;
+				deletearray pvp_mk_victims_tick[0], 1;
+			}
+			set pvp_mk_victims[getarraysize(pvp_mk_victims)], getarg(0);
+			set pvp_mk_victims_tick[getarraysize(pvp_mk_victims)], gettimetick(0);
+		}
+		return !.@exists;
+	}
+	
+	function F_Mk_Distinct_Victims_Reset {
+		deletearray pvp_mk_victims[0], getarraysize(pvp_mk_victims);
+		deletearray pvp_mk_victims_tick[0], getarraysize(pvp_mk_victims_tick);
+		return;
+	}
+	
+	// Valida se o intervalo está dentro do número de elementos do vetor de vitimas.
+	function F_Mk_Distinct_Victims_Valid_Interval {
+		set .@elements, getarg(0);
+		set .@interval, getarg(1);
+		set .@count, getarraysize(pvp_mk_victims);
+		set .@valid_interval, .@count >= 2 && (pvp_mk_victims_tick[.@count-1] / 1000 - pvp_mk_victims_tick[.@count-2] / 1000) <= .@interval;
+		// Reseta vetor quando o intervalo for invalido possuindo 2 ou mais elementos ou quando o intervalo for valido em um mk de count = 8 (godlike)
+		if ((!.@valid_interval && .@count >= 2) || (.@valid_interval && .@count == 8)) F_Mk_Distinct_Victims_Reset();
+		return .@valid_interval && .@count == .@elements;
+	}
+	
+	function F_Update_Most_Wanted {
+		set .@killedrid, getarg(0);
+		// Atualiza Most Wanted
+		if (.pvp_p_mw_cur_id == .@killedrid) {
+			// O killer é o most wanted atual.
+			if (.pvp_p_mw_min_pts >= pvp_d_pts) {
+				// A pontuação do mw continua acima do mínimo necessário, vamos atualiza-la.
+				set .pvp_p_mw_cur_pts, pvp_d_pts;
+			} else {
+				// O mw está abaixo dos requisitos, vamos destronalo. =/
+				set .pvp_p_mw_cur_pts, 0;
+				set .pvp_p_mw_cur_id, 0;
+			}
+		} else {
+			if (.pvp_p_mw_cur_pts < pvp_d_pts) {
+				// A pontuação do killer é maior que a do mw atual =O, vamos declara-lo o novo most wanted.
+				set .pvp_p_mw_cur_pts, pvp_d_pts;
+				set .pvp_p_mw_cur_id, .@killedrid; // Talvez devemos avisar o antigo antes de mudar o id, será?
+			}
+		}
+		return;
+	}
+	
+OnPCKillEvent:
+//=================================================================================================
+//= Killer
+//=================================================================================================
+	set .@killerid, getcharid(3);
+	set .@victimid, killedrid;
+	
+	// Matou alguém, viva, vamos resetar isso =D
+	set pvp_morto_sem_matar, 0;
+	
+	// Persiste ids de vitimas.
+	F_Dk_Distinct_Victims(.@victimid);
+	F_Mk_Distinct_Victims(.@victimid);
+	// Atualiza dados de most wanted considerando o killer atual.
+	F_Update_Most_Wanted(.@killedrid);
+	
+	set .@b_double_kill, F_Mk_Distinct_Victims_Valid_Interval(2, .pvp_p_mk_interval);
+	set .@b_multi_kill, F_Mk_Distinct_Victims_Valid_Interval(3, .pvp_p_mk_interval);
+	set .@b_ultra_kill, F_Mk_Distinct_Victims_Valid_Interval(4, .pvp_p_mk_interval);
+	set .@b_monster_kill, F_Mk_Distinct_Victims_Valid_Interval(5, .pvp_p_mk_interval);
+	set .@b_unstoppable, F_Mk_Distinct_Victims_Valid_Interval(6, .pvp_p_mk_interval);
+	set .@b_holy_shit, F_Mk_Distinct_Victims_Valid_Interval(7, .pvp_p_mk_interval);
+	set .@b_godlike, F_Mk_Distinct_Victims_Valid_Interval(8, .pvp_p_mk_interval);
+	
+	// Ativa bonus extermination, 18 vitimas distintas sem morrer em 10 minutos.
+	set .@b_extermination, F_Dk_Distinct_Victims_Valid_Interval(18, .pvp_p_dk_interval);
+	// Ativa bonus wicked sick, 12 vitimas distintas sem morrer em 10 minutos.
+	set .@b_wicked_sick, F_Dk_Distinct_Victims_Valid_Interval(12, .pvp_p_dk_interval);
+	// Ativa bonus dominating, 9 vitimas distintas sem morrer em 10 minutos.
+	set .@b_dominating, !.@b_wicked_sick && F_Dk_Distinct_Victims_Valid_Interval(9, .pvp_p_dk_interval);
+	// Ativa bonus most wanted caso tenha se tornado um most wanted.
+	set .@b_most_wanted, .pvp_p_mw_cur_id == .@killedrid;
+	// Ativa bonus sheriff caso tenha matado o most wanted.
+	set .@b_sheriff, .pvp_p_mw_cur_id == .@victimid;
+	// Ativa bonus avenger
+	set .@b_avenger, pvp_last_killerid == .@victimid;
+
+//=================================================================================================
+//= Victim
+//=================================================================================================
+	attachrid(.@victimid);	
+	// Guarda quantas vezes o jogador foi morto sem matar.
+	set pvp_morto_sem_matar, pvp_morto_sem_matar + 1;
+	// Morto sem matar ninguém ou morto pela mesma pessoa ativa o bonus noob down fosho.
+	set .@b_noob_down, (pvp_morto_sem_matar >= 4 || pvp_last_killerid == .@killedrid);
+	// Grava id do ultimo killer, importante que isso seja feito somente após a avaliação do bonus noob down.
+	set pvp_last_killerid, .@killedrid;	
+	// Morreu, perdeu a coleção de vitimas.
+	F_Dk_Distinct_Victims_Reset();
+	F_Mk_Distinct_Victims_Reset();
+	
+	
+	F_Last_Killer(.@killerid);
+	//----- Captura de dados -----------------------
+	set .@newbie, pvp_newbie;
+	
+	
+	end;
+
+OnInit:
+	set .pvp_b_skull_drop, 1;
+	set .pvp_b_first_blood, 1;
+	set .pvp_b_avenger, 1;
+	set .pvp_b_double_kill, 1;
+	set .pvp_b_multi_kill, 1;
+	set .pvp_b_ultra_kill, 1;
+	set .pvp_b_monster_kill, 1;
+	set .pvp_b_unstoppable, 1;
+	set .pvp_b_holy_shit, 1;
+	set .pvp_b_godlike, 1;
+	set .pvp_b_dominating, 1;
+	set .pvp_b_wicked_sick, 1;
+	set .pvp_b_extermination, 1;
+	set .pvp_b_sheriff, 1;
+	set .pvp_b_noob_down, 1;
+	set .pvp_b_top_player_dia, 1;
+	set .pvp_b_mk_kill, 1;
+	
+	set $pvp_array_size, 120;
+	
+	// Pontuação mínima necessária para ser considerado um most wanted.
+	set .pvp_p_mw_min_pts, 1;
+	// Pontuação do most wanted atual.
+	set .pvp_p_mw_cur_pts, 1;
+	// ID do most wanted atual.
+	set .pvp_p_mw_cur_id, 1;
+	// Tempo minimo em segundos para considerar multikill.
+	set .pvp_p_mk_interval, 25;
+	set .pvp_p_dk_interval, 600;
+	end;
+}

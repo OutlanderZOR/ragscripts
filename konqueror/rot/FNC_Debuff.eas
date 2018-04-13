@@ -1,0 +1,128 @@
+function	script	F_Debuff	{
+   // Remove blessing, agi-up e angelus
+   if (Class != 4002) && (Class != 4016) && (Class != 4009) && (Class != 23) && (Class != 15) {
+           sc_end SC_ANGELUS;
+           sc_end SC_BLESSING;
+           sc_end SC_INCREASEAGI;
+   }
+
+   // Remove kyrie eleison, impositio manus, gloria, magnificat, aspersio
+   if (Class != 4009) && (Class != 8) {
+           sc_end SC_IMPOSITIO;
+           sc_end SC_ASPERSIO;
+           sc_end SC_BENEDICTIO;
+           sc_end SC_KYRIE;
+           sc_end SC_MAGNIFICAT;
+           sc_end SC_GLORIA;
+   }
+
+	if (Class != 4008) && (Class != 4014)
+	{
+		sc_end SC_BERSERK;
+	}
+
+	// Remove Assumptio
+	if (Class != 4009) {
+		sc_end SC_ASSUMPTIO;
+	}
+
+   // Remove adrenaline rush e maximize power
+   if (Class != 4011) && (Class != 10) {
+           sc_end SC_ADRENALINE;
+           sc_end SC_ADRENALINE2;
+           sc_end SC_WEAPONPERFECTION;
+           sc_end SC_OVERTHRUST;
+           sc_end SC_MAXIMIZEPOWER;
+   }
+
+   // Remove windwalk
+   if (Class != 4012) {
+           sc_end SC_WINDWALK;
+   }
+
+   // Remove enchant poison
+   if (Class != 4013) && (Class != 12) {
+           sc_end SC_ENCPOISON;
+   }
+
+   // Remove devotion, sacrifice e gospel
+   if (Class != 4015) && (Class != 4022) {
+           sc_end SC_PROVIDENCE;
+           sc_end SC_GOSPEL;
+           sc_end SC_DEVOTION;
+           sc_end SC_SACRIFICE;
+   }
+
+   // Remove spiritual sphere
+   if (Class != 4016) && (Class != 15) {
+           sc_end SC_EXPLOSIONSPIRITS;
+   }
+
+   // Remove SL buff
+   if (Class != 4049) {
+           sc_end SC_KAIZEL;
+           sc_end SC_KAAHI;
+           sc_end SC_KAUPE;
+   }
+
+   // All
+   sc_end SC_POISON;
+   sc_end SC_CURSE;
+   sc_end SC_SILENCE;
+   sc_end SC_CONFUSION;
+   sc_end SC_BLIND;
+   sc_end SC_BLEEDING;
+   sc_end SC_DPOISON;
+   sc_end SC_PROVOKE;
+   sc_end SC_SUFFRAGIUM;
+   sc_end SC_MARIONETTE;
+   sc_end SC_MARIONETTE2;
+   sc_end SC_MINDBREAKER;
+   sc_end SC_ONEHAND;
+   sc_end SC_DANCING;
+   sc_end SC_ELEMENTALCHANGE;
+   sc_end SC_RICHMANKIM;
+   sc_end SC_ETERNALCHAOS;
+   sc_end SC_DRUMBATTLE;
+   sc_end SC_NIBELUNGEN;
+   sc_end SC_ROKISWEIL;
+   sc_end SC_INTOABYSS;
+   sc_end SC_SIEGFRIED;
+   sc_end SC_WHISTLE;
+   sc_end SC_ASSNCROS;
+   sc_end SC_POEMBRAGI;
+   sc_end SC_APPLEIDUN;
+   sc_end SC_SPIRIT;
+   sc_end SC_INTRAVISION;
+   sc_end SC_SPEEDUP0;
+   sc_end SC_SPEEDUP1;
+   sc_end SC_SPEED;
+   sc_end SC_STRFOOD;
+   sc_end SC_AGIFOOD;
+   sc_end SC_VITFOOD;
+   sc_end SC_INTFOOD;
+   sc_end SC_DEXFOOD;
+   sc_end SC_LUKFOOD;
+   sc_end SC_HITFOOD;
+   sc_end SC_FLEEFOOD;
+   sc_end SC_BATKFOOD;
+   sc_end SC_WATKFOOD;
+   sc_end SC_MATKFOOD;
+   sc_end SC_INCALLSTATUS;
+   sc_end SC_INCSTR;
+   sc_end SC_INCAGI;
+   sc_end SC_INCVIT;
+   sc_end SC_INCINT;
+   sc_end SC_INCDEX;
+   sc_end SC_INCLUK;
+   sc_end SC_INCHIT;
+   sc_end SC_INCHITRATE;
+   sc_end SC_INCFLEE;
+   sc_end SC_INCFLEERATE;
+   sc_end SC_INCMHPRATE;
+   sc_end SC_INCMSPRATE;
+   sc_end SC_INCATKRATE;
+   sc_end SC_INCMATKRATE;
+   sc_end SC_INCDEFRATE;
+   return;
+}

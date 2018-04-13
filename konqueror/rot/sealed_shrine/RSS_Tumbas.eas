@@ -1,0 +1,222 @@
+-	script	RSS_Tumbas	-1,{
+	end;
+	
+	function	F_GetSealName {
+		switch(getarg(0))
+		{
+			case 1:
+				return "Thuban";
+			case 2:
+				return "Rigel";
+			case 3:
+				return "Mira";
+			case 4:
+				return "Antares";
+		}
+		return "N/A";
+	}
+	
+OnGuardianCast:
+	
+	setarray .mvpid, 1751; // Valkyrie Randgris
+	set .@index, rand(0, (getarraysize(.mvpid) - 1));
+	monster .MAP_EVENT$, $@tumba_x, $@tumba_y, strmobinfo(2, .mvpid[.@index]), .mvpid[.@index], 1, "RSS_Tumbas::OnGuardianKilled";
+	movenpc $@tumba_npc_name$, 0, 0;
+	end;
+	
+OnGuardianKilled:
+	set .qt_guardians_killed, .qt_guardians_killed + 1;
+	callfunc("F_RSS_ANNOUNCE", "Guardião " + strmobinfo(2, killedrid) + " eliminado.");
+	if (.qt_guardians_killed % 3 == 0)
+	{
+		set .@index, rand(0, getarraysize(.selo_bloqueado) - 1);
+		set $@selo_selecionado, .selo_bloqueado[.@index];
+		deletearray .selo_bloqueado[.@index], 1;
+		callfunc("F_RSS_ANNOUNCE", "Selo " + F_GetSealName($@selo_selecionado) + " liberado.");
+		donpcevent "RSS_Tumbas::OnSealCast";
+	}
+	end;
+	
+OnSealCast:
+	if ($@selo_selecionado == .SELO_1)
+	{
+		set .@x, 253;
+		set .@y, 98;
+	}
+	else if ($@selo_selecionado == .SELO_2)
+	{
+		set .@x, 183;
+		set .@y, 42;
+	}
+	else if ($@selo_selecionado == .SELO_3)
+	{
+		set .@x, 142;
+		set .@y, 56;
+	}
+	else if ($@selo_selecionado == .SELO_4)
+	{
+		set .@x, 155;
+		set .@y, 167;
+	}
+	monster .MAP_EVENT$, .@x, .@y, F_GetSealName($@selo_selecionado), .MOB_SELO, 1, "RSS_Tumbas::OnSealKilled";
+	end;
+	
+OnSealKilled:
+	set .qt_seal_killed, .qt_seal_killed + 1;
+	if (.qt_seal_killed == 4)
+	{
+		callfunc("F_RSS_ANNOUNCE", "Todos os selos foram destruidos!");
+		donpcevent "RSS_Tumbas::OnSealStageClear";
+	}
+	else
+	{
+		callfunc("F_RSS_ANNOUNCE", "Selo " + .qt_seal_killed + " / 4 destruido.");
+	}
+	end;
+
+OnSealStageClear:
+	donpcevent "RSS_Tumbas::OnRemoveWall";
+	end;
+
+OnRemoveWall:
+	setcell .MAP_EVENT$, 194, 146, 201, 146, cell_walkable, 1;
+	setcell .MAP_EVENT$, 148, 120, 148, 131, cell_shootable, 1;
+	setcell .MAP_EVENT$, 148, 120, 148, 131, cell_walkable, 1;
+	setcell .MAP_EVENT$, 148, 120, 148, 131, cell_shootable, 1;
+	killmonster .MAP_EVENT$, "RSS_Tumbas::OnBarricade";
+	end;
+	
+OnSetWall:
+	// WALL 1
+	setcell .MAP_EVENT$, 194, 146, 201, 146, cell_walkable, 0;
+	setcell .MAP_EVENT$, 148, 120, 148, 131, cell_shootable, 0;
+	monster .MAP_EVENT$, 194, 145, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 195, 145, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 196, 145, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 197, 145, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 198, 145, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 199, 145, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 200, 145, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 201, 145, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	
+	// WALL 2
+	setcell .MAP_EVENT$, 148, 120, 148, 131, cell_walkable, 0;
+	setcell .MAP_EVENT$, 148, 120, 148, 131, cell_shootable, 0;
+	monster .MAP_EVENT$, 150, 121, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 150, 122, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 150, 123, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 150, 124, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 150, 125, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 150, 126, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 150, 127, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 150, 128, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 150, 129, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	monster .MAP_EVENT$, 150, 130, strmobinfo(2, .MOB_BARRICADE), .MOB_BARRICADE, 1, "RSS_Tumbas::OnBarricade";
+	end;
+
+OnInit:
+	setarray .mvpid, 1751, // Randgris
+					 1511, // Amon Rá
+					 1039, // Baphomet
+					 1272, // Dark Lord
+					 1719, // Detardeurus
+					 1734, // Kiel D-01
+					 1779, // Ktullanux
+					 1768, // Gloom Under Night
+					 1871; // Fallen Bishop
+	
+	// CONST
+	set .SELO_1, 1;
+	set .SELO_2, 2;
+	set .SELO_3, 3;
+	set .SELO_4, 4;
+	
+	set .MOB_SELO, 1915;
+	set .MOB_BARRICADE, 1905;
+	
+	set .WALL_WARP_ROOM_1$, "WWR1";
+	set .WALL_WARP_ROOM_2$, "WWR2";
+	
+	set .MAP_EVENT$, "1@cata";
+
+OnReset:
+	set .qt_guardians_killed, 0;
+	set .qt_seal_killed, 0;
+	setarray .selo_bloqueado, .SELO_1, .SELO_2, .SELO_3, .SELO_4;
+	donpcevent "RSS_Tumbas::OnSetWall";
+	end;
+}
+
+	
+1@cata,190,83,6	script	Tumba#1	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#1";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,268,31,0	script	Tumba#2	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#2";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,246,41,6	script	Tumba#3	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#3";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,155,64,4	script	Tumba#4	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#4";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,93,97,6	script	Tumba#5	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#5";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,89,153,6	script	Tumba#6	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#6";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,190,182,2	script	Tumba#7	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#7";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,120,181,6	script	Tumba#8	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#8";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,86,216,0	script	Tumba#9	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#9";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,233,195,6	script	Tumba#10	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#10";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,254,157,0	script	Tumba#11	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#11";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}
+1@cata,201,209,0	script	Tumba#12	723,{
+	getmapxy($@tumba_map$, $@tumba_x, $@tumba_y, 1);
+	set $@tumba_npc_name$, "Tumba#12";
+	donpcevent "RSS_Tumbas::OnGuardianCast";
+	end;
+}

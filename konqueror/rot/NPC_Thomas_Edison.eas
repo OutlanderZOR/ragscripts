@@ -1,0 +1,147 @@
+prontera,164,166,2	script	Thomas Edison	900,{
+
+	function F_ImprimirLista
+	{
+		set .@len, getarraysize(.nameid);
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			mes "[^ac0000" + (.@i + 1) + "^000000] ^0078ff" + .item_name$[.@i] + "^000000";
+		}
+		return;
+	}
+	
+	set .@title$, "[" + "^ab4a03" + "Thomas Edison" + "^000000" + "]";
+	mes .@title$;
+	mes "Troco itens especiais por equipamentos raros... interessado?";
+	next;
+	if (getgmlevel()<99)
+	{
+		menu "Sim",L_SIM,"Não",L_EXIT;
+	}
+	else
+	{
+		menu "Sim",L_SIM,"Não",L_EXIT,"Reset Vars",L_RESET;
+	}
+	
+L_SIM:
+	mes .@title$;
+	mes "Os itens especials que preciso para a troca são "+
+		"^0084ffSkull^000000, ^0084ffHandsel^000000, " +
+		"^0084ffPoring Coin^000000, ^0084ffGold Coin^000000, " +
+		"^0084ffSilver Coin^000000 e ^0084ffBronze Coin^000000.";
+	next;
+	mes .@title$;
+	mes "Por acaso você tem algum desses itens?";
+	next;
+	menu "Sim",L_TEMITEM,"Não",L_NAOTEMITEM;
+	
+L_NAOTEMITEM:
+	mes .@title$;
+	mes "Estes itens podem ser obtidos no PVP, WOE, " +
+		"MVP Survivor Arena e no PVM Battlegrounds.";
+	next;
+	mes .@title$;
+	mes "Como você não tem itens para a troca, não poderá " +
+		"pegar nenhum item. Deseja ver os preços mesmo assim?";
+	next;
+	menu "Sim",L_VER_LISTA,"Não",L_EXIT;
+	
+L_TEMITEM:
+	mes .@title$;
+	mes Sex ? "Você é o cara!" : "Você é a garota!";
+	mes "Mas será que tem o suficiente para trocar? " +
+		"Hmm.. vamos ver...";
+	next;
+L_VER_LISTA:
+	mes .@title$;
+	F_ImprimirLista();
+	next;
+	menu "Selecionar Item",-,"Sair",L_EXIT;
+	input @index;
+	set @index, @index - 1;
+	next;
+	if (getarraysize(.nameid) > 0 && @index >= 0 && @index < getarraysize(.nameid))
+	{
+		goto L_VER_ITEM;
+	}
+	mes .@title$;
+	mes "O número que você digitou é inválido, tente outro...";
+	next;
+	goto L_VER_LISTA;
+	
+L_VER_ITEM:
+	mes .@title$;
+	mes "Item: ^0084ff" + .item_name$[@index];
+	if (.qt_skull[@index] > 0) mes "^000000Skull(s): " + ((countitem(.id_skull) >= .qt_skull[@index]) ? "^43bf00" : "^ff0000") + .qt_skull[@index];
+	if (.qt_handsel[@index] > 0) mes "^000000Handsel(s): " + ((countitem(.id_handsel) >= .qt_handsel[@index]) ? "^43bf00" : "^ff0000") + .qt_handsel[@index];
+	if (.qt_poring_coin[@index] > 0) mes "^000000Poring Coin(s): " + ((countitem(.id_poring_coin) >= .qt_poring_coin[@index]) ? "^43bf00" : "^ff0000") + .qt_poring_coin[@index];
+	if (.qt_gold_coin[@index] > 0) mes "^000000Gold Coin(s): " + ((countitem(.id_gold_coin) >= .qt_gold_coin[@index]) ? "^43bf00" : "^ff0000") + .qt_gold_coin[@index];
+	if (.qt_silver_coin[@index] > 0) mes "^000000Silver Coin(s): " + ((countitem(.id_silver_coin) >= .qt_silver_coin[@index]) ? "^43bf00" : "^ff0000") + .qt_silver_coin[@index];
+	if (.qt_bronze_coin[@index] > 0) mes "^000000Bronze Coin(s): " + ((countitem(.id_bronze_coin) >= .qt_bronze_coin[@index]) ? "^43bf00" : "^ff0000") + .qt_bronze_coin[@index];
+	next;
+	menu "Trocar",L_CONFIRMA_TROCA,"Voltar para lista",L_VER_LISTA,"Sair",L_EXIT;
+	
+L_CONFIRMA_TROCA:
+	mes .@title$;
+	mes "Tem certeza que deseja trocar pelo item ^ff0000" + .item_name$[@index] + "^000000?";
+	next;
+	menu "Não",L_VER_ITEM,"Sim",L_TROCAR_ITEM,"Voltar para lista",L_VER_LISTA,"Sair",L_EXIT;
+	
+L_TROCAR_ITEM:
+	mes .@title$;
+	if ((countitem(.id_skull) >= .qt_skull[@index]) && (countitem(.id_handsel) >= .qt_handsel[@index]) && (countitem(.id_poring_coin) >= .qt_poring_coin[@index])
+		&& (countitem(.id_gold_coin) >= .qt_gold_coin[@index]) && (countitem(.id_silver_coin) >= .qt_silver_coin[@index]) && (countitem(.id_bronze_coin) >= .qt_bronze_coin[@index]))
+	{
+		delitem .id_skull, .qt_skull[@index];
+		delitem .id_handsel, .qt_handsel[@index];
+		delitem .id_poring_coin, .qt_poring_coin[@index];
+		delitem .id_gold_coin, .qt_gold_coin[@index];
+		delitem .id_silver_coin, .qt_silver_coin[@index];
+		delitem .id_bronze_coin, .qt_bronze_coin[@index];
+		getitem .nameid[@index], 1;
+		mes "Parabens!";
+	} 
+	else
+	{
+		mes "Infelizmente você não tem itens suficientes para a troca...";
+	}
+	next;
+	menu "Voltar para lista",L_VER_LISTA,"Sair",L_EXIT;
+	
+L_EXIT:
+	mes .@title$;
+	mes "Até mais...";
+	close;
+	
+	
+L_RESET:
+	close2;
+OnInit:
+	set .id_skull, 7420;
+	set .id_handsel, 7519;
+	set .id_poring_coin, 7539;
+	set .id_gold_coin, 671;
+	set .id_silver_coin, 675;
+	set .id_bronze_coin, 673;
+	
+	deletearray .nameid[0], getarraysize(.nameid);
+	deletearray .item_name$[0], getarraysize(.item_name$);
+	deletearray .qt_skull[0], getarraysize(.qt_skull);
+	deletearray .qt_handsel[0], getarraysize(.qt_handsel);
+	deletearray .qt_gold_coin[0], getarraysize(.qt_gold_coin);
+	deletearray .qt_silver_coin[0], getarraysize(.qt_silver_coin);
+	deletearray .qt_bronze_coin[0], getarraysize(.qt_bronze_coin);
+	deletearray .qt_poring_coin[0], getarraysize(.qt_poring_coin);
+	
+	query_sql "select " +
+			  "  nameid,  " +
+			  "  item_name,  " +
+			  "  qt_skull,  " +
+			  "  qt_handsel,  " +
+			  "  qt_gold_coin,  " +
+			  "  qt_silver_coin,  " +
+			  "  qt_bronze_coin,  " +
+			  "  qt_poring_coin " +
+			  "from premio;", .nameid, .item_name$, .qt_skull, .qt_handsel, .qt_gold_coin, .qt_silver_coin, .qt_bronze_coin, .qt_poring_coin;
+	end;
+}

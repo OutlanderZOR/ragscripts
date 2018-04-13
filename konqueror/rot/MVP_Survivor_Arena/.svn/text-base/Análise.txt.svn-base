@@ -1,0 +1,127 @@
+============= MVP Survivor Arena ================
+
+* Características do Script
+	- 6 rounds com mvps comuns
+	- round 7 boss
+	- round 8 boss final
+	- 3 níveis de dificuldade: playground, normal e ninja
+	- O evento possui um tempo máximo para ser concluido, este tempo é dado em função ao nível de dificuldade
+	- A cada MVP morto o jogador ganhará pontos dependendo do nível de dificuldade
+	- A cada morte o jogador perde uma quantidade de pontos variável de acordo com o nível de dificuldade
+	- A cada round concluido o jogador ganhará pontos dependendo do nível de dificuldade
+	- Alguns itens não estarão disponíveis no nível playground mesmo que o jogador possua pontos para possui-lo
+	- No termino de cada round os jogadores são ressuscitados, curados e têm seus itens equipados reparados
+	- Entre cada round há um intervalo obrigatório de 5 segundos, o temporizador do evento é pausado em cada intervalo
+	- Cada MVP oferece uma pontuação diferente
+	- Existe um limite de classes que proibe a entrada de mais de 2 jogadores com a mesma classe
+	- Os MVPs sempre variam a cada partida, exceto o boss final
+	- No final do evento os jogadores poderão apostar seus pontos e receber itens em troca
+	- Durante o evento a sala deverá ter no mínimo 3 jogadores, caso contrário o evento terminará
+	
+* Variáveis determinantes
+	- Nível de dificuldade
+	- ID da party registrada
+	- Pontuação do jogador
+	- Lista de itens de premiação
+	- Lista de MVPs comuns
+	- Lista de jogadores registrados
+	- Temporizador
+	- Round
+	- Evento Ativo
+	- Tempo inicio evento
+	- Quantidade MVP Sumonado
+	
+* Funções essenciais
+	- Envio de mensagem para cada membro de uma party;
+	- Contagem de membros da party ignorando membros offline;
+	- Cura em todos os membros de uma party;
+	- Executa repairall em todos os membros da party;
+	- Função que exibe o tempo MM:SS de um parametro int dado em segundos;
+	
+* NPC de Entrada
+	- Para criar uma nova partida é necessária uma party;
+	- Permite que o jogador crie uma nova partida configurando o nível de dificuldade;
+	- Somente o líder da party pode criar uma nova partida;
+	- O script só aceitará party de no mínimo 3 jogadores e no máximo 6 (Jogadores Online);
+	- Uma vez criada a sala o NPC exibirá um waiting room com a mensagem Partida Criada;
+	- O NPC deverá aguardar 1 minuto até que a partida seja iniciada ou cancelada pelo líder da party;
+	- O NPC avisará os membros da party periodicamente sobre o inicio do evento;
+	- Quando o prazo de espera estiver expirado o NPC deverá verificar se a quantidade de membros na party continua válida, caso contrário cancela evento;
+	- Executa warp de todos os jogadores na party para o mapa do evento;
+	- Registra o ID de cada jogador que foi mandado para a sala;
+	- Altera mensagem do waitingroom para "Partida Iniciada";
+	- Quando clicado exibe mensagem com a hora em que a partida foi iniciada;
+	- Jogadores membros da party que estiverem em uma partida começada poderão entrar na sala a qualquer momento desde que tenham seu ID registrado no vetor de entrada;
+	
+* NPC de Ranking
+	- Ativo somente quando uma partida é iniciada;
+	- Exibe mensagem waitingroom "Progresso da Partida";
+	- Exibe o número do round, nível e a pontuação de cada jogador;
+	
+* MVPs
+	- Os MVPs são divididos em 3 níveis de dificuldade: fácil, médio e dificil
+	- As chances dos mvps aparecerem em cada nível são de respectivamente:
+		playground:	70% - 20% - 10%
+		normal:		30% - 40% - 30%
+		ninja:		10% - 20% - 70%
+	
+* LOOPER - Temporizador:
+	- Executa Sleep2 que determina o tempo de toda a partida;
+	- Aguarda o termino do Sleep2;
+	- Se o Round for menor ou igual a 8;
+		- Expulsa todos os jogadores do evento e exibe mensagem de fracasso;
+		- Executa procedimentos de finalização de evento;
+	
+* Script Core
+	- Anuncia as boas vindas;
+	- Informa o nível selecionado e suas características;
+	- Aguarda 30 segundos antes de iniciar o main loop;
+	- Inicializa Round = 1;
+	- Inicia temporizador principal Sleep2 (Tempo) + 65 segundos (acrescimo de intervalo entre os rounds);
+	* LOOP - Repete 7 vezes enquanto o evento estiver ativo;
+		- Executa cura em todos os jogadores e repara itens equipados;
+		- Anuncia o round atual;
+		- Intervalo de 5 segundos;
+		- Grava timetick atual para determinar o tempo em que o round foi terminado;
+		- Se o round for maior que 6;
+			- Sumona MVP BOSS;
+			- Caso contrário executa spawn de MVPs de acordo com o nível selecionado com a quantidade = 2 + Round;
+		- Aguarda até que todos os MVPs sumonados sejam derrotados ou até que o evento não esteja mais ativo;
+		- Mata todos os mobs restantes que possam ter desgarrado do MVP;
+		- Exibe em segundos o tempo em que o round foi executado;
+		- Exibe em minutos e segundos o tempo total menos Round * 5 desde o inicio do evento;
+		- Incrementa pontuação do round para cada jogador;
+		- Incrementa Round + 1;
+	- Verifica se o evento ainda está ativo;
+	- Anuncia etapa final do evento;
+	- Aguarda 5 segundos;
+	- Executa MAP Warp para arena do boss final;
+	- Anuncia mensagens do BOSS;
+	- Aguarda 30 segundos;
+	- Sumona exercito 1 e aguarda enquanto houver mais de 20% ou enquanto o evento estiver ativo;
+	- Sumona exercito 2 e aguarda enquanto houver mais de 20% ou enquanto o evento estiver ativo;
+	- Inicia animação de summon;
+		- Sumona Valkyrie Randgris (Boss Final);
+	- Aguarda enquanto a Valkyrie estiver viva ou o evento estiver ativo;
+	- Caso o evento esteja ativo, incrementa Round + 1;
+	- Anuncia o termino do evento;
+	- Aguarda 10 segundos;
+	- Executa MAP Warp para o mapa de premiação;
+	- Executa procedimentos de finalização de evento;
+	
+* Procedimentos de finalização de evento
+	- Desativa ranking;
+	- Limpa todas as variávels do script;
+	- Reinicia NPC de Entrada;
+	- Anuncio global de termino do evento;
+
+* Ao morrer durante o evento
+	- Verifica se o jogador está em um dos mapas do evento;
+	- Reduz pontuação de acordo com o nível selecionado;
+	- Anuncia ressurreição em 10 segundos;
+	- Aguarda 10 segundos;
+	- Ressuscita jogador e repara todos os itens equipados;
+	
+* Ao matar um MVP
+	- Incrementa pontuação do MVP de acordo com o nível de dificuldade selecionado;
+	- Decrementa 1 da variável quantidade mvp sumonado;

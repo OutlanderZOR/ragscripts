@@ -1,0 +1,182 @@
+//|                         ___           ___                     ___           ___                               
+//|                        /  /\         /  /\      ___          /  /\         /  /\                              
+//|                       /  /:/        /  /:/     /__/\        /  /::\       /  /::\                             
+//|                      /  /:/        /  /:/      \  \:\      /  /:/\:\     /  /:/\:\                            
+//|                     /  /:/        /  /:/        \__\:\    /  /::\ \:\   /  /::\ \:\                           
+//|                    /__/:/     /\ /__/:/         /  /::\  /__/:/\:\_\:\ /__/:/\:\_\:\                          
+//|                    \  \:\    /:/ \  \:\        /  /:/\:\ \__\/~|::\/:/ \__\/  \:\/:/                          
+//|                     \  \:\  /:/   \  \:\      /  /:/__\/    |  |:|::/       \__\::/                           
+//|                      \  \:\/:/     \  \:\    /__/:/         |  |:|\/        /  /:/                            
+//|                       \  \::/       \  \:\   \__\/          |__|:|~        /__/:/                             
+//|                        \__\/         \__\/                   \__\|         \__\/                              
+//|                         ___                         ___           ___           ___                           
+//|                        /  /\          ___          /  /\         /  /\         /  /\                          
+//|                       /  /::\        /  /\        /  /::\       /  /::\       /  /:/                          
+//|                      /__/:/\:\      /  /::\      /  /:/\:\     /  /:/\:\     /  /:/                           
+//|                     _\_ \:\ \:\    /  /:/\:\    /  /::\ \:\   /  /::\ \:\   /  /::\____                       
+//|                    /__/\ \:\ \:\  /  /::\ \:\  /__/:/\:\_\:\ /__/:/\:\_\:\ /__/:/\:::::\                      
+//|                    \  \:\ \:\_\/ /__/:/\:\_\:\ \__\/  \:\/:/ \__\/~|::\/:/ \__\/~|:|~~~~                      
+//|                     \  \:\_\:\   \__\/  \:\/:/      \__\::/     |  |:|::/     |  |:|                          
+//|                      \  \:\/:/        \  \::/       /  /:/      |  |:|\/      |  |:|                          
+//|                       \  \::/          \__\/       /__/:/       |__|:|~       |__|:|                          
+//|                        \__\/                       \__\/         \__\|         \__\|                          
+//|===============================================================================================================
+//|
+//|				R E P A R A D O R
+//|
+//|===============================================================================================================
+//|
+//| Módulo: Script Core
+//| Categoria: Utilidades
+//| Autor: Outlander
+//| Data: 02/10/2012
+//| SQL: Não
+//| 
+//|===============================================================================================================
+-	script	Reparador_Core	-1,{
+	end;
+//|===============================================================================================================
+//|	Funções essenciais
+//|===============================================================================================================
+	
+	function f_cutin_normal
+	{
+		cutin "lhz_ryo12",2;
+		return;
+	}
+	
+	function f_cutin_ahn
+	{
+		cutin "lhz_ryo14",2;
+		return;
+	}
+	
+	function f_cutin_espanto
+	{
+		cutin "lhz_ryo03",2;
+		return;
+	}
+	
+	function f_cutin_feliz
+	{
+		cutin "lhz_ryo01",2;
+		return;
+	}
+
+	function f_color
+	{
+		set .@str$, getarg(0);
+		set .@color$, getarg(1);
+		return "^"+.@color$+.@str$+"^000000";
+	}
+	
+	// Monta string de opção do menu
+	function f_opt
+	{
+		set .@str$, getarg(0);
+		return f_color("(*) ", .color_p$) + .@str$ + f_color(" (*)", .color_p$);
+	}
+	
+	function f_destaque
+	{
+		set .@str$, getarg(0);
+		return "^d80505" + .@str$ + "^000000";
+	}
+	
+	function f_player_name
+	{
+		return "^23a0f7" + strcharinfo(0) + "^000000";
+	}
+	
+	function f_sex
+	{
+		set .@str_m$, getarg(0);
+		set .@str_f$, getarg(1);
+		return (Sex?.@str_m$:.@str_f$);
+	}
+	
+	function f_broken_count
+	{
+		return (getbrokenid(1) ? 1 : 0) +
+				(getbrokenid(2) ? 1 : 0) +
+				(getbrokenid(3) ? 1 : 0) +
+				(getbrokenid(4) ? 1 : 0) +
+				(getbrokenid(5) ? 1 : 0) +
+				(getbrokenid(6) ? 1 : 0) +
+				(getbrokenid(7) ? 1 : 0) +
+				(getbrokenid(8) ? 1 : 0) +
+				(getbrokenid(9) ? 1 : 0) +
+				(getbrokenid(10) ? 1 : 0);
+	}
+	
+//|===============================================================================================================
+//|	Inicialização de variáveis
+//|===============================================================================================================
+OnInit:
+	// Variaveis Warper Padrão
+	set .color$, "a86f41";
+	set .title$, "[" + f_color("Reparador Ryo",.color$) + "]";
+	end;
+	
+OnReparador:
+	mes .title$;
+	if (getbrokenid(1) == 0)
+	{
+		f_cutin_ahn();
+		mes "Você não parece ter itens quebrados...";
+		mes " ";
+		mes "Volte quando precisar.";
+		close2;
+	} 
+	else
+	{
+		set .@broken_count, f_broken_count();
+		if (.broken_count >= 3)
+		{
+			f_cutin_espanto();
+			mes "Mas o que é isso " + f_sex("rapaz","moça") + ", quantos itens quebrados!";
+		}
+		else
+		{
+			f_cutin_normal();
+			mes "Vamos lá.";
+		}
+		mes " ";
+		mes "Qual item deseja reparar?";
+		next;
+		set .@choice,select(f_opt("Todos"),
+							f_opt(getitemname(getbrokenid(1))),
+							f_opt(getitemname(getbrokenid(2))),
+							f_opt(getitemname(getbrokenid(3))),
+							f_opt(getitemname(getbrokenid(4))),
+							f_opt(getitemname(getbrokenid(5))),
+							f_opt(getitemname(getbrokenid(6))),
+							f_opt(getitemname(getbrokenid(7))),
+							f_opt(getitemname(getbrokenid(8))),
+							f_opt(getitemname(getbrokenid(9))),
+							f_opt(getitemname(getbrokenid(10))));
+		switch(.@choice)
+		{
+			case 1:
+				for(set .@i, 1; .@i < 11; set .@i, .@i + 1)
+					if (getbrokenid(.@i))
+						repair(.@i);
+				break;
+			case 2:
+				repair(.@choice);
+				break;
+		}
+		mes .title$;
+		mes "Tudo certo agora.";
+		mes " ";
+		mes "Volte sempre que precisar!";
+		close2;
+	}
+	cutin "",255;
+	end;
+}
+
+-	script	Reparador	-1,{
+	doevent "Reparador_Core::OnReparador";
+	end;
+}

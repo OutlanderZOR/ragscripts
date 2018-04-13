@@ -1,0 +1,27 @@
+-	script	Loja de Utilidades	-1,{
+	callshop("SHOP_Utilidades", 0);
+	end;
+}
+
+quiz_00,50,36,4	duplicate(Loja de Utilidades)	Loja de Utilidades#lu01	90
+prontera,164,166,2	duplicate(Loja de Utilidades)	Loja de Utilidades#lu02	90	
+
+quiz_00,69,36,4	script	Loja de Mercenarios	953,{
+	callshop("SHOP_Mercenary", 0);
+	end;
+}
+
+-	script	Loja de Armaduras	-1,{
+	callshop("SHOP_ARMOR", 0);
+	end;
+}
+quiz_00,71,36,4	duplicate(Loja de Armaduras)	Loja de Armaduras#la01	752
+prontera,164,170,2	duplicate(Loja de Armaduras)	Loja de Armaduras#la02	752
+
+
+-	script	Loja de Armas	-1,{
+	callshop("SHOP_WEAPON", 0);
+	end;
+}
+quiz_00,73,36,4	duplicate(Loja de Armas)	Loja de Armas#lw01	751
+prontera,164,168,2	duplicate(Loja de Armas)	Loja de Armas#lw02	751

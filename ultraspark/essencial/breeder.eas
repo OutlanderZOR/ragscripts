@@ -1,0 +1,111 @@
+//===== rAthena Script =======================================
+//= Universal Rental NPC
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena SVN
+//===== Description: =========================================
+//= One-click automatic mount rentals.
+//============================================================
+
+-	script	Negociante_Core	-1,{
+	end;
+	
+	function f_color
+	{
+		set .@str$, getarg(0);
+		set .@color$, getarg(1);
+		return "^"+.@color$+.@str$+"^000000";
+	}
+	
+	function f_destaque
+	{
+		set .@str$, getarg(0);
+		return f_color(.@str$,"d80505");
+	}
+	
+	function f_player_name
+	{
+		return "^23a0f7" + strcharinfo(0) + "^000000";
+	}
+
+OnInit:
+	set .color$, "BF3D90";
+	set .title$, "[" + f_color("Garota Negociante",.color$) + "]";
+	end;
+	
+OnGarotaNegociante:
+	if (ismounting()) 
+	{
+		mes .title$;
+		message strcharinfo(0),"Você deve sair da sua montaria primeiro.";
+		close; 
+	}
+	else if ((eaclass()&EAJ_THIRDMASK==EAJ_RANGER) && !countitem(6124)) 
+	{
+		if (!checkfalcon() && getskilllv("HT_FALCON") && !checkoption(Option_Wug) && !checkoption(Option_Wugrider)) 
+		{
+			if(select(" ~ Falcon: ~ Warg")==1) 
+				setfalcon;
+			else 
+				getitem 6124,1; 
+		}
+		else 
+			getitem 6124,1; 
+	}
+	else if ((eaclass()&EAJ_THIRDMASK==EAJ_MECHANIC) && !checkcart() && getskilllv("MC_PUSHCART")) 
+	{
+		if (!checkmadogear() && getskilllv("NC_MADOLICENCE")) 
+		{
+			if(select(" ~ Cart: ~ Mado")==1) 
+				setcart;
+			else 
+				setmadogear; 
+		}
+		else 
+			setcart; 
+		}
+	else if (!checkcart() && getskilllv("MC_PUSHCART")) 
+		setcart;
+	else if (!checkfalcon() && getskilllv("HT_FALCON") && !checkoption(Option_Wug) && !checkoption(Option_Wugrider)) 
+		setfalcon;
+	else if (!checkriding() && getskilllv("KN_RIDING")) 
+	{
+		if (eaclass()&EAJ_THIRDMASK==EAJ_RUNE_KNIGHT) 
+			setdragon;
+		else 
+			setriding; 
+	}
+	else if (!checkmadogear() && getskilllv("NC_MADOLICENCE")) 
+		setmadogear;
+	else 
+	{
+		mes .title$;
+		mes "No momento não tenho nada para você " + f_player_name() + ".";
+		mes " ";
+		mes "Aluguel de carros, falcões, pecos, dragões e muito mais. " +
+			"Fale comigo quando precisar!";
+		close; 
+	}
+	specialeffect2 276;
+	close;
+}
+
+prontera,147,169,6	script	Garota Negociante	726,{
+	doevent "Negociante_Core::OnGarotaNegociante";
+	end;
+}
+
+//============================================================ 
+// Old changelog
+//============================================================ 
+//= A Free PecoPeco and Falcon Breeder
+//= 1.1 FIXED checkriding/cart/falcon funcs [Lupus]
+//= 1.2 Added Rebirth/Advanced Class support [Mass Zero]
+//= 1.3 Simplified the checks of job [Silentdragon]
+//= 1.3a Fixed a Typo Error. [Samuray22]
+//=      Thanks to ~AnnieRuru~.
+//= 1.4 Optimized Script. No need for 50 million Labels. [Spre]
+//============================================================

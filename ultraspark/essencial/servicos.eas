@@ -1,0 +1,307 @@
+//|                         ___           ___                     ___           ___                               
+//|                        /  /\         /  /\      ___          /  /\         /  /\                              
+//|                       /  /:/        /  /:/     /__/\        /  /::\       /  /::\                             
+//|                      /  /:/        /  /:/      \  \:\      /  /:/\:\     /  /:/\:\                            
+//|                     /  /:/        /  /:/        \__\:\    /  /::\ \:\   /  /::\ \:\                           
+//|                    /__/:/     /\ /__/:/         /  /::\  /__/:/\:\_\:\ /__/:/\:\_\:\                          
+//|                    \  \:\    /:/ \  \:\        /  /:/\:\ \__\/~|::\/:/ \__\/  \:\/:/                          
+//|                     \  \:\  /:/   \  \:\      /  /:/__\/    |  |:|::/       \__\::/                           
+//|                      \  \:\/:/     \  \:\    /__/:/         |  |:|\/        /  /:/                            
+//|                       \  \::/       \  \:\   \__\/          |__|:|~        /__/:/                             
+//|                        \__\/         \__\/                   \__\|         \__\/                              
+//|                         ___                         ___           ___           ___                           
+//|                        /  /\          ___          /  /\         /  /\         /  /\                          
+//|                       /  /::\        /  /\        /  /::\       /  /::\       /  /:/                          
+//|                      /__/:/\:\      /  /::\      /  /:/\:\     /  /:/\:\     /  /:/                           
+//|                     _\_ \:\ \:\    /  /:/\:\    /  /::\ \:\   /  /::\ \:\   /  /::\____                       
+//|                    /__/\ \:\ \:\  /  /::\ \:\  /__/:/\:\_\:\ /__/:/\:\_\:\ /__/:/\:::::\                      
+//|                    \  \:\ \:\_\/ /__/:/\:\_\:\ \__\/  \:\/:/ \__\/~|::\/:/ \__\/~|:|~~~~                      
+//|                     \  \:\_\:\   \__\/  \:\/:/      \__\::/     |  |:|::/     |  |:|                          
+//|                      \  \:\/:/        \  \::/       /  /:/      |  |:|\/      |  |:|                          
+//|                       \  \::/          \__\/       /__/:/       |__|:|~       |__|:|                          
+//|                        \__\/                       \__\/         \__\|         \__\|                          
+//|===============================================================================================================
+//|
+//|				S E R V I Ç O S    G E R A I S
+//|
+//|===============================================================================================================
+//|
+//| Módulo: Script Core
+//| Categoria: Utilidades
+//| Autor: Outlander
+//| Data: 27/09/2012
+//| SQL: Sim
+//| 
+//|===============================================================================================================
+prontera,147,175,6	script	Serviços Gerais	873,{
+	
+//|===============================================================================================================
+//|	Funções essenciais
+//|===============================================================================================================	
+	function f_cutin
+	{
+		cutin "fly_trock",2;
+		return;
+	}
+	
+	function f_color
+	{
+		set .@str$, getarg(0);
+		set .@color$, getarg(1);
+		return "^"+.@color$+.@str$+"^000000";
+	}
+	
+	function f_opt
+	{
+		set .@str$, getarg(0);
+		return f_color("(#) ",.color$) + .@str$ + f_color(" (#)",.color$);
+	}
+	
+	function f_destaque
+	{
+		set .@str$, getarg(0);
+		return f_color(.@str$,"d80505");
+	}
+	
+	function f_player_name
+	{
+		return f_color(strcharinfo(0),"000000");
+	}
+	
+	function f_format_name
+	{
+		set .@num, getarg(0);
+		set .@str$, getarg(1);
+		return "["+f_color(.@num,"ff0000")+"] " + .@str$;
+	}
+	
+	function f_erro
+	{
+		return f_color(getarg(0),"ff0000");
+	}
+	
+	function f_listar_personagens
+	{
+		deletearray @id[0], getarraysize(@id);
+		deletearray @nomes$[0], getarraysize(@nomes$);
+		deletearray @mapas$[0], getarraysize(@mapas$);
+		query_sql "select `char_id`, `name`, `last_map` "+
+				  "from `char` where account_id = " + getcharid(3) + " " +
+				  "and `char_id` <> " + getcharid(0) + " " +
+				  "order by `name`", @id, @nomes$, @mapas$;
+		mes f_format_name(0, "[Voltar ao menu principal]");
+		for(set @i, 1; @i <= getarraysize(@nomes$); set @i, @i + 1)
+			mes f_format_name(@i, @nomes$[@i-1]);
+		return;
+	}
+	
+	function f_validar_numero
+	{
+		return (@num >= 0 && @num <= getarraysize(@nomes$));
+	}
+	
+	// Verifica se o mapa é um mapa especial do ROT
+	// Mapas com prefixo "rot_" retornam 0 qualquer outro mapa retorna 1;
+	function f_validar_mapa
+	{
+		return !compare(@mapas$[@num],"rot_");
+	}
+	
+	function f_validar_senha
+	{
+		set .@pass$, getarg(0);
+		set .@i, 0;
+		query_sql "select 1 " +
+				  "from `login` " +
+				  "where `account_id` = " + getcharid(3) + " " +
+				  "and user_pass = md5('"+ escape_sql(.@pass$)+"')",.@i;
+		return .@i[0];
+	}
+	
+	function f_validar_email
+	{
+		set .@email$, getarg(0);
+		set .@i, 0;
+		query_sql "select 1 " +
+				  "from `login` " +
+				  "where `account_id` = " + getcharid(3) + " " +
+				  "and email = '"+ escape_sql(.@email$)+"'",.@i;
+		return .@i[0];
+	}
+	
+	function f_definir_senha
+	{
+		set .@pass$, getarg(0);
+		query_sql "update `login` set "+
+				  "`user_pass` = md5('"+ escape_sql(.@pass$) +"') "+
+				  "where account_id = "+getcharid(3);
+		return;
+	}
+	
+//|===============================================================================================================
+//|	Inicio do diálogo
+//|===============================================================================================================
+L_Menu_Principal:
+	f_cutin();
+	mes .title$;
+	mes "Olá " + f_player_name() + ", em que posso ajudar?";
+	next;
+	menu f_opt("Resetar posição de um personagem"),L_Resetar_Pos,
+		 f_opt("Trocar de sexo"),L_Troca_Sexo,
+		 f_opt("Alterar senha"),L_Troca_Senha,
+		 f_opt("Sair"),-;
+	mes .title$;
+	mes "Volte sempre que precisar.";
+	close2;
+	cutin "",255;
+	end;
+	
+L_Resetar_Pos:
+	mes .title$;
+	mes "Digite o número desejado.";
+	f_listar_personagens();
+	input @num;
+	next;
+	if (@num == 0)
+		goto L_Menu_Principal;
+
+	mes .title$;
+	if (f_validar_numero())
+	{
+		// Define o valor real do indice do vetor
+		set @num, @num -1;
+		mes "Nome: " + f_destaque(@nomes$[@num]);
+		mes "Mapa: " + f_destaque(@mapas$[@num]);
+		mes " ";
+		mes "Deseja resetar a posição?";
+		next;
+		switch(select(f_opt("Sim") + ":" + f_opt("Não")))
+		{
+			// Sim, resetar posição.
+			case 1:
+				mes .title$;
+				if (f_validar_mapa())
+				{
+					query_sql "update `char` set "+
+						  "`last_map` = 'prontera', "+
+						  "`last_x` = 156, "+
+						  "`last_y` = 180 "+
+						  "where char_id = " + @id[@num];
+					mes "A posição do personagem foi atualizada.";
+					next;
+					goto L_Menu_Principal;
+				}
+				else
+				{
+					mes "Não é possível resetar a posição de personagens no mapa " + f_destaque(@mapas$[@num]) + ".";
+					next;
+					goto L_Menu_Principal;
+				}
+				break;
+			// Não, retorne ao menu.
+			case 2:
+				goto L_Menu_Principal;
+		}
+	}
+	else
+	{
+		mes "Número inválido.";
+		next;
+		goto L_Resetar_Pos;
+	}
+	end;
+	
+L_Troca_Sexo:
+	mes .title$;
+	mes "Deseja trocar o sexo da conta?";
+	mes " ";
+	mes "Taxa: " + f_destaque(.taxa_troca_sexo + "z");
+	next;
+	switch(select(f_opt("Sim") + ":" + f_opt("Não")))
+	{
+		// Sim, efetuar troca de sexo
+		case 1:
+			mes .title$;
+			if (Zeny >= .taxa_troca_sexo)
+			{
+				mes "Pronto.";
+				mes "Feche o dialogo para concluir a troca.";
+				close2;
+				set Zeny, Zeny - .taxa_troca_sexo;
+				changesex;
+			}
+			else
+			{
+				mes "Você não possui " + f_destaque("zeny") + " suficiente.";
+				next;
+				goto L_Menu_Principal;
+			}
+			break;
+		// Não, retorne ao menu
+		case 2:
+			goto L_Menu_Principal;
+	}
+	cutin "",255;
+	end;
+	
+L_Troca_Senha:
+	mes .title$;
+	mes "Digite a senha atual.";
+	input @senha_atual$;
+	if (!f_validar_senha(@senha_atual$))
+	{
+		mes " ";
+		mes f_erro("Senha inválida.");
+		next;
+		goto L_Menu_Principal;
+	}
+	next;
+	mes .title$;
+	mes "Informe o email da conta.";
+	input @email$;
+	if (!f_validar_email(@email$))
+	{
+		mes " ";
+		mes f_erro("Email inválido.");
+		next;
+		goto L_Menu_Principal;
+	}
+	next;
+	mes .title$;
+	mes "Digite a nova senha.";
+	input @nova_senha_1$;
+	mes "Repita a nova senha.";
+	input @nova_senha_2$;
+	next;
+	mes .title$;
+	if (getstrlen(@nova_senha_1$) < .tamanho_min_senha)
+	{
+		mes " ";
+		mes f_erro("A senha deve ter no mínimo " + .tamanho_min_senha + " caracteres.");
+		next;
+		goto L_Menu_Principal;
+	}
+	if (@nova_senha_1$ != @nova_senha_2$)
+	{
+		mes " ";
+		mes f_erro("Senha não confere.");
+		next;
+		goto L_Menu_Principal;
+	}
+	query_sql "update `login` set "+
+			  "`user_pass` = md5('"+escape_sql(@nova_senha_1$)+"') "+
+			  "where account_id = "+getcharid(3);
+	mes "Sua senha foi atualizada.";
+	next;
+	goto L_Menu_Principal;
+	
+//|===============================================================================================================
+//|	Inicialização de variáveis
+//|===============================================================================================================	
+OnInit:
+	set .color$, "88a20f";
+	set .title$, "[^"+.color$+"Serviços Gerais^000000]";
+	set .taxa_troca_sexo, 10;
+	set .tamanho_min_senha, 4;
+	end;
+}

@@ -1,0 +1,260 @@
+-	script	Job Master	-1,{
+	mes "^ff0000[Job Master]^000000";
+	cutin "ra_nemma01",2;
+	if(Upper == 1 && Class >= Job_Lord_Knight) goto L_noReq;
+	if(JobLevel < 10) goto L_LvError;
+	switch(Class){
+		case Job_Novice_High:
+		case Job_Baby:
+		case Job_Novice:
+			skill 142,1,0;
+			skill 143,1,0;
+			mes "Bem vindo, por favor selecione o job que deseja virar";
+			if(lastJob != 0 && Class == Job_Novice_High){
+				switch(lastJob){
+					case Job_Knight:
+					case Job_Crusader:
+						set @target_job, Job_Swordman_High;
+						break;
+					case Job_Monk:
+					case Job_Priest:
+						set @target_job, Job_Acolyte_High;
+						break;
+					case Job_Alchem:
+					case Job_Blacksmith:
+						set @target_job, Job_Merchant_High;
+						break;
+					case Job_Rogue:
+					case Job_Assassin:
+						set @target_job, Job_Thief_High;
+						break;
+					case Job_Wizard:
+					case Job_Sage:
+						set @target_job, Job_Mage_High;
+						break;
+					case Job_Hunter:
+					case Job_Bard:
+					case Job_Dancer:
+						set @target_job, Job_Archer_High;
+						break;
+							}
+			} else {
+				switch(select("Swordsman","Mage","Archer","Acolyte","Merchant","Thief",
+					"Super Novice","Taekwon","Gunslinger","Ninja")){
+						case 7:
+							if(Class == Job_Novice_High) goto L_noReq;
+							if($@JC_SupNovM > BaseLevel) goto L_BvError;
+							if(Upper == 2)
+								set @target_job, Job_Super_Baby;
+							else
+								set @target_job, Job_SuperNovice;
+							break;
+						case 8:
+							if(Class == Job_Novice_High) goto L_noReq;
+							if(Upper == 2) goto L_noReq;
+							set @target_job, Job_Taekwon;
+							break;
+						case 9:
+						case 10:
+							if(Class == Job_Novice_High || Upper == 2) goto L_noReq;
+							set @target_job, @menu + 15;
+							break;
+						default:
+							set @target_job, @menu;
+							if(Class == Job_Novice_High) set @target_job, @target_job + 4001;
+							break;
+					}
+			}
+			mes "Tem certeza que deseja virar " + JobName(@target_job) + "?";
+			if(select("Não","Sim") == 2){
+				callfunc "Job_Change", @target_job;
+				if(@target_job == Job_Gunsliger || @target_job == Job_Ninja || @target_job == Job_Taekwon) {
+					callfunc "F_ClearJobVar";
+				} else {
+					if($@JC_Plat) goto L_GivePlat;
+				}
+			}
+			goto L_CutinClose;
+			break;
+		default:
+			if(JobLevel < $@JC_MinimumJB) goto L_LvError;
+			deletearray @job_opt, getarraysize(@job_opt);
+			if(Class < Job_Knight || Class == Job_Taekwon || (Class > Job_Baby && Class < Job_Baby_Knight) || (Class > Job_Novice_High && Class < Job_Lord_Knight)){
+				if(lastJob != 0){
+					set @target_job, lastJob + 4001;
+				} else {
+					switch(Class){
+						case Job_Swordman_High:
+						case Job_Baby_Swordman:
+						case Job_Swordman:
+							set @job_opt[0], Job_Knight;
+							set @job_opt[1], Job_Crusader;
+							break;
+						case Job_Mage_High:
+						case Job_Baby_Mage:
+						case Job_Mage:
+							set @job_opt[0], Job_Wizard;
+							set @job_opt[1], Job_Sage;
+							break;
+						case Job_Archer_High:
+						case Job_Baby_Archer:
+						case Job_Archer:
+							set @job_opt[0], Job_Hunter;
+							if(Sex == 0)
+								set @job_opt[1], Job_Dancer;
+							else
+								set @job_opt[1], Job_Bard;
+							break;
+						case Job_Acolyte_High:
+						case Job_Baby_Acolyte:
+						case Job_Acolyte:
+							set @job_opt[0], Job_Priest;
+							set @job_opt[1], Job_Monk;
+							break;
+						case Job_Merchant_High:
+						case Job_Baby_Merchant:
+						case Job_Merchant:
+							set @job_opt[0], Job_Blacksmith;
+							set @job_opt[1], Job_Alchem;
+							break;
+						case Job_Thief_High:
+						case Job_Baby_Thief:
+						case Job_Thief:
+							set @job_opt[0], Job_Assassin;
+							set @job_opt[1], Job_Rogue;
+							break;						
+						default:
+							set @job_opt[0], Job_Star_Gladiator;
+							set @job_opt[1], Job_Soul_Linker;
+							break;
+					}
+					mes "Bem vindo, por favor selecione o job que deseja virar";
+					set @target_job, @job_opt[select(JobName(@job_opt[0]), JobName(@job_opt[1]))-1];
+					if(Class > Job_Novice_High && Class < Job_Lord_Knight) set @target_job, @target_job + 4001;
+				}
+				mes "Tem certeza que deseja virar " + JobName(@target_job) + "?";
+				if(select("Não","Sim")==2){
+					callfunc "Job_Change", @target_job;
+					if(@target_job == Job_Star_Gladiator || @target_job == Job_Soul_Linker) {
+						callfunc "F_ClearJobVar";
+					} else {
+						if($@JC_Plat) goto L_GivePlat;
+					}
+				}
+				goto L_CutinClose;
+			}
+			if(checkfalcon() || checkcart() || checkriding()) goto L_remove;
+			if((Class >=Job_Knight) && (Class <=Job_Crusader2)){
+				cutin "ra_nemma03",2;
+				mes "Você deseja rebornar?";
+				if(select("Sim","Não")==1){
+					if(BaseLevel < 99 || JobLevel < 50) goto L_cantCh;
+					set lastJob, Class;
+					if(Class == Job_Knight2){
+						set lastJob, Job_Knight;
+					} else {
+						if(Class == Job_Crusader2){
+							set lastJob, Job_Crusader;
+						}
+					}
+					jobchange Job_Novice_High;
+					resetlvl(1);
+					skill 142,1,0;
+					skill 143,1,0;
+				}
+				goto L_CutinClose;
+			}
+	}
+	cutin "ra_nemma04",2;
+	mes "Alguma merda bem fudida aconteceu.";
+	goto L_CutinClose;
+
+L_GivePlat:
+	if (BaseClass==Job_SuperNovice) goto L_sSuperN;
+	if (BaseClass==Job_Swordman) goto L_sSword;
+	if (BaseClass==Job_Mage) goto L_sMage;
+	if (BaseClass==Job_Archer) goto L_sArcher;
+	if (BaseClass==Job_Acolyte) goto L_sAcolyte;
+	if (BaseClass==Job_Merchant) goto L_sMerchant;
+	if (BaseClass==Job_Thief) goto L_sThief;
+	goto L_CutinClose;
+L_sSuperN:
+	skill 142,1,0;
+	goto L_CutinClose;
+L_sSword:
+	skill 142,1,0;
+	skill 144,1,0;
+	skill 145,1,0;
+	skill 146,1,0;
+	goto L_CutinClose;
+L_sMage:
+	skill 142,1,0;
+	skill 157,1,0;
+	goto L_CutinClose;
+L_sArcher:
+	skill 142,1,0;
+	skill 147,1,0;
+	skill 148,1,0;
+	goto L_CutinClose;
+L_sAcolyte:
+	skill 142,1,0;
+	skill 156,1,0;
+	goto L_CutinClose;
+L_sMerchant:
+	skill 142,1,0;
+	skill 153,1,0;
+	skill 154,1,0;
+	skill 155,1,0;
+	goto L_CutinClose;
+L_sThief:
+	skill 142,1,0;
+	skill 149,1,0;
+	skill 150,1,0;
+	skill 151,1,0;
+	skill 152,1,0;
+	goto L_CutinClose;
+
+L_cantCh:
+	cutin "ra_nemma02",2;
+	mes "Desculpe, mas você não tem os requerimentos minimos para mudar de classe.";
+	mes "Volte quando estiver pronto!";
+	goto L_CutinClose;
+
+L_LvError:
+	cutin "ra_nemma04",2;
+	mes "Desculpe, mas você não tem Job Levels suficientes.";
+	mes "Volte quando estiver pronto!";
+	goto L_CutinClose;
+
+L_BvError:
+	cutin "ra_nemma04",2;
+	mes "Desculpe, mas você não aparenta ter Base Level suficiente para mudar de classe.";
+	mes "Volte quando estiver pronto!";
+	goto L_CutinClose;
+
+L_noReq:
+	cutin "ra_nemma02",2;
+	mes "Desculpe, mas você não tem os requerimentos minimos para mudar de classe.";
+	mes "Volte quando estiver pronto!";
+	goto L_CutinClose;
+
+L_remove:
+	cutin "ra_nemma03",2;
+	mes "Por favor remova seu cart, falcão ou peco.";
+	goto L_CutinClose;
+	
+L_CutinClose:
+	close2;
+	cutin "",255;
+	end;
+
+OnInit:
+	// Variable Setup
+	set $@JC_MinimumJB, 40; //Minimum job level for changing between 2nd and advance Class (Default : 40)
+	set $@JC_Plat, 1; //Give Platinum skills on Jobchange (Default : 1-yes)
+	set $@JC_SupNovM, 45; //Base Level to change into Super Novice (Default : 45)
+	end;
+}
+
+prontera,160,187,4	duplicate(Job Master)	Job Master#jm01	920
+quiz_00,75,36,4	duplicate(Job Master)	Job Master#jm02	920

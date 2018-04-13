@@ -1,0 +1,177 @@
+bat_c01,58,84,6	script	Saida#11	723,{
+	savepoint "pvp_y_room",41,72;
+	warp "pvp_y_room",41,72;
+	end;
+	
+OnInit:
+	waitingroom "(>) Saida (<)", 0;
+	end;
+}
+bat_c01,84,91,3	script	Thompson#11	404,{
+	set .@title$, "[^4d4d4dThompson, o Juiz^000000]";
+	mes .@title$;
+	mes "Eu quero luta justa e sem trapaça!";
+	next;
+	mes .@title$;
+	mes "Dentro do ringue que os lutadores de verdade provam sua força. " +
+		"Entre lá e prove seu valor!";
+	next;
+	menu "É isso ae!",-,"Entrar no meio",L_MIDDLE;
+	close2;
+	emotion e_pif;
+	end;
+	
+L_MIDDLE:
+	warp "bat_c01", 100, 92;
+	end;
+}
+
+bat_c01,78,89,0	script	Basilicador#1	-1,9,10,{
+OnTouch:
+	//announce "[Ringue Arena] " + strcharinfo(0) + " entrou no ringue.", bc_map, 0xcfff8b;
+	set ringue_exit, 1;
+	sc_start SC_BASILICA,86400000,0;
+	end;
+}
+
+bat_c01,96,88,0	script	Desbasilicador#1	-1,9,10,{
+OnTouch:
+	if (ringue_exit)
+	{
+		announce "[Ringue Arena] " + strcharinfo(0) + " entrou no ringue.", bc_map, 0xcfff8b;
+		set ringue_exit, 0;
+	}
+	sc_end SC_BASILICA;
+	end;
+}
+
+-	script	RINGUE_SETWALL	-1,{
+OnInit:
+//	setcell "bat_c01", 87, 90, 87, 101, cell_walkable, 0;
+//	setcell "bat_c01", 87, 90, 87, 101, cell_shootable, 0;
+	setwall "bat_c01",87,90,12,0,0,"RINGUE_WALL1";
+	setwall "bat_c01",87,72,12,0,0,"RINGUE_WALL2";
+	setwall "bat_c01",88,72,24,6,0,"RINGUE_WALL3";
+	setwall "bat_c01",112,82,30,0,0,"RINGUE_WALL4";
+	setwall "bat_c01",88,111,24,6,0,"RINGUE_WALL5";
+	end;
+}
+
+// WALL ESQUERDA
+bat_c01,87,101,0	script	teste#123a	1905,{}
+bat_c01,87,100,0	script	teste#123b	1905,{}
+bat_c01,87,99,0	script	teste#123c	1905,{}
+bat_c01,87,98,0	script	teste#123d	1905,{}
+bat_c01,87,97,0	script	teste#123e	1905,{}
+bat_c01,87,96,0	script	teste#123f	1905,{}
+bat_c01,87,95,0	script	teste#123g	1905,{}
+bat_c01,87,94,0	script	teste#123h	1905,{}
+bat_c01,87,93,0	script	teste#123i	1905,{}
+bat_c01,87,92,0	script	teste#123j	1905,{}
+bat_c01,87,91,0	script	teste#123l	1905,{}
+bat_c01,87,90,0	script	teste#123m	1905,{}
+
+
+
+
+//bat_c01,87,88,0	script	teste#123	1905,{}
+//bat_c01,87,87,0	script	teste#123	1905,{}
+//bat_c01,87,86,0	script	teste#123	1905,{}
+//bat_c01,87,85,0	script	teste#123	1905,{}
+//bat_c01,87,84,0	script	teste#123	1905,{}
+bat_c01,87,83,0	script	teste#1231	1905,{}
+bat_c01,87,82,0	script	teste#1232	1905,{}
+bat_c01,87,81,0	script	teste#1233	1905,{}
+bat_c01,87,80,0	script	teste#1234	1905,{}
+bat_c01,87,79,0	script	teste#1235	1905,{}
+bat_c01,87,78,0	script	teste#1236	1905,{}
+bat_c01,87,77,0	script	teste#1237	1905,{}
+bat_c01,87,76,0	script	teste#1238	1905,{}
+bat_c01,87,75,0	script	teste#1239	1905,{}
+bat_c01,87,74,0	script	teste#12311	1905,{}
+bat_c01,87,73,0	script	teste#1230	1905,{}
+bat_c01,87,72,0	script	teste#12312	1905,{}
+
+// WALL BAIXO
+bat_c01,111,72,0	script	teste#12313	1905,{}
+bat_c01,110,72,0	script	teste#12314	1905,{}
+bat_c01,109,72,0	script	teste#12315	1905,{}
+bat_c01,108,72,0	script	teste#12316	1905,{}
+bat_c01,107,72,0	script	teste#12317	1905,{}
+bat_c01,106,72,0	script	teste#12318	1905,{}
+bat_c01,105,72,0	script	teste#12319	1905,{}
+bat_c01,104,72,0	script	teste#12320	1905,{}
+bat_c01,103,72,0	script	teste#12321	1905,{}
+bat_c01,102,72,0	script	teste#12322	1905,{}
+bat_c01,101,72,0	script	teste#12323	1905,{}
+bat_c01,100,72,0	script	teste#12324	1905,{}
+bat_c01,99,72,0	script	teste#12325	1905,{}
+bat_c01,98,72,0	script	teste#12326	1905,{}
+bat_c01,97,72,0	script	teste#12327	1905,{}
+bat_c01,96,72,0	script	teste#12328	1905,{}
+bat_c01,95,72,0	script	teste#12329	1905,{}
+bat_c01,94,72,0	script	teste#12330	1905,{}
+bat_c01,93,72,0	script	teste#12331	1905,{}
+bat_c01,92,72,0	script	teste#12332	1905,{}
+bat_c01,91,72,0	script	teste#12333	1905,{}
+bat_c01,90,72,0	script	teste#12334	1905,{}
+bat_c01,89,72,0	script	teste#12335	1905,{}
+bat_c01,88,72,0	script	teste#12336	1905,{}
+
+// WALL DIREITA
+bat_c01,112,111,0	script	teste#12337	1905,{}
+bat_c01,112,110,0	script	teste#12338	1905,{}
+bat_c01,112,109,0	script	teste#12339	1905,{}
+bat_c01,112,108,0	script	teste#12340	1905,{}
+bat_c01,112,107,0	script	teste#12341	1905,{}
+bat_c01,112,106,0	script	teste#12342	1905,{}
+bat_c01,112,105,0	script	teste#12343	1905,{}
+bat_c01,112,104,0	script	teste#12344	1905,{}
+bat_c01,112,103,0	script	teste#12345	1905,{}
+bat_c01,112,102,0	script	teste#12346	1905,{}
+bat_c01,112,101,0	script	teste#12347	1905,{}
+bat_c01,112,100,0	script	teste#12348	1905,{}
+bat_c01,112,99,0	script	teste#12349	1905,{}
+bat_c01,112,98,0	script	teste#12350	1905,{}
+bat_c01,112,97,0	script	teste#12351	1905,{}
+bat_c01,112,96,0	script	teste#12352	1905,{}
+bat_c01,112,95,0	script	teste#12353	1905,{}
+bat_c01,112,94,0	script	teste#12354	1905,{}
+bat_c01,112,93,0	script	teste#12355	1905,{}
+bat_c01,112,92,0	script	teste#12356	1905,{}
+bat_c01,112,91,0	script	teste#12357	1905,{}
+bat_c01,112,90,0	script	teste#12358	1905,{}
+bat_c01,112,89,0	script	teste#12359	1905,{}
+bat_c01,112,88,0	script	teste#12360	1905,{}
+bat_c01,112,87,0	script	teste#12361	1905,{}
+bat_c01,112,86,0	script	teste#12362	1905,{}
+bat_c01,112,85,0	script	teste#12363	1905,{}
+bat_c01,112,84,0	script	teste#12364	1905,{}
+bat_c01,112,83,0	script	teste#12365	1905,{}
+bat_c01,112,82,0	script	teste#12366	1905,{}
+
+// WALL CIMA
+bat_c01,111,111,0	script	teste#12367	1905,{}
+bat_c01,110,111,0	script	teste#12368	1905,{}
+bat_c01,109,111,0	script	teste#12369	1905,{}
+bat_c01,108,111,0	script	teste#12370	1905,{}
+bat_c01,107,111,0	script	teste#12371	1905,{}
+bat_c01,106,111,0	script	teste#12372	1905,{}
+bat_c01,105,111,0	script	teste#12373	1905,{}
+bat_c01,104,111,0	script	teste#12374	1905,{}
+bat_c01,103,111,0	script	teste#12375	1905,{}
+bat_c01,102,111,0	script	teste#12376	1905,{}
+bat_c01,101,111,0	script	teste#12377	1905,{}
+bat_c01,100,111,0	script	teste#12378	1905,{}
+bat_c01,99,111,0	script	teste#12379	1905,{}
+bat_c01,98,111,0	script	teste#12380	1905,{}
+bat_c01,97,111,0	script	teste#12381	1905,{}
+bat_c01,96,111,0	script	teste#12382	1905,{}
+bat_c01,95,111,0	script	teste#12383	1905,{}
+bat_c01,94,111,0	script	teste#12384	1905,{}
+bat_c01,93,111,0	script	teste#12385	1905,{}
+bat_c01,92,111,0	script	teste#12386	1905,{}
+bat_c01,91,111,0	script	teste#12387	1905,{}
+bat_c01,90,111,0	script	teste#12388	1905,{}
+bat_c01,89,111,0	script	teste#12389	1905,{}
+bat_c01,88,111,0	script	teste#12390	1905,{}

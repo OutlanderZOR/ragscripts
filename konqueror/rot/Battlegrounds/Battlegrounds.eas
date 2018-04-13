@@ -1,0 +1,589 @@
+-	script	RoTBattlegrounds	-1,{
+
+OnInit:
+	mapwarp "bat_b01","prontera",155,178;
+	setmapflag "bat_b01",mf_nomvploot;
+	setmapflag "bat_b01",mf_nomobloot;
+	setmapflag "bat_b01",mf_partylock;
+	setmapflag "bat_b01",mf_noicewall;
+	setmapflag "bat_b01",mf_noteleport;
+	setmapflag "bat_b01",mf_nogo;
+	setmapflag "bat_b01",mf_noreturn;
+	setmapflag "bat_b01",mf_nowarpto;
+	setmapflag "bat_b01",mf_nowarp;
+	setmapflag "bat_b01",mf_nowarpto;
+	removemapflag "bat_b01",mf_pvp;
+	removemapflag "bat_b01",mf_fireworks;
+	setarray .mobarray, 1,
+						1163, 1276, 1276, 1268, 1203, 1163, 1163, 1163, 1219, 1268, // Chivalry (Sem MvP)
+						1189, 1189, 1189, 1189, 1189, 1213, 1273, 1213, 1087, 1087, // Orcs (Com MvP)
+						1870, 1867, 1864, 1870, 1870, 1870, 1870, 1867, 1867, 1702, // Abbey (Sem Mvp)
+						1154, 1098, 1310, 1154, 1098, 1310, 1154, 1098, 1310, 1157, // Sphinx (Com Mvp)
+						1713, 1716, 1714, 1717, 1714, 1717, 1714, 1717, 1716, 1720, // Abyss (Com MvP)
+						1833, 1831, 1382, 1379, 1833, 1831, 1833, 1379, 1379, 1831, // Thor Dungeon (Sem Mvp)
+						1916, 1916, 1916, 1916, 1916, 1916, 1916, 1916, 1916, 1916; // Morroc Satan (Tempo para destruir o emp)
+	
+	
+	// WAYPOINT 1
+	setarray .wparray_1, 144, 151,
+						 150, 151,
+						 166, 170,
+						 186, 191,
+						 209, 196,
+						 235, 185,
+						 244, 166,
+						 249, 156,
+						 335, 142;
+	// WAYPOINT 2
+	setarray .wparray_2, 144, 150,
+						 150, 150,
+						 168, 173,
+						 188, 191,
+						 219, 190,
+						 240, 165,
+						 247, 163,
+						 250, 154,
+						 335, 144;
+	// WAYPOINT 3
+	setarray .wparray_3, 144, 149,
+						 151, 150,
+						 163, 167,
+						 186, 186,
+						 215, 186,
+						 239, 166,
+						 246, 165,
+						 251, 153,
+						 335, 146;
+	// WAYPOINT 4
+	setarray .wparray_4, 144, 147,
+						 160, 160,
+						 170, 166,
+						 191, 185,
+						 212, 185,
+						 238, 165,
+						 245, 164,
+						 248, 152,
+						 335, 148;
+	// WAYPOINT 5
+	setarray .wparray_5, 143, 146,
+						 150, 143,
+						 154, 133,
+						 178, 123,
+						 191, 114,
+						 214, 114,
+						 241, 140,
+						 252, 150,
+						 335, 157;
+	// WAYPOINT 6
+	setarray .wparray_6, 143, 145,
+						 151, 141,
+						 154, 131,
+						 184, 117,
+						 215, 114,
+						 248, 141,
+						 249, 152,
+						 335, 155;
+	// WAYPOINT 7
+	setarray .wparray_7, 143, 144,
+						 149, 142,
+						 152, 132,
+						 161, 122,
+						 181, 108,
+						 208, 107,
+						 231, 122,
+						 249, 147,
+						 259, 153,
+						 335, 153;
+	// WAYPOINT 8
+	setarray .wparray_8, 144, 142,
+						 149, 142,
+						 152, 130,
+						 157, 118,
+						 197, 109,
+						 221, 115,
+						 243, 115,
+						 249, 148,
+						 335, 151;
+	set .IsEventActive, 0;
+end;
+
+//=================================================================================================
+//=		FUNÇÕES
+//=================================================================================================	
+	function	fncSetEmpHP	{
+		setmobdata getarg(0), 2, 8000000;
+		setmobdata getarg(0), 3, 8000000;
+		setmobdata getarg(0), 10, 1;
+		setmobdata getarg(0), 25, 
+			AI_ACTION_TYPE_DETECT|
+			AI_ACTION_TYPE_KILL|
+			AI_ACTION_TYPE_UNLOCK|
+			AI_ACTION_TYPE_DEAD;
+		// Define engine callback routines. 	
+		mobattach getarg(0), "AI_Emperium";
+		return;
+	}
+	
+	function	fncSpawnStarterEmp {
+		set .@emp_id, mobspawn(strmobinfo(1, 1907), 1907, "bat_b01",getarg(0),getarg(1));
+		for (set .@x, getarg(0)-2; .@x < getarg(0)+4; set .@x, .@x + 2) {
+			for (set .@y, getarg(1)+2; .@y > getarg(1)-4; set .@y, .@y - 2) {
+				if (.@x != getarg(0)) || (.@y != getarg(1)) {
+					set .@mob_id, mobspawn(strmobinfo(1, 1674), 1674, "bat_b01",.@x,.@y);
+					setmobdata .@mob_id, 2, 1000000;
+					setmobdata .@mob_id, 3, 1000000;
+				}
+			}
+		}
+		fncSetEmpHP(.@emp_id);
+		return;
+	}
+	
+	function	fncCreateWpMob {
+		if (.baseUnderAttack) {
+			set .@mob_id, .mobarray[(.RoundNo*10)];
+		} else {
+			set .@mob_id, .mobarray[rand(.RoundNo*10-9, .RoundNo*10)];
+		}
+		set .@mob_id, mobspawn(strmobinfo(1, .@mob_id), .@mob_id, "bat_b01",73,rand(142,157));
+		setmobdata	.@mob_id, 24, 0; // killer no
+		setmobdata	.@mob_id, 26, 1; // randomwalk off
+		setmobdata	.@mob_id, 25, AI_ACTION_TYPE_DEAD; // evento somente quando morrer 	
+		mobattach	.@mob_id, "AI_WaypointMob"; // AI Script
+		return .@mob_id;
+	}
+
+	function	fncSearchMobDead {
+		for(set .@i, 0; .@i < getarraysize($mobsdead); set .@i, .@i + 1) {
+			if ($mobsdead[.@i]==getarg(0)) {
+				return .@i+1;
+			}
+		}
+		return 0;
+	}
+
+	function	fncIsAlive {
+		set .@deadid, fncSearchMobDead(getarg(0));
+		if (.@deadid) {
+			deletearray $mobsdead[.@deadid-1],1;
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+	
+	function	fncMapTalk {
+		mapannounce "bat_b01",getarg(0),0,0xffa800;
+		return;	
+	}
+	
+	function	fncMapTalkNormal {
+		mapannounce "bat_b01",getarg(0),0,0x97e345;
+		return;	
+	}
+	
+	function	fncLoadPartyMembers {
+		getpartymember(.partyid),2;
+		cleararray .pMembers[0],0,getarraysize(.pMembers);
+		for(set .@i, 0; .@i < getarraysize($@partymemberaid); set .@i, .@i + 1) {
+			if(isloggedin($@partymemberaid[.@i]))
+				set .pMembers[getarraysize(.pMembers)], $@partymemberaid[.@i];
+		}
+		return;
+	}
+	
+	function	fncMakeYggBerry {
+		fncLoadPartyMembers();
+		for(set .@i, 0; .@i < getarraysize(.pMembers); set .@i, .@i + 1) {
+			attachrid(.pMembers[.@i]);
+			getmapxy(.@map$,.@x, .@y, 0);
+			if(.@map$=="bat_b01") {
+				dispbottom("~ Yggdrasilberry ~");
+				makeitem 607,rand(1,10),"bat_b01",.@x+1,.@y-1;
+				makeitem 607,rand(1,10),"bat_b01",.@x-1,.@y+1; 
+				makeitem 607,rand(1,10),"bat_b01",.@x+1,.@y+1;
+				makeitem 607,rand(1,10),"bat_b01",.@x-1,.@y-1;
+			}
+			detachrid;	
+		}
+		return;
+	}	
+	
+	function	fncShowViewPoint {
+		fncLoadPartyMembers();
+		set .viewpoints[getarraysize(.viewpoints)],getarg(0);
+		set .viewpoints[getarraysize(.viewpoints)],getarg(1);
+		
+		for(set .@i, 0; .@i < getarraysize(.pMembers); set .@i, .@i + 1) {
+			attachrid(.pMembers[.@i]);
+			//announce "viewpoint 1,"+getarg(0)+","+getarg(1)+","+(getarraysize(.viewpoints)/2),0;
+			viewpoint 1,getarg(0),getarg(1),(getarraysize(.viewpoints)/2),0xFF0000;
+			detachrid;
+		}
+		return;
+	}
+	
+	function	fncLimparViewPointArray {
+		deletearray .viewpoints[0],getarraysize(.viewpoints);
+		return;
+	}	
+
+	function	fncRemoveViewPoint {
+		fncLoadPartyMembers();
+		for(set .@i, 0; .@i < getarraysize(.pMembers); set .@i, .@i + 1) {
+			//announce "viewpoint 2,"+.viewpoints[.@i]+","+.viewpoints[.@i+1]+","+.@i,0;
+			attachrid(.pMembers[.@i]);
+			for(set .@x, 0; .@x < getarraysize(.viewpoints); set .@x, .@x + 1) {
+				viewpoint 2,.viewpoints[.@x],.viewpoints[.@x+1],.@x+1,0xFF0000;
+			}
+			detachrid;
+		}
+		fncLimparViewPointArray();
+		return;
+	}
+	
+	function	fncCreatePoringBomb {
+		set .@mob_id, mobspawn (strmobinfo(1, 1904),1904,getarg(0),getarg(1),getarg(2));
+		mobattach .@mob_id,"AI_PoringBomb";
+		setmobdata .@mob_id, 2, 10000;
+		setmobdata .@mob_id, 3, 10000;
+		setmobdata .@mob_id, 8, 50;
+		setmobdata .@mob_id, 9, 0x37B5;
+		setmobdata .@mob_id, 10, 1;
+		setmobdata .@mob_id, 14, getarg(3);
+		setmobdata .@mob_id, 26, 0;
+		setmobdata .@mob_id, 24, 1; // Enable killer mode.
+		setmobdata .@mob_id, 25, 
+			AI_ACTION_TYPE_DETECT|
+			AI_ACTION_TYPE_KILL|
+			AI_ACTION_TYPE_UNLOCK|
+			AI_ACTION_TYPE_DEAD|
+			AI_ACTION_TYPE_ATTACK; // Define engine callback routines. 	 
+		return;
+	}
+	
+	function	fncCheckEventActive {
+		if(!.IsEventActive) {
+			unitstop getarg(0);
+			sleep(rand(1,5)*1000);
+			unitkill getarg(0);
+			end;
+		}
+		return;
+	}
+
+	
+//=================================================================================================
+//=		NPC ENTRADA
+//=================================================================================================	
+OnNpcEntry:
+	if (.IsEventActive) || (getmapusers("bat_b01")) {
+		mes "Já existe uma partida em andamento...";
+		close;
+	} else {
+		set .partyid, getcharid(1);
+		removemapflag "bat_b01",mf_fireworks;
+		donpcevent "RoTBattlegrounds::OnEventStart";
+		warpparty "bat_b01",326,149,.partyid;
+	}
+end;
+	
+//=================================================================================================
+//=		EVENTOS DO ROT BATTLEGROUNDS
+//=================================================================================================	
+OnEventStart:
+	// Inicia variáveis de controle
+	set .IsEventActive, 1;
+	set .RoundNo, 0;
+	set .TowerHP, 0;
+	set .empsDestroyed, 0;
+	deletearray $mobsdead[0],getarraysize($mobsdead);
+	fncLimparViewPointArray();
+	
+	killmonsterall "bat_b01";
+	
+	donpcevent "RoTBattlegrounds::OnEventStartAnnouncer";
+
+	sleep(40500);
+	if (!.IsEventActive) || (!getmapusers("bat_b01")) end;
+	
+	// Cria bombas de defesa
+	donpcevent "RoTBattlegrounds::OnBombDefenseLeft";
+	donpcevent "RoTBattlegrounds::OnBombDefenseRight";
+	donpcevent "RoTBattlegrounds::OnSetBombs";
+	donpcevent "RoTBattlegrounds::OnCheckUnderAttack";
+	// Cria emperiums
+	donpcevent "RoTBattlegrounds::OnSetEmperium";
+	
+	// Inicia Loop de rounds
+	do {		
+		set .RoundNo, .RoundNo + 1;
+		if (.RoundNo >= 3) fncMakeYggBerry();
+		// Sumona mobs especiais de defesa do round
+		donpcevent "RoTBattlegrounds::OnSpecialSummons";
+		fncMapTalkNormal("ROUND: " + .RoundNo);
+		do {	
+			for (set .@i, 0; .@i < 18+.RoundNo; set .@i, .@i + 1) {
+				donpcevent "RoTBattlegrounds::OnCreateWpMob";
+				sleep(250);
+			}
+			sleep(.RoundNo*1000);
+		} while (.SpawnCount < (18+.RoundNo)*5*.RoundNo) && (.IsEventActive);
+		set .SpawnCount, 0; // Reseta contagem de monstros do round
+		if (.IsEventActive) sleep(90000); // Aguarda 30 segundos para troca de round
+	} while (.RoundNo < 7) && (.IsEventActive);
+end;
+		
+OnEventStartAnnouncer:
+	sleep(5000);
+	fncMapTalk("Bem vindos ao RoT Battlegrounds - BETA TEST");
+	sleep(5000);
+	fncMapTalk("A invasão começará em instantes, estejam preparados!");
+	sleep(5000);
+	fncMapTalk("Mantenham atenção nos anuncios em LARANJA, eles poderão ser úteis.");
+	sleep(5000);
+	fncMapTalk("OBJETIVO 1: Defenda a torre azul das tropas inimigas!");
+	fncShowViewPoint(335,150);
+	sleep(5000);
+	fncMapTalk("OBJETIVO 2: Destrua todos os emperiums localizados na base oposta para terminar o jogo!");
+	fncShowViewPoint(94,167);
+	fncShowViewPoint(94,132);
+	sleep(5000);
+	fncMapTalk("AVISO: A torre sofrerá danos cada vez que um monstro toca-la.");
+	sleep(5000);
+	fncMapTalk("AVISO: O dano recebido pela torre é o HP do monstro dividido por 2.");
+	sleep(5000);
+	fncMapTalk("Boa Sorte!");
+	fncRemoveViewPoint();
+	mapwarp("bat_b01","bat_b01",326,149);
+	end;
+
+end;
+
+//=================================================================================================
+//=		EVENTOS DE DEFESA
+//=================================================================================================	
+OnSpecialSummons:
+	if(.RoundNo==6) {
+		for (set .@i, 0; .@i < 5; set .@i, .@i + 1) {
+			monster "bat_b01",110+.@i,140,strmobinfo(1, 1637),1637,1;
+		}
+		for (set .@i, 0; .@i < 5; set .@i, .@i + 1) {
+			monster "bat_b01",110+.@i,159,strmobinfo(1, 1637),1637,1;
+		}
+	}
+end;
+
+OnCheckUnderAttack:
+	do {
+		sleep(2500);
+		if (getareausers("bat_b01",0,0,142,175)) {
+			if (!rand(25)) fncMapTalkNormal("AVISO: Ao fazer rush na apenas monstros mais fortes serão sumonados.");
+			set .baseUnderAttack, 1;
+		} else {
+			set .baseUnderAttack, 0;
+		}
+	} while (.IsEventActive) || (getmapusers("bat_b01"));
+end;
+
+OnSetBombs:
+	for (set .@i, 0; .@i < 25; set .@i, .@i + 1) {
+		donpcevent "RoTBattlegrounds::OnSetBombFlDefense";
+	}
+end;
+	
+OnSetBombFlDefense:
+	if (.IsEventActive) && (.RoundNo <= 3) {
+		switch(rand(2)) {
+			case 0: fncCreatePoringBomb("bat_b01",173,182,1); break;
+			case 1: fncCreatePoringBomb("bat_b01",168,135,1); break;
+		}
+	}
+end;
+
+OnBombDefenseLeft:
+	do {
+		while (getareausers("bat_b01",(94-15),(131-15),(94+15),(131+15))) {
+			for (set .@i, 0; .@i < 18; set .@i, .@i + 2) {
+				switch(rand(2)) {
+					case 0: fncCreatePoringBomb("bat_b01",102-.@i,131,0); break;
+					case 1: fncCreatePoringBomb("bat_b01",102-.@i,140,0); break;
+				}
+			}
+			sleep(10000);			
+		}
+		sleep(5000);
+	} while (.IsEventActive) && (.RoundNo <= 2);
+end;
+
+OnBombDefenseRight:
+	do {
+		while (getareausers("bat_b01",(94-15),(167-15),(94+15),(167+15))) {
+			for (set .@i, 0; .@i < 18; set .@i, .@i + 2) {
+				switch(rand(2)) {
+					case 0: fncCreatePoringBomb("bat_b01",102-.@i,168,0); break;
+					case 1: fncCreatePoringBomb("bat_b01",102-.@i,159,0); break;
+				}
+			}
+			sleep(10000);
+		}
+		sleep(5000);
+	} while (.IsEventActive) && (.RoundNo <= 2);
+end;
+
+
+//=================================================================================================
+//=		EVENTOS DE MOBS
+//=================================================================================================	
+OnSetEmperium:
+	// Sumona EMPERIUMS E BOMBAS
+	for(set .@i, 0; .@i < 20; set .@i, .@i + 2) {
+		set .@emp_id, mobspawn(strmobinfo(1, 1907), 1907, "bat_b01",103-.@i,131);
+		fncSetEmpHP(.@emp_id);
+	}
+	for(set .@i, 0; .@i < 20; set .@i, .@i + 2) {
+		set .@emp_id, mobspawn(strmobinfo(1, 1908), 1908, "bat_b01",103-.@i,168);
+		fncSetEmpHP(.@emp_id);
+	}
+	// starter emps
+	fncSpawnStarterEmp(228,114);
+	fncSpawnStarterEmp(207,192);
+	fncSpawnStarterEmp(172,182);
+	fncSpawnStarterEmp(185,113);
+	fncSpawnStarterEmp(265,151);
+	sleep(5000);
+	fncMapTalk("ATENÇÃO: A torre está com HP ZERO!");
+	sleep(2000);
+	fncMapTalk("ATENÇÃO: Destrua os emperiums indicados no MINI-MAP, para curá-la.");
+	fncShowViewPoint(228,114);
+	fncShowViewPoint(207,192);
+	fncShowViewPoint(172,182);
+	fncShowViewPoint(185,113);
+	fncShowViewPoint(265,151);
+	sleep(60000);
+	fncRemoveViewPoint();
+end;
+
+OnEmpBreak:
+	set .TowerHP, .TowerHP + 1000000;
+	set .empsDestroyed, .empsDestroyed + 1;
+	fncMapTalkNormal("Emperium Destruido! " + .empsDestroyed + " de 25");
+	//soundeffectall "shutoff.wav",0,1,"bat_b01",0,0,400,400;
+	if (.empsDestroyed>=25) {
+		set .IsEventActive, 0;
+		sleep(20000);
+		if (getmapusers("bat_b01")) set .IsEventActive, 1;
+		fncMapTalk("RoT Battlegrouds Completo! Parabéns!!!");
+		setmapflag "bat_b01",mf_fireworks;
+	}
+end;	
+
+
+//=================================================================================================
+//=		WAYPOINT MOBS EVENTS
+//=================================================================================================	
+OnCreateWpMob:
+	// Conta mob criado
+	set .SpawnCount, .SpawnCount + 1;
+	
+	// Define qual waypoint usar
+	switch(rand(1,8)) { 
+		case 1:
+			copyarray .@mywp[0], .wparray_1[0], getarraysize(.wparray_1);
+			break;
+		case 2:
+			copyarray .@mywp[0], .wparray_2[0], getarraysize(.wparray_2);
+			break;
+		case 3:
+			copyarray .@mywp[0], .wparray_3[0], getarraysize(.wparray_3);
+			break;
+		case 4:
+			copyarray .@mywp[0], .wparray_4[0], getarraysize(.wparray_4);
+			break;
+		case 5:
+			copyarray .@mywp[0], .wparray_5[0], getarraysize(.wparray_5);
+			break;
+		case 6:
+			copyarray .@mywp[0], .wparray_6[0], getarraysize(.wparray_6);
+			break;
+		case 7:
+			copyarray .@mywp[0], .wparray_7[0], getarraysize(.wparray_7);
+			break;
+		case 8:
+			copyarray .@mywp[0], .wparray_8[0], getarraysize(.wparray_8);
+			break;
+	}
+	
+	// Cria mob
+	set .@mob_id, fncCreateWpMob();
+	
+	getmobdata(.@mob_id, .@mobdata);
+	for (set .@i, 0; .@i < getarraysize(.@mywp); set .@i, .@i + 2) {	
+		set .@next_x, .@mobdata[6];
+		set .@next_y, .@mobdata[7];
+		while (.@mobdata[6] != .@mywp[.@i]) || (.@mobdata[7] != .@mywp[.@i+1]) {
+			// Verifica se existem alvos aos arredores e para de andar caso sim
+			while (getareausers("bat_b01",.@mobdata[6]-7,.@mobdata[7]-7,.@mobdata[6]+7,.@mobdata[7]+7)) {
+				sleep(500);
+				if(!fncIsAlive(.@mob_id)) end; // Verifica se o mob está vivo antes de checar a data !Importante
+				fncCheckEventActive(.@mob_id);
+				getmobdata(.@mob_id, .@mobdata);
+			}
+			// Verifica se o mob está preso
+			if (.@last_x == .@mobdata[6]) && (.@last_y == .@mobdata[7]) {
+				set .@stuckcount, .@stuckcount + 1;
+				if (.@stuckcount >= 30) {
+					if (.@i) set .@i, .@i - 2;
+					unitwarp .@mob_id, "bat_b01",.@mywp[.@i],.@mywp[.@i+1];
+				}
+			} else {
+				set .@last_x, .@mobdata[6];
+				set .@last_y, .@mobdata[7];
+				set .@stuckcount, 0;
+			}
+			// Define posição x a andar
+			if (.@mobdata[6] != .@mywp[.@i]) {
+				if (.@mobdata[6] < .@mywp[.@i]) {
+					set .@next_x, .@mobdata[6] + 30;
+					if (.@next_x > .@mywp[.@i])
+						set .@next_x, .@mywp[.@i];
+				} else {
+					set .@next_x, .@mobdata[6] - 30;
+					if (.@next_x < .@mywp[.@i])
+						set .@next_x, .@mywp[.@i];
+				}
+			}		
+			// Define posição y a andar
+			if (.@mobdata[7] != .@mywp[.@i+1]) {
+				if (.@mobdata[7] < .@mywp[.@i+1]) {
+					set .@next_y, .@mobdata[7] + 30;
+					if (.@next_y > .@mywp[.@i+1])
+						set .@next_y, .@mywp[.@i+1];
+				} else {
+					set .@next_y, .@mobdata[7] - 30;
+					if (.@next_y < .@mywp[.@i+1])
+						set .@next_y, .@mywp[.@i+1];
+				}
+			}
+			// Anda posição calculada
+			unitwalk .@mob_id, .@next_x, .@next_y; 
+			// Aguarda tempo para calcular nova posição
+			sleep(500);
+			if(!fncIsAlive(.@mob_id)) end; // Verifica se o mob está vivo antes de checar a data !Importante
+			fncCheckEventActive(.@mob_id);
+			getmobdata(.@mob_id, .@mobdata); // Verificação de coordenadas a cada loop
+		} // fim do while waypoint loop
+		set .@stuckcount, 0; // limpa stuck count para próximo wp
+	} // fim do for e fim do waypoint
+	unitkill .@mob_id;
+	donpcevent "BlueTower::OnExplode";
+	set .TowerHP, .TowerHP - (.@mobdata[2]/2);
+	if (.TowerHP <= 0) && (.IsEventActive) {
+		set .IsEventActive, 0;
+		set .TowerHP, 0;
+		fncMapTalk("A Torre foi destruida! Fim de jogo.");
+		sleep(1000);
+		mapwarp "bat_b01","prontera",155,178;		
+	}
+end;
+}

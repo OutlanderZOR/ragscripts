@@ -1,0 +1,318 @@
+//=================================================================================================
+//			SQL BANKER
+//=================================================================================================
+prontera.gat,142,172,6	script	RoT SQL Banker	833,{
+L_Start:
+       set .@title$, "[" + "^36C60D" + "RoT Banker" + "^000000" + "]";
+
+       set @acc_exists, 0;
+       set @user_pass$, "";
+       query_sql "select 1, zeny, user_pass from sql_banker where account_id = "+getcharid(3), @acc_exists, @zeny, @user_pass$;
+       if (!@acc_exists) goto L_First_Time;
+       // VERIFICA SENHA
+       if (@user_pass$!="") {
+               mes .@title$;
+               mes "Sua conta está protegida por senha.";
+               mes "Informe a sua senha para continuar...";
+               input @pw$;
+               if (@user_pass$!=@pw$) {
+                       mes "^EC0000" + "Senha Incorreta" + "^000000";
+                       close;
+               }
+               next;
+       }
+// .ml$ + "Sair" + .mr$
+L_Main_Menu:
+       mes .@title$;
+       mes "O que deseja?";
+
+       set @qnt, 0;
+       next;
+       sleep2 100;
+       switch(select(.ml$+"Depositar Zeny"+.mr$,.ml$+"Sacar Zeny"+.mr$, .ml$+"Visualizar Saldo"+.mr$,
+       .ml$+"Visualizar Extrato"+.mr$, .ml$+"Alterar Senha"+.mr$, .ml$+"Apagar Senha"+.mr$)) {
+               case 1:
+                       mes .@title$;
+                       mes "Entre a quantia que deseja depositar";
+                       input @qnt;
+                       next;
+                       mes .@title$;
+                       if (zeny < @qnt) || (@qnt <= 0) goto L_Invalid_Op;
+                       mes "DEPÓSITO: ^EC0000"+@qnt+" z^000000";
+                       menu .ml$ + "Confirmar" + .mr$,-,.ml$ + "Cancelar" + .mr$,L_Main_Menu;
+                       next;
+                       mes .@title$;
+                       mes "Realizando transferencia... Aguarde.";
+                       set zeny, zeny - @qnt;
+                       announce "RoT SQL Banker: Não desconecte ou use comandos de warp durante a transferencia!",3,0xff0000;
+                       sleep2 1;
+                       query_sql "Update sql_banker set zeny = zeny + "+@qnt+" Where account_id = "+getcharid(3);
+                       callfunc ("fnc_sql_banker_log",getcharid(3),getcharid(3),1,@qnt);
+                       goto L_Sucessfull_Op;
+                       break;
+               case 2:
+                       set @zeny, 0;
+                       query_sql "Select zeny from sql_banker Where account_id = "+getcharid(3), @zeny;
+                       mes .@title$;
+                       mes "Entre o valor da quantia que deseja sacar";
+                       input @qnt;
+                       next;
+                       mes .@title$;
+                       if (@zeny < @qnt) || (@qnt <= 0) goto L_Invalid_Op;
+                       mes "SAQUE: ^EC0000"+@qnt+"^000000";
+                       menu .ml$ + "Confirmar" + .mr$,-,.ml$ + "Cancelar" + .mr$,L_Main_Menu;
+                       next;
+                       mes .@title$;
+                       mes "Realizando transferencia... Aguarde.";
+                       query_sql "Update sql_banker set zeny = zeny - "+@qnt+" Where account_id = "+getcharid(3);
+                       announce "RoT SQL Banker: Não desconecte ou use comandos de warp durante a transferencia!",3,0xff0000;
+                       sleep2 1;
+                       set zeny, zeny + @qnt;
+                       callfunc ("fnc_sql_banker_log",getcharid(3),getcharid(3),2,@qnt);
+                       goto L_Sucessfull_Op;
+                       break;
+               case 3:
+                       set @zeny$,"";
+                       query_sql "Select FORMAT(zeny, 0) from sql_banker Where account_id = "+getcharid(3),@zeny$;
+                       mes .@title$;
+                       mes "Você possui em sua conta: ^E70AA5"+@zeny$+" z^000000";
+                       next;
+                       menu .ml$ + "Sair" + .mr$,-,.ml$ + "Menu Principal" + .mr$,L_Main_Menu;
+               case 4:
+                       set @index, 0;
+                       do {
+                               sleep2 100;
+                               mes .@title$;
+                               deletearray @id[0], getarraysize(@id);
+                               deletearray @tipo_operacao[0], getarraysize(@tipo_operacao);
+                               deletearray @nome_operacao$[0], getarraysize(@nome_operacao$);
+                               deletearray @dt_operacao$[0], getarraysize(@dt_operacao$);
+                               deletearray @zeny$[0], getarraysize(@zeny$);
+                               query_sql "select a.id, a.tipo_operacao, b.nome_operacao, a.dt_operacao, "+
+                               		   "FORMAT(a.zeny, 0) "+
+                                       "from sql_banker_log a "+
+                                       "join sql_banker_operacoes b on a.tipo_operacao = b.tipo_operacao "+
+                                       "where a.acc_src = "+getcharid(3)+" OR a.acc_des = "+getcharid(3)+" " +
+                                       "order by a.id desc limit "+@index+",6", @id, @tipo_operacao, @nome_operacao$, @dt_operacao$, @zeny$;
+                               for (set @i, 0; @i < 6; set @i, @i + 1) {
+									if (@id[@i]) {
+										switch(@tipo_operacao[@i]) {
+										       case 1: set @color_op$,"^369915"; break;
+										       case 2: set @color_op$,"^E70A0A"; break;
+										}
+										mes "^ACACAC-----------------------------^000000";
+										mes @color_op$ + @nome_operacao$[@i] + " ("+@id[@i]+"): ^000000 ^757575" + @dt_operacao$[@i] + "^000000";
+										mes "^651D67" + "VALOR:" + "^000000" + " - ^E70AA5" + @zeny$[@i] + " z^000000";
+									}
+                               }
+                               next;
+                               set @option, select(.ml$+"Avançar Resultados >>"+.mr$,.ml$+"<< Retornar Resultados"+.mr$,.ml$+"Menu Principal"+.mr$);
+                               switch(@option) {
+                                       case 1:
+                                               set @index, @index + 6;
+                                               break;
+                                       case 2:
+                                               if (@index - 6 >= 0) set @index, @index - 6;
+                                               break;
+                               }
+                       } while (@option!=3);
+                       goto L_Main_Menu;
+               case 5:
+                       mes .@title$;
+                       if (@user_pass$ == "") {
+                               mes "Você ainda não criou uma senha para a sua conta. Deseja criar agora?";
+                               next;
+                               menu .ml$ + "Sim - Criar Senha" + .mr$,-,.ml$ + "Não - Retornar ao Menu Principal" + .mr$,L_Main_Menu;
+                               mes .@title$;
+                       }
+                       set @new_pw$, callfunc("fnc_PW_Dialog",@user_pass$);
+                       if (@new_pw$=="") close;
+                       query_sql "Update sql_banker set user_pass = '"+@new_pw$+"' where account_id ="+getcharid(3);
+                       next;
+                       mes .@title$;
+                       mes "Senha alterada.";
+                       goto L_Main_Menu;
+                       break;
+               case 6:
+                       query_sql "Update sql_banker set user_pass = '' where account_id ="+getcharid(3);
+                       mes .@title$;
+                       mes "Senha removida.";
+                       close2;
+                       break;
+       }
+       end;
+
+// MENSAGEM DE OPERAÇÃO SUCEDIDA
+L_Sucessfull_Op:
+       mes "^369915" + "Operação concluída." + "^000000";
+       mes "Deseja realizar mais alguma transação?";
+       next;
+       menu .ml$ + "Sair" + .mr$,-,.ml$ + "Menu Principal" + .mr$,L_Main_Menu;
+       close;
+
+// MENSAGEM DE OPERAÇÃO INVÁLIDA
+L_Invalid_Op:
+       mes "A quantia informada não é válida, por favor, verifique os valores digitados e tente novamente";
+       goto L_Main_Menu;
+       end;
+
+// MENSAGEM EXIBIDA NO PRIMEIRO ACESSO
+L_First_Time:
+       mes .@title$;
+       if (sex) { mes "hmm.. vejo que vc é novo por aqui."; } else { mes "hmm.. vejo que vc é nova por aqui."; }
+       mes "Tudo indica que ainda não existe um cadastro em seu nome.";
+L_Rollback_First_Time:
+       next;
+       switch(select(.ml$+"Abrir conta"+.mr$, .ml$+"Informações"+.mr$)) {
+               case 1:
+                       query_sql "Insert into sql_banker (account_id, zeny, user_pass) VALUES ("+getcharid(3)+", 0, '')";
+                       mes .@title$;
+                       mes "Sua conta foi criada com sucesso, agora você já poderá começar a usa-la.";
+                       next;
+                       goto L_Start;
+               case 2:
+                       mes .@title$;
+                       mes "O Sql Banker utiliza transações em banco de dados para guardar seu dinheiro.";
+                       goto L_Rollback_First_Time;
+                       break;
+       }
+       end;
+
+
+// INICIALIZAÇÃO DE VARIÁVEIS
+OnInit:
+       set .ml$, "(^20AF1D$^000000) ^131E11";
+       set .mr$, "^000000 (^20AF1D$^000000)";
+
+end;
+
+}
+
+function	script	fnc_sql_banker_log	{
+       set @acc_src, getarg(0);
+       set @acc_des, getarg(1);
+       set @tipo_operacao, getarg(2);
+       set @zeny, getarg(3);
+       query_sql "Insert Into sql_banker_log (acc_src, acc_des, tipo_operacao, dt_operacao, zeny) VALUES "+
+       "("+@acc_src+","+@acc_des+","+@tipo_operacao+",now(),"+@zeny+")";
+       return;
+}
+
+function	script	fnc_PW_Dialog	{
+       // VERIFICA SE JÁ EXISTE UMA SENHA CRIADA E PEDE INFORMAÇÕES
+       if (getarg(0)!="") {
+               mes "Informe sua atual senha...";
+               input @old_pw$;
+               if (getarg(0) != @old_pw$) {
+                       mes "Senha incorreta.";
+                       return "";
+               }
+       }
+       // TESTE DE TAMANHO
+       mes "Informe sua nova senha...";
+       input @pw_1$;
+       if (getstrlen(@pw_1$) < 3) || (getstrlen(@pw_2$) > 15) {
+               mes "Sua senha deve ter no mínimo 4 caracteres e no máximo 15 caracteres.";
+               return "";
+       }
+       // VERIFICA SENHA INFORMADA
+       mes "Repita a nova senha...";
+       input @pw_2$;
+       if (@pw_1$ != @pw_2$) {
+               mes "As duas senhas informadas são diferentes.";
+               return "";
+       }
+       return @pw_1$;
+}
+
+
+//=================================================================================================
+//			STARTER SCRIPT
+//=================================================================================================
+geffen,119,71,4	script	Nyuang#rot	877,{
+		cutin "nyuang_1",2;
+       set .@title$,"[^681EA6Nyuang^000000]";
+       mes .@title$;
+       if (Class) {
+               mes "Sinto muito, mas eu só ofereço ajuda a iniciantes.";
+               close2;
+               cutin "",255;
+               end;
+       } else {
+               mes "Bem vindo! Foi bom vc ter falado comigo, eu estou oferecendo ajuda para os novatos! =o";
+               mes "Então... o que vai ser?";
+       }
+       next;
+       switch(select("~ Eu quero first job! ~", "~ Nada.. me mande para Prontera ~")) {
+               case 1:
+                       mes .@title$;
+                       mes "Escolha a classe...";
+                       next;
+                       set @classe, select("Swordman","Mage","Archer","Acolyte","Merchant","Thief","Super Novice","Gunslinger","Ninja");
+                       atcommand "@skillall";
+                       switch(@classe) {
+                               case 1: // Swordman
+                                       jobchange 1;
+                                       getitem 1107, 1; // Blade
+                                       break;
+                               case 2: // Mage
+                                       jobchange 2;
+                                       getitem 1610, 1; // Arc Wand
+                                       break;
+                               case 3: // Archer
+                                       jobchange 3;
+                                       getitem 1704, 1; // Composite Bow
+                                       getitem 1750, 1500; // Arrows
+                                       break;
+                               case 4: // Acolyte
+                                       jobchange 4;
+                                       getitem 1610, 1; // Arc Wand
+                                       getitem 1519, 1;
+                                       break;
+                               case 5: // Merchant
+                                       jobchange 5;
+                                       getitem 1304, 1; // Orcish Axe
+                                       break;
+                               case 6: // Thief
+                                       jobchange 6;
+                                       getitem 1207, 1; // Main gauche
+                                       break;
+                               case 7:
+                                       jobchange 23;
+                                       getitem 1243, 1; // Novice Gauche
+                                       break;
+                               case 8:
+                                       jobchange 24;
+                                       getitem 13150, 1; // Bench
+                                       break;
+                               case 9:
+                                       jobchange 25;
+                                       break;
+                       }
+                       getitem 501, 50;        // 50 Red Potions
+                       getitem 601, 20;        // 20 Fly Wings
+                       getitem 602, 10;        // 10 Butterfly Wings
+                       getitem 7059, 15;       // 15 Storage Tickets
+                       set zeny, zeny + 10000; // 10k zeny
+
+                       savepoint "prontera",156,179;
+                       warp "prontera",156,179;
+
+                       break;
+
+               case 2:
+                       mes .@title$;
+                       mes "Tudo bem... mas se mudar de idéia, estarei aqui mesmo. =D";
+                       next;
+                       savepoint "prontera",156,179;
+                       warp "prontera",156,179;
+                       break;
+       }
+       close2;
+       cutin "",255;
+       end;
+       
+ OnInit:
+ 	 waitingroom "Novatos Aqui!!1",0;
+ 	end;
+}

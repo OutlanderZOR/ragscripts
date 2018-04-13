@@ -1,0 +1,5 @@
+rot_train,362,363,0	warp	rot_train_wp1	2,2,rot_train,362,350
+rot_train,362,357,0	warp	rot_train_wp2	2,2,rot_train,362,370
+	
+rot_train,336,363,0	warp	rot_train_wp3	2,2,rot_train,336,350
+rot_train,336,357,0	warp	rot_train_wp4	2,2,rot_train,336,370

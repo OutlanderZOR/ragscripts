@@ -1,0 +1,1113 @@
+//|                         ___           ___                     ___           ___                               
+//|                        /  /\         /  /\      ___          /  /\         /  /\                              
+//|                       /  /:/        /  /:/     /__/\        /  /::\       /  /::\                             
+//|                      /  /:/        /  /:/      \  \:\      /  /:/\:\     /  /:/\:\                            
+//|                     /  /:/        /  /:/        \__\:\    /  /::\ \:\   /  /::\ \:\                           
+//|                    /__/:/     /\ /__/:/         /  /::\  /__/:/\:\_\:\ /__/:/\:\_\:\                          
+//|                    \  \:\    /:/ \  \:\        /  /:/\:\ \__\/~|::\/:/ \__\/  \:\/:/                          
+//|                     \  \:\  /:/   \  \:\      /  /:/__\/    |  |:|::/       \__\::/                           
+//|                      \  \:\/:/     \  \:\    /__/:/         |  |:|\/        /  /:/                            
+//|                       \  \::/       \  \:\   \__\/          |__|:|~        /__/:/                             
+//|                        \__\/         \__\/                   \__\|         \__\/                              
+//|                         ___                         ___           ___           ___                           
+//|                        /  /\          ___          /  /\         /  /\         /  /\                          
+//|                       /  /::\        /  /\        /  /::\       /  /::\       /  /:/                          
+//|                      /__/:/\:\      /  /::\      /  /:/\:\     /  /:/\:\     /  /:/                           
+//|                     _\_ \:\ \:\    /  /:/\:\    /  /::\ \:\   /  /::\ \:\   /  /::\____                       
+//|                    /__/\ \:\ \:\  /  /::\ \:\  /__/:/\:\_\:\ /__/:/\:\_\:\ /__/:/\:::::\                      
+//|                    \  \:\ \:\_\/ /__/:/\:\_\:\ \__\/  \:\/:/ \__\/~|::\/:/ \__\/~|:|~~~~                      
+//|                     \  \:\_\:\   \__\/  \:\/:/      \__\::/     |  |:|::/     |  |:|                          
+//|                      \  \:\/:/        \  \::/       /  /:/      |  |:|\/      |  |:|                          
+//|                       \  \::/          \__\/       /__/:/       |__|:|~       |__|:|                          
+//|                        \__\/                       \__\/         \__\|         \__\|                          
+//|===============================================================================================================
+//|
+//|				S E R V E R    I N T R O
+//|
+//|===============================================================================================================
+//|
+//| Módulo: Script Core
+//| Categoria: Tutorial
+//| Autor: Outlander
+//| Data: 24/09/2012
+//| SQL: Não
+//| 
+//|===============================================================================================================
+
+// mudar no ea, wp inicia rot_intro1,36,27
+
+-	script	Intro_Core	-1,{
+	end;
+
+//|===============================================================================================================
+//|	Inicialização de variáveis
+//|===============================================================================================================
+OnInit:
+	// Variáveis Nyuang
+	set .color_n$, "d500f5";
+	set .title_n$, "[^"+.color_n$+"Nyuang^000000]";
+	
+	// Variáveis Wayne
+	set .color_w$, "a47d3f";
+	set .title_w$, "[^"+.color_w$+"Supervisor Wayne^000000]";
+	
+	// Variáveis Zelador
+	set .color_z$, "6ca43f";
+	set .title_z$, "[^"+.color_z$+"Zelador Bagaço^000000]";
+	
+	// Variaveis Garoto
+	set .color_go$, "4cbeff";
+	set .title_go$, "[^"+.color_go$+"Garoto^000000]";
+	
+	// Variavel Garota
+	set .color_ga$, "d500f5";
+	set .title_ga$, "[^"+.color_ga$+"Garota^000000]";
+	
+	// Variaveis Salim
+	set .color_s$, "b20000";
+	set .title_s$, "[^"+.color_s$+"Salim^000000]";
+	
+	// Outros
+	set .dialogo_aval, 0;
+	set .dialogo_zela, 0;
+	set .nota_nyuang, 0;
+	set .dialogo_salim_done, 0;
+	set .dialogo_salim_init, 0;
+	end;
+	
+//|===============================================================================================================
+//|	Funções essenciais
+//|===============================================================================================================
+	function f_npctalk
+	{
+		set .@npcname$, getarg(0);
+		set .@msg$, getarg(1);
+		atcommand "@npctalk " + .@npcname$ + "," + .@msg$;
+		return;
+	}
+	
+	// Monta string de opção do menu
+	function f_opt_n
+	{
+		set .@str$, getarg(0);
+		return "^" + .color_n$ + "(~) ^000000" + .@str$ + "^" + .color_n$ + " (~)^000000";
+	}
+	
+	function f_opt_w
+	{
+		set .@str$, getarg(0);
+		return "^" + .color_w$ + "(*) ^000000" + .@str$ + "^" + .color_w$ + " (*)^000000";
+	}
+	
+	function f_color
+	{
+		set .@str$, getarg(0);
+		set .@color$, getarg(1);
+		return "^"+.@color$+.@str$+"^000000";
+	}
+	
+	function f_sex
+	{
+		set .@str_m$, getarg(0);
+		set .@str_f$, getarg(1);
+		return (Sex?.@str_m$:.@str_f$);
+	}
+	
+	function f_destaque
+	{
+		set .@str$, getarg(0);
+		return "^d80505" + .@str$ + "^000000";
+	}
+	
+	function f_player_name
+	{
+		return "^23a0f7" + strcharinfo(0) + "^000000";
+	}
+	
+	// Abstração do comando cutin
+	// pos = 1 (esquerda)
+	// pos = 2 (direita)
+	function f_cutin
+	{
+		set .@cutin_str$, getarg(0);
+		set .@cutin_pos, getarg(1);
+		cutin .@cutin_str$, .@cutin_pos;
+		return;
+	}
+	
+	function f_cutin_sal_sad
+	{
+		set .@cutin_pos, getarg(0);
+		f_cutin("aca_salim03", .@cutin_pos);
+		return;
+	}
+	
+	function f_cutin_sal_sob
+	{
+		set .@cutin_pos, getarg(0);
+		f_cutin("aca_salim01", .@cutin_pos);
+		return;
+	}
+	
+	function f_cutin_sal_feliz
+	{
+		set .@cutin_pos, getarg(0);
+		f_cutin("aca_salim02", .@cutin_pos);
+		return;
+	}
+	
+	function f_cutin_zel
+	{
+		set .@cutin_pos, getarg(0);
+		f_cutin("ein_hicman", .@cutin_pos);
+		return;
+	}
+	
+	function f_cutin_way
+	{
+		set .@cutin_pos, getarg(0);
+		f_cutin("wayne", .@cutin_pos);
+		return;
+	}
+	
+	function f_cutin_nyu_tease
+	{
+		set .@cutin_pos, getarg(0);
+		f_cutin("nyuang_2", .@cutin_pos);
+		return;
+	}
+	
+	function f_cutin_nyu_feliz
+	{
+		set .@cutin_pos, getarg(0);
+		f_cutin("nyuang_3", .@cutin_pos);
+		return;
+	}
+	
+	function f_cutin_nyu_normal
+	{
+		set .@cutin_pos, getarg(0);
+		f_cutin("nyuang_1", .@cutin_pos);
+		return;
+	}
+	
+	function f_warp_capital
+	{
+		warp "prontera",156,181;
+		return;
+	}
+	
+	function f_pular_intro
+	{
+		f_cutin_nyu_normal(2);
+		mes .title_n$;
+		mes "A etapa de introdução é muito importante!";
+		mes " ";
+		mes "Pulando a introdução você terá dificuldades para mudar de classe e subir de level.";
+		next;
+		mes .title_n$;
+		mes "Deseja mesmo sair?";
+		next;
+		if (select(f_opt_n("Não") + ":" + f_opt_n("Sim"))-1)
+		{
+			f_cutin_nyu_feliz(2);
+			mes .title_n$;
+			mes "Bem, como quiser. ^^";
+			mes " ";
+			mes "Me chame caso tenha alguma dúvida, estarei sempre em prontera " +
+				"para atender os jogadores.";
+			close2;
+			set intr_concluida, 1;
+			return 1;
+		}
+		else
+			return 0;
+	}
+	
+	function f_obter_armas
+	{
+		if (!intro_obter_armas)
+		{
+			unequip(EQI_HAND_L);
+			unequip(EQI_HAND_R);
+			switch(Class)
+			{
+				case Job_Rune_Knight_T:
+					// pike
+					getitem2 1408,1,1,4,0,4281,4092,4082,4126;
+					equip 1408;
+					break;
+				case Job_Warlock_T:
+					getitem2 1608,1,1,0,0,4003,4003,4003,0;
+					equip 1608;
+					break;
+				case Job_Ranger_T:
+					getitem 1765,1000;
+					equip 1765;
+					getitem2 1702,1,1,4,0,4281,4092,4082,4126;
+					equip 1702;
+					break;
+				case Job_Arch_Bishop_T:
+					getitem2 1608,1,1,0,0,4003,4003,4003,0;
+					equip 1608;
+					break;
+				case Job_Mechanic_T:
+					getitem2 1302,1,1,4,0,4281,4092,4082,4126;
+					equip 1302;
+					break;
+				case Job_Guillotine_Cross_T:
+					getitem2 1251,1,1,4,0,4281,4092,4082,0;
+					equip 1251;
+					break;
+				case Job_Royal_Guard_T:
+					getitem2 1127,1,1,4,0,4281,4092,4082,0;
+					equip 1127;
+					break;
+				case Job_Sorcerer_T:
+					getitem2 1608,1,1,0,0,4003,4003,4003,0;
+					equip 1608;
+					break;
+				case Job_Minstrel_T:
+					getitem 1765,1000;
+					equip 1765;
+					getitem2 1702,1,1,4,0,4281,4092,4082,4126;
+					equip 1702;
+					break;
+				case Job_Wanderer_T:
+					getitem 1765,1000;
+					equip 1765;
+					getitem2 1702,1,1,4,0,4281,4092,4082,4126;
+					equip 1702;
+					break;
+				case Job_Sura_T:
+					getitem2 1505,1,1,4,0,4281,4092,4082,4126;
+					equip 1505;
+					break;
+				case Job_Genetic_T:
+					getitem2 1127,1,1,4,0,4281,4092,4082,0;
+					equip 1127;
+					break;
+				case Job_Shadow_Chaser_T:
+					getitem 1765,1000;
+					equip 1765;
+					getitem2 1702,1,1,4,0,4281,4092,4082,4126;
+					equip 1702;
+					break;
+				case Job_Kagerou:
+				case Job_Oboro:
+					getitem2 13011,1,1,0,0,4003,4003,4003,0;
+					equip 13011;
+					break;
+				case Job_SuperNovice:
+					getitem2 1302,1,1,4,0,4281,4092,4082,4126;
+					equip 1302;
+					break;
+				case Job_Gunslinger:
+					getitem2 13104,1,1,4,0,4281,0,0,0;
+					equip 13104;
+					break;
+				case Job_Star_Gladiator:
+					getitem2 1551,1,1,4,0,4281,4281,0,0;
+					equip 1551;
+					break;
+				case Job_Soul_Linker:
+					getitem2 1608,1,1,0,0,4003,4003,4003,0;
+					equip 1608;
+					break;
+			}
+			set intro_obter_armas, 1;
+		}
+		return;
+	}
+	
+	function f_set_skillpoint
+	{
+		resetskill;
+		switch(Class)
+		{
+			case Job_Rune_Knight_T:
+			case Job_Warlock_T:
+			case Job_Ranger_T:
+			case Job_Arch_Bishop_T:
+			case Job_Mechanic_T:
+			case Job_Guillotine_Cross_T:
+			case Job_Royal_Guard_T:
+			case Job_Sorcerer_T:
+			case Job_Minstrel_T:
+			case Job_Wanderer_T:
+			case Job_Sura_T:
+			case Job_Genetic_T:
+			case Job_Shadow_Chaser_T:
+				set skillpoint, 130;
+				break;
+			case Job_Kagerou:
+			case Job_Oboro:
+				set skillpoint, 60;
+				break;
+			case Job_SuperNovice:
+				set skillpoint, 10;
+				break;
+			case Job_Gunslinger:
+				set skillpoint, 10;
+				break;
+			case Job_Star_Gladiator:
+				set skillpoint, 50;
+				break;
+			case Job_Soul_Linker:
+				set skillpoint, 50;
+				break;
+		}
+		return;
+	}
+	
+	function f_obter_set
+	{
+		if (!intro_obter_set)
+		{
+			unequip(EQI_ARMOR);
+			unequip(EQI_GARMENT);
+			unequip(EQI_SHOES);
+			
+			// armor + peco peco card
+			getitem2 2306,1,1,4,0,4031,0,0,0;
+			// muffler + raydric card
+			getitem2 2504,1,1,4,0,4133,0,0,0;
+			// shoes + verit card
+			getitem2 2404,1,1,4,0,4107,0,0,0;
+			
+			// equipa
+			equip 2306;
+			equip 2504;
+			equip 2404;
+			
+			set intro_obter_set, 1;
+		}
+		return;
+	}
+	
+	function f_get_platinum
+	{
+		skill 142,1,0;
+		switch(BaseClass) 
+		{
+			case 0: if (Class !=23) skill 143,1,0; break;
+			case 1: skill 144,1,0; skill 145,1,0; skill 146,1,0; break;
+			case 2: skill 157,1,0; break;
+			case 3: skill 147,1,0; skill 148,1,0; break;
+			case 4: skill 156,1,0; break;
+			case 5: skill 153,1,0; skill 154,1,0; skill 155,1,0; break;
+			case 6: skill 149,1,0; skill 150,1,0; skill 151,1,0; skill 152,1,0; break;
+			default: break; 
+		}
+		switch(roclass(eaclass()&EAJ_UPPERMASK)) 
+		{
+			case 7: skill 1001,1,0; break;
+			case 8: skill 1014,1,0; break;
+			case 9: skill 1006,1,0; break;
+			case 10: skill 1012,1,0; skill 1013,1,0; break;
+			case 11: skill 1009,1,0; break;
+			case 12: skill 1003,1,0; skill 1004,1,0; break;
+			case 14: skill 1002,1,0; break;
+			case 15: skill 1015,1,0; skill 1016,1,0; break;
+			case 16: skill 1007,1,0; skill 1008,1,0; skill 1017,1,0; skill 1018,1,0; skill 1019,1,0; break;
+			case 17: skill 1005,1,0; break;
+			case 18: skill 238,1,0; break;
+			case 19: skill 1010,1,0; break;
+			case 20: skill 1011,1,0; break;
+			default: break; 
+		}
+		return;
+	}
+	
+OnNPCKillEvent:
+	if (killedrid == 1002 && BaseLevel <= 90)
+	{
+		getmapxy(.@map$,.@x,.@y,0);
+		if (.@map$ == "rot_intro3")
+		{
+			if (BaseLevel < 90)
+				getexp 200,1200;
+			else if (!@aviso_level_90)
+			{
+				set @aviso_level_90, 1;
+				announce "Após atingir o level 90 os Porings passam a valer menos experiência.",bc_self;
+				sleep2 10000;
+				announce "Fale com a Nyuang para concluir esta etapa da introdução.",bc_self;
+				viewpoint 1,118,110,1,0xFF0000;
+			}
+		}
+	}
+	end;
+
+//|===============================================================================================================
+//|	Primeira introdução (que_hugel)
+//|===============================================================================================================
+OnNyuIntro1:
+	// variavel para controle de progresso
+	set intr_concluida, 0;
+	set @ignore_ontouch, 0;
+	f_cutin_nyu_feliz(2);
+	mes .title_n$;
+	mes "Olá " + f_player_name();
+	if (!#intr_old_user)
+	{
+		mes "Bem vindo(a) ao RO Tactics!";
+		mes " ";
+		mes "Eu sou ^" + .color_n$ + "Nyuang^000000, guia oficial do " + f_destaque("ROT") + ".";
+	}
+	else
+		mes "Novo personagem né, espero que esteja gostando do ROT.";
+	next;
+L_Pegunta_Classe:
+	f_cutin_nyu_feliz(2);
+	mes .title_n$;
+	mes "Entao...";
+	mes "Vamos escolher sua classe?";
+	next;
+	menu f_opt_n("Vamos"),-,f_opt_n("Não, espere!"),L_Pular_Intro;
+	warp "rot_intro2",104,102;
+	end;
+	
+L_Pular_Intro:
+	f_cutin_nyu_normal(2);;
+	mes .title_n$;
+	mes "O que houve?";
+	next;
+	menu f_opt_n("Nada não"),L_Pegunta_Classe,f_opt_n("Quero pular a introdução"),-;
+	if (f_pular_intro())
+		f_warp_capital();
+	else
+		goto L_Pegunta_Classe;
+	end;
+	
+//|===============================================================================================================
+//|	Nyuang jobchange evento OnTouch
+//|===============================================================================================================
+OnNyuIntro2:
+	f_cutin_nyu_feliz(2);
+	mes .title_n$;
+	mes "Aqui temos os mestres das principais artes de combate.";
+	mes " ";
+	mes "Para facilitar, todos eles oferecem um treinamento expresso, mudança de classe imediata garantida!";
+	next;
+	f_cutin_nyu_tease(2);
+	mes .title_n$;
+	mes "Nessa arena você poderá trocar de classe quantas vezes quiser, "+
+		"mas depois que sairmos a escolha será permanente.";
+	next;
+	f_cutin_nyu_feliz(2);
+	mes .title_n$;
+	mes "Então tome seu tempo e escolha com calma!";
+	mes " ";
+	mes "Quando tiver decidido me avise!";
+	close2;
+	cutin "",255;
+	// Define estado de leitura ontouch
+	set @ignore_ontouch, 1;
+	end;	
+	
+//|===============================================================================================================
+//|	Nyuang jobchange dialogo pós seleção
+//|===============================================================================================================
+OnNyuIntro3:
+	mes .title_n$;
+	if (!Class)
+	{
+		f_cutin_nyu_normal(2);;
+		mes "Está tendo alguma dificuldade?";
+		mes "Para trocar de classe basta conversar com os NPCs mestres.";
+		mes " ";
+		mes "Posso ajudar em mais alguma coisa?";
+		next;
+		if (select(f_opt_n("Nada, vou escolher minha classe") + ":" + f_opt_n("Quero sair daqui"))-1)
+		{
+			if (f_pular_intro())
+				f_warp_capital();
+		}
+		else
+		{
+			f_cutin_nyu_feliz(2);
+			mes .title_n$;
+			mes "Ok, estarei esperando! ~";
+			
+		}
+		close2;
+	}
+	else
+	{
+		f_cutin_nyu_feliz(2);
+		mes "Muito bem, agora você precisa treinar um pouco.";
+		mes " ";
+		mes "Eu conheço um mapa muito bom, você subirá de nivel em um piscar de olhos.";
+		next;
+		switch(select(f_opt_n("Vamos") + ":" + f_opt_n("Espere, ainda não decidi") + ":" + f_opt_n("Quero sair da introdução")))
+		{
+			case 1:
+				// Confirma estado para ativação do OnTouch na proxima etapa
+				set @ignore_ontouch, 0;
+				f_get_platinum();
+				atcommand "@blvl 10";
+				atcommand "@jlvl 10";
+				f_set_skillpoint();
+				percentheal 100,100;
+				save "rot_intro3",118,106;
+				warp "rot_intro3",118,106;
+				f_obter_armas();
+				break;
+			case 2:
+				f_cutin_nyu_tease(2);
+				mes .title_n$;
+				mes "Ok.. ok.";
+				mes "Estou esperando.";
+				break;
+			case 3:
+				if (f_pular_intro())
+				{
+					f_set_skillpoint();
+					f_get_platinum();
+					f_warp_capital();
+				}
+				break;
+		}
+		close2;
+	}
+	cutin "",255;
+	end;
+	
+//|===============================================================================================================
+//|	Nyuang treinamento poring OnTouch
+//|===============================================================================================================
+OnNyuIntro4:
+	f_cutin_nyu_feliz(2);
+	mes .title_n$;
+	mes "Este é o mapa secreto dos Super Porings.";
+	mes " ";
+	mes "Aqui um Poring vale muita "+ f_destaque("exp") +", mate quantos forem necessários "+
+		"para chegar ao " + f_destaque("level 90") + ".";
+	next;
+	mes .title_n$;
+	mes "Fale comigo quando terminar ou quando achar que matou o suficiente.";
+	mes " ";
+	mes "Estarei esperando. Ok?";
+	close2;
+	set @ignore_ontouch, 1;
+	cutin "",255;
+	end;
+	
+
+	
+//|===============================================================================================================
+//|	Nyuang treinamento poring on click
+//|===============================================================================================================
+OnNyuIntro5:
+	mes .title_n$;
+	if (BaseLevel < 90)
+	{
+		f_cutin_nyu_normal(2);
+		mes "Já terminou?";
+		mes " ";
+		mes "Acho que seu level ainda é baixo, recomendo que você treine "+
+			"aqui pelo menos até o " + f_destaque("level 90");
+		next;
+		switch(select(f_opt_n("Hmm Ok, vou upar mais") + ":" + f_opt_n("Acho que já é o suficiente") + ":" + f_opt_n("Quero pular a introdução")))
+		{
+			case 1:
+				f_cutin_nyu_feliz(2);
+				mes .title_n$;
+				mes "Certo, estarei esperando.";
+				close2;
+				break;
+			case 2:
+				f_cutin_nyu_feliz(2);
+				mes .title_n$;
+				mes "Ok.. ok.";
+				mes "Vamos seguir em frente para a proxima etapa então?";
+				next;
+				if (select(f_opt_n("Vamos") + ":" + f_opt_n("Na verdade, mudei de idéia"))-1)
+				{
+					f_cutin_nyu_tease(2);
+					mes .title_n$;
+					mes "Heh.. me chame quando decidir.";
+					close2;
+				}
+				else
+				{
+					set @ignore_ontouch, 0;
+					warp "market",100,82;
+				}
+				break;
+			case 3:
+				if (f_pular_intro())
+					f_warp_capital();
+				close2;
+		}
+	}
+	else
+	{
+		f_cutin_nyu_feliz(2);
+		mes "Parece que você já está " + f_sex("pronto","pronta") + ".";
+		mes " ";
+		mes "Agora vamos para o mercado. O mercador chefe é meu amigo, se eu pedir ele vai te ajudar com certeza!";
+		next;
+		switch(select(f_opt_n("Sim, vamos") + ":" + f_opt_n("Ainda não, espere") + ":" + f_opt_n("Quero pular a introdução")))
+		{
+			case 1:
+				set @ignore_ontouch, 0;
+				warp "market",100,82;
+				break;
+			case 2:
+				f_cutin_nyu_tease(2);
+				mes .title_n$;
+				mes "Ok.. ok.";
+				mes "Me avise quando estiver pronto.";
+				close2;
+				break;
+			case 3:
+				if (f_pular_intro())
+					f_warp_capital();
+				close2;
+				break;
+		}
+	}
+	cutin "",255;
+	end;
+	
+//|===============================================================================================================
+//|	Wayne treinamento poring on click
+//|===============================================================================================================
+OnWayne:
+	f_cutin_way(2);
+	mes .title_w$;
+	mes "Olá " + f_player_name() + ", tudo bem?";
+	next;
+	if(select(f_opt_w("Tudo certo") + ":" + f_opt_w("Quem diabos é você?"))-1)
+	{
+		mes .title_w$;
+		mes "Meu nome é Wayne, sou supervisor chefe dos NPCs do " + f_destaque("ROT") + ".";
+		mes " ";
+		mes "Estou aqui para observar o desempenho da "+f_color("Nyuang",.color_n$)+".";
+		next;
+		mes .title_w$;
+		mes "O GM contratou ela recentemente para cuidar dos nossos novos jogadores.";
+		mes " ";
+		mes "Por isso tenho que ficar de olho!";
+		next;
+		if (!(select(f_opt_w("Ta certo") + ":" + f_opt_w("Ok, quero treinar agora"))-1))
+		{
+			mes .title_w$;
+			mes "Não tenho nada contra estagiários, mas as vezes a "+f_color("Nyuang",.color_n$)+" se empolga de mais, isso me preocupa.";
+			mes " ";
+			mes "Devemos ser sérios e profissionais durante o trabalho!";
+			next;
+			mes .title_w$;
+			mes "Falando nisso, como você avalia o desempenho dela?";
+			next;
+			set .nota_nyuang, select(f_opt_w("Muito bom") + ":" + f_opt_w("Bom") + ":" + f_opt_w("Razoável") + ":" + f_opt_w("Ruim"));
+			mes .title_w$;
+			mes "Obrigado pelo seu tempo, não quero atrapalhar mais, pode ir treinar.";
+			set @mute_wayne, 1;
+			close2;
+			donpcevent "Intro_Core::OnAvaliacaoNyu";
+		}
+		else
+		{
+			mes .title_w$;
+			mes "Certo, não quero atrapalhar.";
+			close2;
+		}
+	}
+	else
+		close2;
+	cutin "",255;
+	end;
+	
+OnAvaliacaoNyu:
+	if (!.dialogo_aval && .nota_nyuang >= 1 && .nota_nyuang <= 4)
+	{
+		sleep 2000;
+		set .dialogo_aval, 1;
+		set .@nyu_npc$, "Nyuang#i3";
+		set .@way_npc$, "Supervisor Wayne#i1";
+		switch(.nota_nyuang)
+		{
+			// Muito bom
+			case 1:
+				f_npctalk(.@way_npc$, "Muito bem Nyuang, estamos recebendo elogios.");
+				sleep 5000;
+				f_npctalk(.@nyu_npc$, "Estou me esforçando! ^_~");
+				break;
+			// Bom
+			case 2:
+				f_npctalk(.@way_npc$, "Parece que você está indo bem Nyuang.");
+				sleep 3000;
+				f_npctalk(.@nyu_npc$, "Que bom! ^^");
+				sleep 5000;
+				f_npctalk(.@way_npc$, "O que aparenta não importa, eu quero resultados!");
+				sleep 4000;
+				f_npctalk(.@nyu_npc$, "As vezes vc é um chato sabia? <_<");
+				break;
+			// Razoável
+			case 3:
+				f_npctalk(.@way_npc$, "Nyuang, você sabe que pra mim só existem profissionais bons e ruins.");
+				sleep 3000;
+				f_npctalk(.@nyu_npc$, "Huh, o que vc ta resmungando ai?");
+				sleep 5000;
+				f_npctalk(.@way_npc$, "Seu desempenho está baixo, desse jeito teremos que reduzir o seu salário!");
+				sleep 3000;
+				f_npctalk(.@nyu_npc$, "Mas eu já ganho uma mixaria!");
+				sleep 2800;
+				f_npctalk(.@way_npc$, "Não ta facil pra ninguém.");
+				break;
+			// Ruim
+			case 4:
+				f_npctalk(.@way_npc$, "Nyuang, seu desempenho é inadmissível, você está demitida!");
+				sleep 5000;
+				f_npctalk(.@nyu_npc$, "Você não pode me demitir, foi o GM em pessoa que me contratou!");
+				sleep 5000;
+				f_npctalk(.@way_npc$, "Verdade. Mas fique sabendo que falarei mal ao seu respeito na proxima reunião!");
+				sleep 3000;
+				f_npctalk(.@nyu_npc$, "Você é um desgraçado sabia? <_<");
+				break;
+		}
+		sleep 60 * 1000;
+		set .dialogo_aval, 0;
+	}
+	end;
+	
+OnZelador:
+	f_cutin_zel(2);
+	mes .title_z$;
+	mes "Dizem que existe uma lista de piores empregos do mundo";
+	mes "...";
+	mes "Se for mesmo verdade eu estou em primeiro lugar.";
+	next;
+	mes .title_z$;
+	mes "Essas crianças vem aqui e mijam e cagam na agua.";
+	mes " ";
+	mes "Depois sou eu que limpo a bagunça!";
+	next;
+	mes .title_z$;
+	mes "Eu uso essa água pra coar meu café e tomar banho!";
+	mes " ";
+	mes "Malditas pestes!";
+	close2;
+	cutin "", 255;
+	donpcevent "Intro_Core::OnZeladorEsporro";
+	end;
+	
+OnZeladorEsporro:
+	if (!.dialogo_zela)
+	{
+		set .dialogo_zela, 1;
+		set .@zel_npc$, "Zelador Bagaço#i1";
+		sleep 2000;
+		f_npctalk(.@zel_npc$, "EI !!");
+		sleep 1000;
+		f_npctalk(.@zel_npc$, "Filho da puta!");
+		sleep 1500;
+		f_npctalk(.@zel_npc$, "Pare de cagar na agua!");
+		sleep 4000;
+		f_npctalk(.@zel_npc$, "Maldito, finge que nem ta me ouvindo...");
+		
+		sleep 120 * 1000;
+		set .dialogo_zela, 0;
+	}
+	end;
+	
+OnGaroto1:
+	mes .title_go$;
+	mes "Wayne nos trás aqui pra brincar com os porings.";
+	mes " ";
+	mes "Ele é bem sério, mas não deixa de ser legal.";
+	close;
+	end;
+
+OnGarota1:
+	mes .title_ga$;
+	mes "O zelador não gosta da gente.";
+	mes " ";
+	mes "Sempre arrumando um jeito de nos culpar por qualquer coisa.";
+	close;
+	end;
+
+OnGaroto2:
+	mes .title_go$;
+	if (rand(1,10)>2)
+		mes "Oi.";
+	else
+	{
+		mes "Acho que vi um coco boiando na agua.";
+		mes " ";
+		mes "Quem pode ter feito uma coisa dessa?";
+	}
+	close;
+	end;
+	
+	
+//|===============================================================================================================
+//|	Nyuang mercado OnTouch
+//|===============================================================================================================
+OnNyuIntro6:
+	f_cutin_nyu_feliz(2);
+	mes .title_n$;
+	mes "Chegamos no mercado do " + f_destaque("ROT") + ".";
+	mes " ";
+	mes "Aqui você encontrará todos os itens que precisa.";
+	next;
+	f_cutin_nyu_tease(2);
+	mes .title_n$;
+	mes "Mas cá entre nós, alguns dizem que os mercadores aqui são muito gananciosos";
+	next;
+	f_cutin_nyu_feliz(2);
+	mes .title_n$;
+	mes "Na falta de item ou zeny, você poderá caçar o que quer normalmente nos campos, dungeons e quests "+
+		"do mundo de Midgard ou eventos exclusivos do " + f_destaque("ROT") + ".";
+	next;
+	f_cutin_nyu_normal(0);
+	f_cutin_sal_feliz(2);
+	mes .title_s$;
+	mes "Ei " + f_color("Nyuang", .color_n$) + ", chega de conversa e me introduza.";
+	mes " ";
+	mes "No bom sentido, claro. kkkkkkk";
+	next;
+	f_cutin_nyu_tease(0);
+	mes .title_n$;
+	mes "...";
+	mes "Ha... ha...";
+	mes " ";
+	mes "Pode nos ajudar?";
+	next;
+	f_cutin_sal_feliz(2);
+	mes .title_s$;
+	mes "Haha claro, claro.";
+	mes " ";
+	mes "Diga o que precisa, se estiver ao alcance do grande " + f_color("Salim",.color_s$) + ", lider dos mercadores, "+
+		"irei realizar seu desejo.";
+	next;
+	f_cutin_nyu_tease(0);
+	mes .title_n$;
+	mes "Mas que porcaria é essa, ta pagando de gênio da lampada agora?";
+	next;
+	f_cutin_sal_feliz(2);
+	mes .title_s$;
+	mes "Hahaha!";
+	mes " ";
+	mes "Não sério mesmo, diga o que precisa.";
+	next;
+	f_cutin_nyu_normal(0);
+	mes .title_n$;
+	mes "Bem, " + f_player_name() + " aqui acabou de criar o personagem.";
+	mes " ";
+	mes "Seria legal arrumarmos alguns itens para " + f_sex("ele","ela") + ".";
+	next;
+	f_cutin_sal_feliz(2);
+	mes .title_s$;
+	mes "Bem e "+ f_destaque("quanto") +" seu amigo pretende gastar?";
+	mes " ";
+	mes "O mercado do grande "+f_color("Salim",.color_s$)+" tem de tudo, itens básicos, raros, "+
+		"lendários, parcelamos em até...";
+	next;
+	f_cutin_nyu_tease(0);
+	mes .title_n$;
+	mes "...";
+	mes "de graça";
+	mes "...";
+	next;
+	f_cutin_sal_sob(2);
+	mes .title_s$;
+	mes "Assim você enfraquece a amizade " + f_color("Nyuang", .color_n$) + ".";
+	mes " ";
+	mes "Vou ver o que posso conseguir, esperem ai.";
+	next;
+	f_cutin_nyu_feliz(0);
+	mes .title_n$;
+	mes "Vamos esperar um pouco! ~";
+	mes f_destaque("(!... aguarde ...!)");
+	mes " ";
+	sleep2 1500;
+//	donpcevent "Intro_Core::OnSalim";
+//	set @count, 0;
+//	sleep2 100; // segurança para atualizar .dialogo_salim_done
+//	while(.dialogo_salim_init)
+//	{
+//		sleep2 500;
+//		set @count, @count + 1;
+//		if (@count == 20)
+//		{
+//			f_cutin_nyu_tease(0);
+//			mes "Esses mercadores...";
+//			mes f_destaque("(!... aguarde ...!)");
+//		}
+//	}
+	f_cutin_sal_feliz(2);
+	mes .title_s$;
+	mes "Pronto!";
+	next;
+	f_cutin_sal_feliz(2);
+	f_obter_set();
+	mes .title_s$;
+	mes "Aqui está, desculpa ae pela confusão.";
+	mes " ";
+	mes "Qualquer coisa, estamos as ordens.";
+	next;
+	f_cutin_nyu_feliz(0);
+	mes .title_n$;
+	mes "Valeu pela ajuda "+f_color("Salim",.color_s$)+"!";
+	next;
+	f_cutin_sal_sad(2);
+	mes .title_s$;
+	mes "Certo, mas não pense que ficarei vendendo fiado pra vocês.";
+	mes " ";
+	mes f_color("Salim",.color_s$)+" tem familia pra sustentar!";
+	next;
+	f_cutin_nyu_feliz(0);
+	mes .title_n$;
+	mes "Ok... ok...";
+	mes " ";
+	mes "Bem, vamos prosseguir, tenho mais lugares para mostrar!";
+	close2;
+	cutin "",255;
+	warp "rot_event",57,19;
+	end;
+	
+OnSalim:
+	if (!.dialogo_salim_init)
+	{
+		set .dialogo_salim_init, 1;
+		sleep 200;
+		set .@npc_sal$, "Salim#i1";
+		set .@npc_rob$, "Roberval#i1";
+		f_npctalk(.@npc_sal$, "Roberval!...");
+		sleep 4000;
+		f_npctalk(.@npc_sal$, "OOW ROBERVAL!");
+		sleep 2000;
+		f_npctalk(.@npc_sal$, "OOOOOOOOWWW ROBERVAAL!!");
+		sleep 1500;
+		f_npctalk(.@npc_rob$, "Opa. Diga meu senhor!");
+		sleep 2000;
+		f_npctalk(.@npc_sal$, "Porra ta surdo Roberval?");
+		sleep 3000;
+		f_npctalk(.@npc_rob$, "Tava destraido tirando um melecão aqui...");
+		sleep 2000;
+		f_npctalk(.@npc_sal$, "Que merda ein bixo.");
+		sleep 1000;
+		f_npctalk(.@npc_rob$, "=D");
+		sleep 4000;
+		f_npctalk(.@npc_sal$, "Pega aquela caixa que deixei atrás da carroça do Tião.");
+		sleep 3500;
+		f_npctalk(.@npc_sal$, "Vou dar aqueles itens pra Nyuang.");
+		sleep 5000;
+		f_npctalk(.@npc_rob$, "Mas aquela caixa o Tião falo pra joga fora.");
+		sleep 2000;
+		f_npctalk(.@npc_sal$, "Jogar fora Roberval??!");
+		sleep 2000;
+		f_npctalk(.@npc_rob$, "Só tinha item lixo lá meu senhor.");
+		sleep 1500;
+		f_npctalk(.@npc_sal$, "NÃO ERA PRA JOGAR FORA ROBERVAL!");
+		sleep 3000;
+		f_npctalk(.@npc_sal$, "PUTA QUE PARIU!");
+		sleep 800;
+		f_npctalk(.@npc_rob$, "o__o");
+		sleep 2000;
+		f_npctalk(.@npc_sal$, "ASSIM VCS ME FODEM!");
+		sleep 4000;
+		f_npctalk(.@npc_sal$, "Me passa uma sua, depois vou ter uma conversa com Tião.");
+		sleep 3500;
+		f_npctalk(.@npc_rob$, "As ordens meu senhor!");
+		sleep 5000;
+		set .dialogo_salim_init, 0;
+	}
+	end;
+	
+OnNyuIntro7:
+	f_cutin_nyu_feliz(2);
+	mes .title_n$;
+	mes "Aqui é a "+ f_destaque("Central de Eventos") + ".";
+	mes " ";
+	mes "Todo dia um evento novo é oferecido e eventos secretos são revelados.";
+	next;
+	mes .title_n$;
+	mes "Participando dos eventos você concorre a vários itens e moedas que valem "+
+		"mais que dinheiro! ~";
+	mes " ";
+	mes "Vamos seguir em frente.";
+	close2;
+	cutin "",255;
+	set @ignore_ontouch, 0;
+	warp "rot_p_room",53,65;
+	end;
+OnNyuIntro8:
+	f_cutin_nyu_feliz(2);
+	mes .title_n$;
+	mes "Aqui é a "+f_destaque("Central de PVP")+".";
+	mes " ";
+	mes "Eventos aleatórios, ranking e npcs especializados estão disponíveis para facilitar seu acesso "+
+		"e deixar o combate sempre interessante!";
+	next;
+	f_cutin_nyu_tease(2);
+	mes .title_n$;
+	mes "O PVP do " + f_destaque("ROT") + " é cheio de opções, então recomendo que fale comigo uma outra hora que vier aqui, "+
+		"pois temos que ir para nossa próxima e " + f_destaque("última parada") + ".";
+	close2;
+	cutin "",255;
+	set @ignore_ontouch, 0;
+	warp "prontera",156,181;
+	end;
+OnNyuIntro9:
+	f_cutin_nyu_tease(2);
+	mes .title_n$;
+	mes "Phew~ Agora estamos na " + f_destaque("capital") + " do servidor, a cidade de " + f_destaque("Prontera") + ".";
+	mes " ";
+	mes "Aqui você encontrará os principais NPCs e atalhos para "+f_destaque("zonas específicas")+".";
+	next;
+	mes .title_n$;
+	mes "Para facilitar seu acesso a "+f_destaque("capital")+", você poderá usar o comando "+f_destaque("@go 0")+
+		" nos mapas em que esse tipo de comando é permitido.";
+	next;
+	f_cutin_nyu_feliz(2);
+	mes .title_n$;
+	mes "Qualquer outra dúvida é só falar comigo, estarei sempre por aqui.";
+	mes " ";
+	mes "Espero que tenha gostado do tour, "+f_destaque("tenha um bom jogo")+"! ~";
+	close2;
+	// Marca conclusão da introdução para que eventos OnTouch não afetem os veteranos.
+	set intr_concluida, 1;
+	cutin "",255;
+	end;
+}
+
+
+//|===============================================================================================================
+//|	Supervisor Wayne
+//|===============================================================================================================
+rot_intro3,124,113,4	script	Supervisor Wayne#i1	412,{
+	if (!@mute_wayne)
+		doevent "Intro_Core::OnWayne";
+	end;
+}
+
+rot_intro3,145,116,4	script	Zelador Bagaço#i1	847,{
+	doevent "Intro_Core::OnZelador";
+	end;
+}
+
+rot_intro3,152,97,4	script	Garoto#1	975,{
+	doevent "Intro_Core::OnGaroto1";
+	end;
+}
+
+rot_intro3,154,96,4	script	Garota#1	882,{
+	doevent "Intro_Core::OnGarota1";
+	end;
+}
+
+rot_intro3,155,94,6	script	Garoto#2	706,{
+	doevent "Intro_Core::OnGaroto2";
+	end;
+}
+
+
+market,104,87,4	script	Salim#i1	58,{end;}
+
+
+market,113,82,4	script	Roberval#i1	807,{end;}

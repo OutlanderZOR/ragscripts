@@ -1,0 +1,66 @@
+prontera,150,191,4	script	Centro de Treinamento	835,{
+	save "rot_train",350,376;
+	warp "rot_train",350,376;
+	end;
+OnInit:
+	waitingroom "Treinamento",0;
+	end;
+}
+
+prontera,153,189,4	script	Mercado	835,{
+	warp "market",100,111;
+	end;
+OnInit:
+	waitingroom "Mercado",0;
+	end;
+}
+
+prontera,159,189,4	script	PVP	835,{
+	warp "rot_p_room",52,42;
+	end;
+OnInit:
+	waitingroom "PVP",0;
+	end;
+}
+
+prontera,162,191,4	script	Eventos	835,{
+	warp "rot_event",66,22;
+	end;
+OnInit:
+	waitingroom "Eventos",0;
+	end;
+}
+
+rot_p_room,56,45,4	script	Prontera	835,{
+	save "prontera",156,180;
+	warp "prontera",156,180;
+	end;
+OnInit:
+	waitingroom "Prontera",0;
+	end;
+}
+
+// CLONES
+
+// 1. PVP ROOM
+//rot_p_room,59,43,4	duplicate(Mercado)	Mercado#c1	835
+//rot_p_room,62,45,4	duplicate(Eventos)	Eventos#c1	835
+//rot_p_room,65,43,4	duplicate(Centro de Treinamento)	Centro de Treinamento#c1	835
+	
+// 2. Centro de Treinamento
+//rot_train,339,388,4	duplicate(PVP)	PVP#c2	835
+rot_train,342,390,4	duplicate(Prontera)	Prontera#c2	835
+//rot_train,357,386,4	duplicate(Mercado)	Mercado#c2	835
+//rot_train,360,388,4	duplicate(Eventos)	Eventos#c2	835
+	
+// 3. Mercado
+//market,86,115,4	duplicate(PVP)	PVP#c3	835
+//market,113,115,4	duplicate(Centro de Treinamento)	Centro de Treinamento#c3	835
+//market,96,98,4	duplicate(Eventos)	Eventos#c3	835
+market,100,118,4	duplicate(Prontera)	Prontera#c3	835
+	
+// 4. Eventos
+rot_event,69,10,4	duplicate(Prontera)	Prontera#c4	835
+//rot_event,72,12,4	duplicate(PVP)	PVP#c4	835
+//rot_event,75,10,4	duplicate(Mercado)	Mercado#c4	835
+//rot_event,78,12,4	duplicate(Centro de Treinamento)	Centro de Treinamento#c4	835

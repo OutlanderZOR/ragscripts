@@ -1,0 +1,176 @@
+//|                         ___           ___                     ___           ___                               
+//|                        /  /\         /  /\      ___          /  /\         /  /\                              
+//|                       /  /:/        /  /:/     /__/\        /  /::\       /  /::\                             
+//|                      /  /:/        /  /:/      \  \:\      /  /:/\:\     /  /:/\:\                            
+//|                     /  /:/        /  /:/        \__\:\    /  /::\ \:\   /  /::\ \:\                           
+//|                    /__/:/     /\ /__/:/         /  /::\  /__/:/\:\_\:\ /__/:/\:\_\:\                          
+//|                    \  \:\    /:/ \  \:\        /  /:/\:\ \__\/~|::\/:/ \__\/  \:\/:/                          
+//|                     \  \:\  /:/   \  \:\      /  /:/__\/    |  |:|::/       \__\::/                           
+//|                      \  \:\/:/     \  \:\    /__/:/         |  |:|\/        /  /:/                            
+//|                       \  \::/       \  \:\   \__\/          |__|:|~        /__/:/                             
+//|                        \__\/         \__\/                   \__\|         \__\/                              
+//|                         ___                         ___           ___           ___                           
+//|                        /  /\          ___          /  /\         /  /\         /  /\                          
+//|                       /  /::\        /  /\        /  /::\       /  /::\       /  /:/                          
+//|                      /__/:/\:\      /  /::\      /  /:/\:\     /  /:/\:\     /  /:/                           
+//|                     _\_ \:\ \:\    /  /:/\:\    /  /::\ \:\   /  /::\ \:\   /  /::\____                       
+//|                    /__/\ \:\ \:\  /  /::\ \:\  /__/:/\:\_\:\ /__/:/\:\_\:\ /__/:/\:::::\                      
+//|                    \  \:\ \:\_\/ /__/:/\:\_\:\ \__\/  \:\/:/ \__\/~|::\/:/ \__\/~|:|~~~~                      
+//|                     \  \:\_\:\   \__\/  \:\/:/      \__\::/     |  |:|::/     |  |:|                          
+//|                      \  \:\/:/        \  \::/       /  /:/      |  |:|\/      |  |:|                          
+//|                       \  \::/          \__\/       /__/:/       |__|:|~       |__|:|                          
+//|                        \__\/                       \__\/         \__\|         \__\|                          
+//|===============================================================================================================
+//|
+//|				H E A L E R
+//|
+//|===============================================================================================================
+//|
+//| Módulo: Script Core
+//| Categoria: Utilidades
+//| Autor: Outlander
+//| Data: 02/10/2012
+//| SQL: Não
+//| 
+//|===============================================================================================================
+-	script	Encantador_Core	-1,{
+	end;
+//|===============================================================================================================
+//|	Funções essenciais
+//|===============================================================================================================
+	
+	function f_cutin
+	{
+		cutin "jpn_oz01",2;
+		return;
+	}
+
+	function f_color
+	{
+		set .@str$, getarg(0);
+		set .@color$, getarg(1);
+		return "^"+.@color$+.@str$+"^000000";
+	}
+	
+	// Monta string de opção do menu
+	function f_opt
+	{
+		set .@str$, getarg(0);
+		return f_color("> ", .color$) + .@str$;
+	}
+	
+	function f_destaque
+	{
+		set .@str$, getarg(0);
+		return "^d80505" + .@str$ + "^000000";
+	}
+	
+	function f_player_name
+	{
+		return "^23a0f7" + strcharinfo(0) + "^000000";
+	}
+	
+	function f_sex
+	{
+		set .@str_m$, getarg(0);
+		set .@str_f$, getarg(1);
+		return (Sex?.@str_m$:.@str_f$);
+	}
+	
+//|===============================================================================================================
+//|	Inicialização de variáveis
+//|===============================================================================================================
+OnInit:
+	// Variaveis Warper Padrão
+	set .color$, "9843E8";
+	set .title$, "[" + f_color("Encantador Oz",.color$) + "]";
+	set .duracao_buff, 5 * 60000;
+	set .duracao_endw, 30 * 60000;
+	end;
+	
+OnEncantador:
+	f_cutin();
+	set .duracao, 1800000;
+	mes .title$;
+	mes "Eu sei que vc nunca conseguirá ser tão maneiro como eu, " +
+		"mas não se preocupe, tenho algo especial para vc.";
+	next;
+	mes .title$;
+	mes "Encantamentos e buffs de vários tipos.";
+	mes " ";
+	mes "E então, o que vai ser?";
+	next;
+	switch(select(f_opt("Buffs") + ":" + f_opt("Encantamento de Arma") + ":" + f_opt("Sair"))) {
+		case 1:
+			mes .title$;
+			mes "Os buffs acabarão após "+ f_destaque((.duracao_buff/60000) +" minutos") + " ou caso vc morra.";
+			skilleffect 29,0;
+			sc_start SC_INCREASEAGI, .duracao_buff, 10;
+			
+			skilleffect 34,0;
+			sc_start SC_BLESSING, .duracao_buff, 10;
+			break;
+		case 2:
+			mes .title$;
+			mes "Com qual elemento deseja encantar sua arma?";
+			next;
+			switch(select(f_opt("Encantamento de "+f_color("fogo","FF0000")) + ":" +
+						f_opt("Encantamento de "+f_color("gelo","0095FF")) + ":" + 
+						f_opt("Encantamento de "+f_color("terra","B87A54")) + ":" + 
+						f_opt("Encantamento de "+f_color("vento","58D65A"))))
+			{
+				case 1:
+					skilleffect 280,0;
+					sc_start SC_FIREWEAPON, .duracao_endw, 0;
+					break;
+				case 2:
+					skilleffect 281,0;
+					sc_start SC_WATERWEAPON, .duracao_endw, 0;
+					break;
+				case 3:
+					skilleffect 283,0;
+					sc_start SC_EARTHWEAPON, .duracao_endw, 0;
+					break;
+				case 4:
+					skilleffect 282,0;
+					sc_start SC_WINDWEAPON, .duracao_endw, 0;
+					break;
+			}
+			mes .title$;
+			mes "O encantamento acabará após "+ f_destaque((.duracao_endw/60000) +" minutos")+" ou caso vc morra.";
+			break;
+		case 3:
+			mes .title$;
+			mes "Fala sério...";
+			mes " ";
+			mes "... deixa pra lá então ...";
+			close2;
+			cutin "",255;
+			end;
+	}
+	mes " ";
+	mes "Mas ninguém quer que isso aconteça, não é mesmo?";
+	next;
+	if (rand(1,10)==1)
+	{
+		mes .title$;
+		mes " ";
+		mes "... mentira, eu espero que você morra, sério.";
+	}
+	else
+	{
+		mes .title$;
+		mes "Aqui estamos sempre preocupados com a segurança de todos.";
+		mes " ";
+		mes "Então tome cuidado!";
+	}
+	close2;
+	cutin "",255;
+	end;
+}
+
+
+-	script	Encantador	-1,{
+	doevent "Encantador_Core::OnEncantador";
+	close;
+}

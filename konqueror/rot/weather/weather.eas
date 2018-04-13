@@ -1,0 +1,19 @@
+-	script	rot_weather	-1,{
+	end;
+	
+OnInit:
+	do {
+		sleep(1 * 60 * 60 * 1000);
+		if (isday())
+		{
+			soundeffectall "owl.wav", 0, "prontera", 0, 0, 300, 300;
+			night;
+		}
+		else
+		{
+			soundeffectall "se_cock_01.wav", 0, "prontera", 0, 0, 300, 300;
+			day;
+		}
+	} while(1);
+	end;
+}

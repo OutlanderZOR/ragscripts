@@ -1,0 +1,41 @@
+rot_intro1,36,32,4	script	Nyuang	877,10,10,{
+	getmapxy(.@map$,.@x,.@y,0);
+	if (.@map$ == "rot_intro1")
+		doevent "Intro_Core::OnNyuIntro1";
+	else if (.@map$ == "rot_intro2")
+		doevent "Intro_Core::OnNyuIntro3";
+	else if (.@map$ == "rot_intro3")
+		doevent "Intro_Core::OnNyuIntro5";
+//	else if (.@map$ == "rot_intro3")
+//		doevent "Intro_Core::OnNyuIntro5";
+	end;
+OnTouch:
+	getmapxy(.@map$,.@x,.@y,0);
+	if (!@ignore_ontouch && !intr_concluida)
+	{
+		if (.@map$ == "rot_intro2")
+			doevent "Intro_Core::OnNyuIntro2";
+		else if (.@map$ == "rot_intro3")
+			doevent "Intro_Core::OnNyuIntro4";
+		else if (.@map$ == "market")
+			doevent "Intro_Core::OnNyuIntro6";
+		else if (.@map$ == "rot_event")
+			doevent "Intro_Core::OnNyuIntro7";
+		else if (.@map$ == "rot_p_room")
+			doevent "Intro_Core::OnNyuIntro8";
+		else if (.@map$ == "prontera")
+			doevent "Intro_Core::OnNyuIntro9";
+	}
+	end;
+}
+
+// Introdução
+rot_intro2,104,108,4	duplicate(Nyuang)	Nyuang#i1	877,10,10
+rot_intro3,118,110,4	duplicate(Nyuang)	Nyuang#i2	877,10,10
+market,100,87,5	duplicate(Nyuang)	Nyuang#i3	877,10,10,
+rot_event,57,22,4	duplicate(Nyuang)	Nyuang#i4	877,10,10
+rot_p_room,53,69,4	duplicate(Nyuang)	Nyuang#i5	877,10,10
+prontera,156,187,4	duplicate(Nyuang)	Nyuang#i6	877,10,10
+	
+// Outros
+rot_train,350,389,4	duplicate(Nyuang)	Nyuang#o1	877

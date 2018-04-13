@@ -1,0 +1,79 @@
+function	script	F_SHOP_ADMIN	{
+	set .@shopid, getarg(0);
+	set .@name$, "";
+	set .@title$, "[" + "^ff0000" + "Shop Admin" + "^000000" + "]";
+	set .@exists, 0;
+	if (getgmlevel()==99) {
+		mes .@title$;
+		mes "Script de administração de lojas SQL.";
+		mes "";
+		mes "OBS.: Não adicione mais de 120 itens em uma única loja.";
+		next;
+		switch(select("Visualizar:Alterar")) {
+			case 1:
+				break;
+			case 2:
+L_Menu_Administracao:
+				query_sql "select 1, name from shop where shopid = "+ .@shopid, .@exists, .@name$;
+				if (.@exists) {
+					mes .@title$;
+					mes "Selecione a ação de administração.";
+					next;
+					switch(select("Adicionar:Remover:Sair"))
+					{
+						case 1:
+							mes .@title$;
+							mes "Digite o ID do item que deseja adicionar.";
+							input .@in_itemid;
+							set .@exists, 0;
+							// Verifica se o item já foi adicionado a loja.
+							query_sql "select 1 from shopitem where shopid = "+ .@shopid +" and itemid = "+ .@in_itemid, .@exists;
+							next;
+							mes .@title$;
+							if (!.@exists) {
+								mes "Digite o preço do item ou deixe 0 (zero) para usar o valor padrão.";
+								input .@in_price;
+								if (.@in_price == 0) {
+									query_sql "insert into shopitem (shopid, itemid) values ("+ .@shopid +","+ .@in_itemid +");";
+								} else {
+									query_sql "insert into shopitem (shopid, itemid, price) values ("+ .@shopid +","+ .@in_itemid +","+ .@in_price +");";
+								}
+								mes "Concluído.";
+							} else {
+								mes "O item selecionado já existe na loja.";
+							}
+							callfunc("F_LOAD_SHOP", .@name$);
+							goto L_Menu_Administracao;
+						case 2:
+							mes .@title$;
+							mes "Digite o ID do item que deseja remover.";
+							// Seleciona itens da loja.
+							query_sql "select b.itemid, ifnull(c.name_japanese, 'N/A') name_japanese, ifnull(b.price, c.price_buy) price " +
+									  "from shop a " +
+									  "join shopitem b on a.shopid = b.shopid " +
+									  "left join item_db c on b.itemid = c.id " +
+									  "where a.name = '"+ .@name$ +"' " +
+									  "order by c.name_japanese;", .@itemid, .@name_japanese$, .@price;
+							// Exibe itens da loja para auxiliar durante a remoção.
+							for(set .@i, 0; .@i < getarraysize(.@itemid); set .@i, .@i + 1) {
+								mes "[" + .@itemid[.@i] + "] " + .@name_japanese$[.@i];
+							}
+							input .@in_itemid;
+							query_sql "delete from shopitem where shopid = "+ .@shopid +" and itemid = "+ .@in_itemid +";";
+							npcshopdelitem .@name$, .@in_itemid;
+							mes "Concluído.";
+							callfunc("F_LOAD_SHOP", .@name$);
+							goto L_Menu_Administracao;
+						case 3:
+							// Sair
+							break;
+					}
+					close;
+					end;
+				}
+				break;
+		}
+		close2;
+	}
+	return .@lockshop;
+}

@@ -1,0 +1,42 @@
+pvp_y_room.gat,27,59,6	script	Distribuidor Bobi	866,{
+	mes "[^203C9BDistribuidor Bobi^000000]";
+	if (Class != 4013) && (Class != 4019) goto WRONGCLASS;
+	mes "Eu distribuo poções diariamente para Creators e Assassin Cross di gratiz =D";
+	mes "Para fazer sua retirada vc deve ter no mínimo ^E0230750 Kills^000000 registradas hoje.";
+	next;
+	
+	if (Class==4013) && (#gotbottle_sinx==gettime(8)) goto SAMEDAY;
+	if (Class==4019) && (#gotbottle_creator==gettime(8)) goto SAMEDAY;
+	query_sql "select case when total_kills_hoje < 50 then 0 else 1 end from pvp where char_id = "+getcharid(0),@CanGet;
+	if (@CanGet==0) goto NOKILLS;
+	if (Class==4013) {
+		getitem 678,200;
+		set #gotbottle_sinx,gettime(8);
+	}
+	if (Class==4019) {
+		getitem 7135,450;
+		getitem 7136,450;
+		set #gotbottle_creator,gettime(8);
+	}
+	mes "[^203C9BDistribuidor Bobi^000000]";
+	mes "Ai estão suas poções de Hoje, faça bom uso.";
+	close;
+	
+SAMEDAY:
+	mes "[^203C9BDistribuidor Bobi^000000]";
+	mes "Você já retirou as poções de hoje para esse personagem.";
+	close;
+	
+NOKILLS:
+	mes "[^203C9BDistribuidor Bobi^000000]";
+	mes "Você não tem o número de kills necessários para retirar poções.";
+	close;
+	
+WRONGCLASS:
+	mes "Huh? O que vc quer?";
+	close;
+	
+OnInit:
+	waitingroom "Distribuidor",0;
+	end;
+}

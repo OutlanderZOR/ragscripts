@@ -1,0 +1,50 @@
+function	script	F_LOAD_PVP_ROOM	{
+	set .@npc_name$, getarg(0);
+	set .@ranked, getarg(1);
+	
+	set .@notin$, "0";
+	deletearray .@pvp_map_id[0], getarraysize(.@pvp_map_id);
+	deletearray .@gat_name$[0], getarraysize(.@gat_name$);
+	deletearray .@spawn_x[0], getarraysize(.@spawn_x);
+	deletearray .@spawn_y[0], getarraysize(.@spawn_y);
+	deletearray .@name$[0], getarraysize(.@name$);
+
+	for(set .@i, 0; .@i < getarraysize($pvp_map_aloc); set .@i, .@i + 1) {
+		set .@notin$, .@notin$ + "," + $pvp_map_aloc[.@i];
+	}
+	
+	query_sql "select pvpmap_id, gat_name, spawn_x, spawn_y, name " +
+			  "from pvpmap " +
+			  "where ranked = "+ .@ranked + " " +
+			  "and pvpmap_id not in ("+ .@notin$ +");", .@pvp_map_id, .@gat_name$, .@spawn_x, .@spawn_y, .@name$;
+	
+	if (getarraysize(.@gat_name$) > 0) {
+		set .@selected, rand(0, getarraysize(.@gat_name$) - 1);
+		set .@current_map_id, getvariableofnpc(.pvp_map_id, .@npc_name$);
+		
+		// Deleta ID atual alocado
+		for(set .@i, 0; .@i < getarraysize($pvp_map_aloc); set .@i, .@i + 1) {
+			if ($pvp_map_aloc[.@i] == .@current_map_id) {
+				deletearray $pvp_map_aloc[.@i], 1;
+				break;
+			}
+		}
+		// Atribui ID selecionado ao vetor de IDs alocados
+		set $pvp_map_aloc[getarraysize($pvp_map_aloc)], .@pvp_map_id[.@selected];
+		
+		announce "ID: " + .@pvp_map_id[.@selected] + " GAT: " + .@gat_name$[.@selected] + " X: " + .@spawn_x[.@selected] + " Y: " + .@spawn_y[.@selected] + " NAME: " + .@name$[.@selected] + " RANKED: " + .@ranked, 0;
+
+		set getvariableofnpc(.pvp_map_id, .@npc_name$), .@pvp_map_id[.@selected];
+		set getvariableofnpc(.gat_name$, .@npc_name$), .@gat_name$[.@selected];
+		set getvariableofnpc(.spawn_x, .@npc_name$), .@spawn_x[.@selected];
+		set getvariableofnpc(.spawn_y, .@npc_name$), .@spawn_y[.@selected];
+		set getvariableofnpc(.name$, .@npc_name$), .@name$[.@selected];
+		set getvariableofnpc(.ranked, .@npc_name$), .@ranked;
+		
+		donpcevent .@npc_name$ + "::OnLoad";
+		return 1;
+	} else {
+		donpcevent .@npc_name$ + "::OnLoadFail";
+		return 0;
+	}
+}

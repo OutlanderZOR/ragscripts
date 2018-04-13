@@ -1,0 +1,39 @@
+//======================================================================
+//= MVP KILLERS
+//======================================================================
+prontera,141,163,6	script	Últimos MvPs Mortos	857,{
+	deletearray .@nome$[0], getarraysize(.@nome$);
+	deletearray .@valor[0], getarraysize(.@valor);
+
+	sleep2 100;
+	
+	query_sql "select iname, (time_to_sec(now()) - time_to_sec(killdate)) / 60 "+
+			  "from mvpkill a "+
+			  "join mob_db b on a.mobid = b.id "+
+			  "join `char` c on a.charid = c.char_id "+
+			  "where killdate >= curdate() and "+
+			  "(time_to_sec(now()) - time_to_sec(killdate)) / 60 <= 240 "+
+			  "order by killdate desc ",.@nome$, .@valor;
+
+	set .@title$, "[^D3220E" + "Últimos MvPs derrotados" + "^000000]";
+	mes .@title$;
+	if (getarraysize(.@valor)==0) {
+		mes "^616161Nenhum resultado disponível...^000000";
+		close;
+	}
+	set .@i, 0;
+	set .@str_tempo$, "";
+	do {
+		if (.@valor[.@i] <= 59) {
+			set .@str_tempo$, .@valor[.@i] + " mins atrás";
+		} else if (.@valor[.@i] <= 1439) {
+			set .@str_tempo$, .@valor[.@i] + " horas atrás";
+		} else {
+			set .@str_tempo$, .@valor[.@i] + " dias atrás";
+		}
+		if (.@nome$[.@i] != "") mes "^1285E2" + .@nome$[.@i] + "^000000 a ^D909AF"+ .@str_tempo$ +"^000000";
+		set .@i, .@i + 1;
+		if (.@valor[.@i]==0) break;
+	} while (.@i <= 20);
+	close;	
+}

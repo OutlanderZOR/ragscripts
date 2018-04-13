@@ -1,0 +1,404 @@
+//=================================================================================================
+//= TRADER
+//=================================================================================================
+// DESC.: Retorna propriedade enabled de um NPC trader.
+// ARG0: ID do NPC trader.
+// RETURNS: Bool.
+function	script	F_PZ_TRADER_GETENABLED	{
+	set .@trader_id, getarg(0);
+	set .@enabled, 0;
+	query_sql "select enabled from pz_trader where id = "+.@trader_id, .@enabled;
+	return .@enabled;
+}
+
+// DESC.: Define estado enabled de um NPC trader.
+// ARG0: ID do NPC trader.
+// ARG1: Estado enabled.
+// RETURNS: Vazio.
+function	script	F_PZ_TRADER_SETENABLED	{
+	set .@trader_id, getarg(0);
+	set .@enabled, getarg(1);
+	query_sql "update pz_trader set enabled = "+ .@enabled +" where id = "+.@trader_id;
+	return;
+}
+
+// DESC.: Identifica se um trader existe.
+// ARG0: ID do NPC trader.
+// RETURNS: Bool.
+function	script	F_PZ_TRADER_EXISTS	{
+	set .@id, getarg(0);
+	set .@exists, 0;
+	query_sql "select 1 from pz_trader where id = "+ .@id, .@exists;
+	return .@exists;
+}
+
+// DESC.: Retorna ID de um NPC trader pelo nome script.
+// ARG0: Nome script do NPC trader.
+// RETURNS: ID do NPC trader.
+function	script	F_PZ_TRADER_GETID	{
+	set .@script_name$, getarg(0);
+	set .@id, 0;
+	query_sql "select id from pz_trader where script_name = '"+.@script_name$+"' limit 1", .@id;
+	return .@id;
+}
+
+// DESC.: Cadastra um novo NPC trader.
+// ARG0: Nome de visualização.
+// ARG1: Nome script do NPC.
+// RETURNS: Sucesso.
+function	script	F_PZ_TRADER_NEW	{
+	set .@display_name$, getarg(0);
+	set .@script_name$, getarg(1);
+	if (!callfunc("F_PZ_TRADER_GETID", .@script_name$)) {
+		query_sql "insert into pz_trader (display_name, script_name, enabled) values ('"+.@display_name$+"','"+.@script_name$+"', 0);";
+		return 1;
+	} else {
+		set @error$, "O nome script '" + .@script_name$ + "' já existe.";
+		return 0;
+	}
+}
+
+function	script	F_PZ_TRADER_EDIT	{
+	set .@trader_id, getarg(0);
+	set .@display_name$, getarg(1);
+	set .@script_name$, getarg(2);
+	if (!callfunc("F_PZ_TRADER_GETID", .@script_name$)) {
+		query_sql "update pz_trader set display_name = '" + .@display_name$ + "', script_name = '" + .@script_name$ + "' where id = " + .@trader_id;
+		return 1;
+	} else {
+		set @error$, "O nome script '" + .@script_name$ + "' já existe.";
+		return 0;
+	}
+}
+
+// DESC.: Remove um trader e todos os premios relacionados.
+// ARG0: ID do NPC trader.
+// RETURNS: Vazio.
+function	script	F_PZ_TRADER_DEL	{
+	set .@id, getarg(0);
+	callfunc("F_PZ_PRIZE_DELALL", .@id);
+	query_sql "delete from pz_trader where id = "+.@id;
+	return;
+}
+
+// DESC.: Inicialização do trader.
+// ARG0: ID do NPC trader.
+// RETURNS: Vazio.
+function	script	F_PZ_TRADER_LOAD	{
+	set .@id, getarg(0);
+	set .@display_name$, "";
+	set .@script_name$, "";
+	set .@enabled, 0;
+	query_sql "select display_name, script_name, enabled from pz_trader where id = "+.@id, .@display_name$, .@script_name$, .@enabled;
+	set getvariableofnpc(.display_name$, .@script_name$), .@display_name$;
+	set getvariableofnpc(.enabled, .@script_name$), .@enabled;
+	set getvariableofnpc(.id, .@script_name$), .@id;
+	return;
+}
+
+// DESC.: Imprime visualização de traders.
+// RETURNS: Ultimo indice da pagina.
+function	script	F_PZ_TRADER_LIST_VIEW	{
+	return callfunc("F_PZ_GLOBAL_LIST_VIEW", "pz_trader", "display_name", "");
+}
+
+function	script	F_PZ_TRADER_SUMMARY	{
+	set .@trader_id, getarg(0);
+	set .@display_name$, "";
+	set .@script_name$, "";
+	set .@enabled, 0;
+	query_sql "select display_name, script_name, enabled from pz_trader where id = "+.@trader_id, .@display_name$, .@script_name$, .@enabled;
+	mes "Display: ^ff0000" + .@display_name$ + "^000000";
+	mes "Script: ^ff0000" + .@script_name$ + "^000000";
+	mes "Ativado: ^ff0000" + .@enabled + "^000000";
+	mes "[Premio(s)]";
+	callfunc("F_PZ_PRIZE_LIST_VIEW", .@trader_id);
+	return;
+}
+
+
+
+//=================================================================================================
+//= PRIZE
+//=================================================================================================
+
+// DESC.: Identifica se o premio existe.
+// ARG0: ID do premio.
+// RETURNS: Bool.
+function	script	F_PZ_PRIZE_EXISTS	{
+	set .@id, getarg(0);
+	set .@exists, 0;
+	query_sql "select 1 from pz_prize where id = "+.@id, .@exists;
+	return .@exists;
+}
+
+// DESC.: Retorna ID do premio pelo nome.
+// ARG0: Nome do premio.
+// RETURNS: ID do premio.
+function	script	F_PZ_PRIZE_GETID	{
+	set .@name$, getarg(0);
+	set .@id, 0;
+	query_sql "select id from pz_prize where name = '"+.@name$+"' limit 1", .@id;
+	return .@id;
+}
+
+// DESC.: Retorna primeiro ID de premio de um NPC trader.
+// ARG0: ID do NPC trader.
+// RETURNS: ID do premio.
+function	script	F_PZ_PRIZE_GETFIRST	{
+	set .@trader_id, getarg(0);
+	set .@id, 0;
+	query_sql "select id from pz_prize limit 1", .@id;
+	return .@id;
+}
+
+// DESC.: Cadastra novo premio.
+// ARG0: ID do NPC trader do premio.
+// ARG1: Nome do premio.
+// RETURNS: Sucesso.
+function	script	F_PZ_PRIZE_NEW	{
+	set .@trader_id, getarg(0);
+	set .@name$, getarg(1);
+	if (!callfunc("F_PZ_TRADER_EXISTS", .@trader_id)) {
+		set @error$, "Não foi possível identificar o trader.";
+		return 0;
+	}
+	if ($pz_allow_duplicated_name || !callfunc("F_PZ_PRIZE_GETID", .@name$)) {
+		query_sql "insert into pz_prize (trader_id, name) values ("+.@trader_id+",'"+.@name$+"');";
+		return 1;
+	} else {
+		set @error$, "Não é permitido o cadastro duplicado para nomes de premios.";
+		return 0;
+	}
+}
+
+// DESC.: Remove premio, todos os itens de recompensa e itens de requerimento.
+// ARG0: ID do premio.
+// RETURNS: Vazio.
+function	script	F_PZ_PRIZE_DEL	{
+	set .@id, getarg(0);
+	callfunc("F_PZ_PRIZEITEM_DELALL", .@id);
+	query_sql "delete from pz_prize where id = "+.@id;
+	return;
+}
+
+// DESC.: Remove todos os premios de um trader.
+// ARG0: ID do NPC trader.
+// RETURNS: Vazio.
+function	script	F_PZ_PRIZE_DELALL	{
+	set .@trader_id, getarg(0);
+	set .@id, callfunc("F_PZ_PRIZE_GETFIRST", .@trader_id);
+	while(.@id != 0) {
+		callfunc("F_PZ_PRIZEITEM_DELALL", .@id);
+		callfunc("F_PZ_PRIZE_DEL", .@id);
+		set .@id, callfunc("F_PZ_PRIZE_GETFIRST", .@trader_id);
+	}
+	return;
+}
+
+// DESC.: Realoca um premio para outro trader.
+// ARG0: ID do NPC trader de destino.
+// ARG1: ID do premio que será realocado.
+// RETURNS: Sucesso.
+function	script	F_PZ_PRIZE_REALLOC	{
+	set .@dest_trader_id, getarg(0);
+	set .@prize_id, getarg(1);
+	if (!callfunc("F_PZ_TRADER_EXISTS", .@dest_trader_id)) {
+		set @error$, "Não foi possível identificar o trader.";
+		return 0;
+	}
+	if (!callfunc("F_PZ_PRIZE_EXISTS", .@prize_id)) {
+		set @error$, "Não foi possível identificar o premio.";
+		return 0;
+	}
+	query_sql "update pz_prize set trader_id = "+.@trader_id+" where id = "+.@prize_id;
+	return 1;
+}
+
+// DESC.: Realoca todos os premios para um outro trader.
+// ARG0: ID do NPC trader de origem.
+// ARG1: ID do NPC trader de destino.
+// RETURNS: Sucesso.
+function	script	F_PZ_PRIZE_REALLOCALL	{
+	set .@sour_trader_id, getarg(0);
+	set .@dest_trader_id, getarg(1);
+	set .@prize_id, callfunc("F_PZ_PRIZE_GETFIRST", .@sour_trader_id);
+	while(.@prize_id != 0) {
+		if (!callfunc("F_PZ_PRIZE_REALLOC", .@dest_trader_id, .@prize_id)) {
+			return 0;
+		}
+		set .@prize_id, callfunc("F_PZ_PRIZE_GETFIRST", .@sour_trader_id);
+	}
+	return 1;
+}
+
+// DESC.: Imprime visualização de premios de um trader.
+// ARG0: ID do NPC trader.
+// RETURNS: Ultimo indice da pagina.
+function	script	F_PZ_PRIZE_LIST_VIEW	{
+	return callfunc("F_PZ_GLOBAL_LIST_VIEW", "pz_prize", "name", "trader_id = "+getarg(0));
+}
+
+function	script	F_PZ_PRIZE_SUMMARY	{
+	set .@prize_id, getarg(0);
+	set .@nome$, "";
+	query_sql "select nome from pz_prize where id = "+.@prize_id, .@nome$;
+	mes "Nome: ^ff0000" + .@nome$ + "^000000";
+	
+}
+
+
+//=================================================================================================
+//= PRIZE ITEM
+//=================================================================================================
+
+//function	script	F_PZ_PRIZE_EXISTS_ITEM	{
+//	set .@id, getarg(0);
+//	set .@exists, 0;
+//	query_sql "select 1 from pz_prize_item where id = " + .@id, .@exists;
+//	return .@exists;
+//}
+
+// DESC.: Retorna primeiro ID de um prize_item de um premio.
+// ARG0: ID do premio.
+// RETURNS: Vazio.
+function	script	F_PZ_PRIZEITEM_GETFIRST	{
+	set .@prize_id, getarg(0);
+	set .@id, 0;
+	query_sql "select id from pz_prize_item where prize_id = "+.@prize_id, .@id;
+	return .@id;
+}
+
+// DESC.: Cadastra um novo prize item.
+// ARG0: ID do premio.
+// ARG1: ID do item.
+// ARG2: Quantidade de itens.
+// ARG3: Tipo de prize item PRIZE ou REQUIREMENT.
+// RETURNS: Vazio.
+function	script	F_PZ_PRIZEITEM_NEW	{
+	set .@prize_id, getarg(0);
+	set .@item_id, getarg(1);
+	set .@amount, getarg(2);
+	set .@type$, getarg(3);
+	if (!callfunc("F_PZ_PRIZE_EXISTS", .@prize_id)) {
+		set @error$, "Não foi possível identificar o premio.";
+		return 0;
+	}
+	if (getiteminfo(.@item_id, 0) == -1) {
+		set @error$, "Não foi possível identificar o item.";
+		return 0;
+	}
+	query_sql "insert into pz_prize_item (prize_id, item_id, amount, type) values ("+.@prize_id+","+.@item_id+","+.@amount+","+.@type$+");";
+	return 1;
+}
+
+// DESC.: Remove prize item.
+// ARG0: ID do prize item.
+// RETURNS: Vazio.
+function	script	F_PZ_PRIZEITEM_DEL	{
+	set .@id, getarg(0);
+	query_sql "delete from pz_prize_item where id = " + .@id;
+	return;
+}
+
+// DESC.: Remove todos os prize itens de um premio.
+// ARG0: ID do premio.
+// RETURNS: Vazio.
+function	script	F_PZ_PRIZEITEM_DELALL	{
+	set .@prize_id, getarg(0);
+	set .@id, callfunc("F_PZ_PRIZEITEM_GETFIRST", .@prize_id);
+	while(.@id != 0) {
+		query_sql "delete from pz_prize_item where id = " + .@id;
+		set .@id, callfunc("F_PZ_PRIZEITEM_GETFIRST", .@prize_id);
+	}
+	return;
+}
+
+//=================================================================================================
+//= GLOBAL
+//=================================================================================================
+
+// DESC.: Imprime visualização por paginas de itens de uma tabela
+// ARG0: Nome da tabela.
+// ARG1: Coluna de visualização.
+// ARG2: Where.
+// RETURNS: Quantidade de itens selecionados.
+function	script	F_PZ_GLOBAL_LIST_VIEW	{
+	set .@table_name$, getarg(0);
+	set .@display_column$, getarg(1);
+	set .@where$, getarg(2);
+	
+	deletearray .@display_name$[0], getarraysize(.@display_name$);
+	deletearray .@id, getarraysize(.@id);
+	set .@query$, "select id, "+.@display_column$+" from "+.@table_name$;
+	if (.@where$ != "") {
+		set .@query$, .@query$ + " where " + .@where$;
+	}
+	set .@query$, .@query$ + " order by "+.@display_column$+" limit 0," + $pz_max_array_size + ";";
+	debugmes .@query$;
+	query_sql .@query$, .@id, .@display_name$;
+	set .@count, getarraysize(.@display_name$);
+	for(set .@i, 0; .@i < .@count; set .@i, .@i + 1) {
+		mes "[" + .@id[.@i] + "] " + .@display_name$[.@i];
+	}
+	if (.@count == 0){
+		mes "^bbbbbbN/A^000000";
+	}
+	return .@count;
+}
+
+
+// DESC.: Poda logs de alteração com idade em dias maior ou igual ao valor especificado na
+//        variável global $pz_change_log_prune_age
+// RETURNS: Vazio.
+function	script	F_PZ_GLOBAL_PRUNECHANGELOG	{
+	if ($pz_change_log_prune_age) {
+		query_sql "delete from pz_change_log where DATEDIFF(now(), change_date) >= "+$pz_change_log_prune_age+";";
+	}
+	return;
+}
+
+// DESC.: Poda logs de trocas com idade em dias maior ou igual ao valor especificado na
+//        variável global $pz_trade_log_prune_age
+// RETURNS: Vazio.
+function	script	F_PZ_GLOBAL_PRUNETRADELOG	{
+	if ($pz_trade_log_prune_age) {
+		query_sql "delete from pz_trade_log where DATEDIFF(now(), trade_date) >= "+$pz_trade_log_prune_age+";";
+	}
+	return;
+}
+
+// DESC.: Remove registros orfãos.
+// RETURNS: Vazio.
+function	script	F_PZ_GLOBAL_CLEAN_ORPHANED	{
+	// Remove itens orfãos.
+	if ($pz_clean_orphaned) {
+		query_sql "delete a "+
+	              "from pz_prize_item a "+
+	              "left join pz_prize b on a.prize_id = b.id "+
+	              "where b.id is null;";
+
+		// Remove premios orfãos.
+		query_sql "delete a "+
+	              "from pz_prize a "+
+	              "left join pz_trader b on a.trader_id = b.id "+
+	              "where b.id is null;";
+	}
+    return;
+}
+
+// DESC.: Restaura valores padrões das variáveis globais de controle do script.
+// RETURNS: Vazio.
+function	script	F_PZ_GLOBAL_RESTOREDEFAULTS	{
+	set $pz_max_array_size, 120;
+	set $pz_allow_duplicated_name, 0;
+	set $pz_trade_log, 1;
+	set $pz_change_log, 1;
+	set $pz_trade_log_prune_age, 0;
+	set $pz_change_log_prune_age, 0;
+	set $pz_clean_orphaned, 1;
+	set $pz_admin_level, 99;
+	set $pz_mantainer_level, 10;
+	set $pz_page_size, 10;
+	return;
+}

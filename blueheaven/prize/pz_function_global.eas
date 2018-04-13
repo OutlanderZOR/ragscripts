@@ -1,0 +1,7 @@
+
+// DESC.: 
+// ARG0: 
+// RETURNS: Vazio.
+function	script	F_PZ_GLOBAL_TITLE	{
+	return "[" + "^00b293" + "PZ - " + getarg(0) + "^000000" + "]";
+}

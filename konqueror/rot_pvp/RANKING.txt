@@ -1,0 +1,164 @@
+-	script	rank_cleanup	-1,{
+OnHour00:
+OnInit:
+	query_sql "update pvp set "+
+			"total_kills_hoje = 0, "+
+			"total_mortes_hoje = 0, "+
+			"total_mortes_mplayer_hoje = 0, "+
+			"noobs_killed_hoje = 0, "+
+			"mw_killed_hoje = 0, "+
+			"mw_mortes_hoje = 0, "+
+			"mk_doublekill_hoje = 0, "+
+			"mk_multikill_hoje = 0, "+
+			"mk_ultrakill_hoje = 0, "+
+			"mk_monsterkill_hoje = 0, "+
+			"mk_unstoppable_hoje = 0, "+
+			"mk_holyshit_hoje = 0, "+
+			"mk_godlike_hoje = 0, "+
+			"mk_wickedsick_hoje = 0, "+
+			"day_now = curdate() "+
+			"where day_now < curdate();";
+	end;
+}
+
+//======================================================================
+//= TOTAL KILLS HOJE
+//======================================================================
+pvp_y_room.gat,38,91,4	script	Ranking Total Kills Hoje	857,{
+	cleararray(@nome$[0],"",getarraysize(@nome$));
+	cleararray(@valor[0],0,getarraysize(@valor));
+	sleep2 100;
+	query_sql "select substring(name,1,18), total_kills_hoje from pvp where total_kills_hoje > 0 and name <> '' "+
+    "order by total_kills_hoje DESC limit 20",@nome$,@valor;
+
+	set .@title$, "[^D3220E" + "Ranking Total Kills Hoje - 255" + "^000000]";
+	mes .@title$;
+	if (getarraysize(@valor)==0) {
+		mes "^616161Nenhum resultado disponível...^000000";
+		close;
+	}
+	set @i, 0;
+	do {
+		if (@nome$[@i] != "") mes "^D96700" + (@i + 1) + "º^000000 ^1285E2" + @nome$[@i] + "^000000 ^D909AF" + @valor[@i] + " kills ^000000";
+		set @i, @i + 1;
+		if (@valor[@i]==0) break;
+	} while (@i <= 20);
+	close;
+	
+OnInit:
+	waitingroom "Rank - Kills Hoje",0;
+	end;
+}
+//======================================================================
+//= TOTAL KILLS
+//======================================================================
+pvp_y_room.gat,30,91,4	script	Ranking Total Kills	857,{
+	cleararray(@nome$[0],"",getarraysize(@nome$));
+	cleararray(@valor[0],0,getarraysize(@valor));
+	sleep2 100;
+	query_sql "select substring(name,1,18), total_kills from pvp where total_kills > 0 and name <> '' "+
+    "order by total_kills DESC limit 20",@nome$,@valor;
+
+	set .@title$, "[^D3220E" + "Ranking Total Kills - 255" + "^000000]";	
+	mes .@title$;
+	if (getarraysize(@valor)==0) {
+		mes "^616161Nenhum resultado disponível...^000000";
+		close;
+	}
+	set @i, 0;
+	do {
+		if (@nome$[@i] != "") mes "^D96700" + (@i + 1) + "º^000000 ^1285E2" + @nome$[@i] + "^000000 ^D909AF" + @valor[@i] + " kills ^000000";
+		set @i, @i + 1;
+		if (@valor[@i]==0) break;
+	} while (@i <= 20);
+	close;
+	
+OnInit:
+	waitingroom "Rank - Total Kills",0;
+	end;
+}
+//======================================================================
+//= TOTAL PTS
+//======================================================================
+pvp_y_room.gat,46,91,4	script	Ranking Total Pts	857,{
+	cleararray(@nome$[0],"",getarraysize(@nome$));
+	cleararray(@valor[0],0,getarraysize(@valor));
+	sleep2 100;
+	query_sql "select substring(name,1,18), fnc_total_pts(char_id) from pvp where fnc_total_pts(char_id) > 0 and name <> '' "+
+    "order by fnc_total_pts(char_id) DESC limit 20",@nome$,@valor;
+
+	set .@title$, "[^D3220E" + "Ranking Total Pts - 255" + "^000000]";
+	mes .@title$;
+	if (getarraysize(@valor)==0) {
+		mes "^616161Nenhum resultado disponível...^000000";
+		close;
+	}
+	set @i, 0;
+	do {
+		if (@nome$[@i] != "") mes "^D96700" + (@i + 1) + "º^000000 ^1285E2" + @nome$[@i] + "^000000 ^D909AF" + @valor[@i] + " pontos ^000000";
+		set @i, @i + 1;
+		if (@valor[@i]==0) break;
+	} while (@i <= 20);
+	close;
+	
+OnInit:
+	waitingroom "Rank - Pontuação",0;
+	end;
+}
+//======================================================================
+//= OS MELHORES
+//======================================================================
+//pvp_y_room.gat,54,91,4	script	Ranking Os Melhores	857,{
+//	cleararray(@nome$[0],"",getarraysize(@nome$));
+//	cleararray(@valor[0],0,getarraysize(@valor));
+//	sleep2 100;
+//	query_sql "select substring(a.name,1,20), fnc_retorna_nota(a.char_id) " +
+//	"from pvp a " +
+//	"join `char` b on a.char_id = b.char_id " +
+//	"join login c on c.account_id = b.account_id " +
+//	"where fnc_retorna_nota(a.char_id) > 80 and lastlogin > curdate() - 10 " +
+//	"order by fnc_retorna_nota(a.char_id) DESC limit 10",@nome$,@valor;
+//
+//	set .@title$, "[^D3220E" + "Ranking Os Melhores - 255" + "^000000]";
+//	
+//	mes .@title$;
+//	set @i, 0;
+//	do {
+//		if (@nome$[@i] != "") mes "^D96700" + (@i + 1) + "º^000000 ^1285E2" + @nome$[@i] + "^000000 ^D909AF" + @valor[@i] + "%^000000";
+//		set @i, @i + 1;
+//		if (@valor[@i]==0) break;
+//	} while (@i <= 20);
+//	close;
+//	
+//OnInit:
+//	waitingroom "Rank - Os Melhores",0;
+//	end;
+//}
+//======================================================================
+//= RANK CLASSES
+//======================================================================
+//pvp_y_room.gat,37,51,0	script	Rank de Classes 255	857,{
+//	set .@title$, "[^D3220E" + "Ranking de Classes - 255" + "^000000]";
+//	
+//	sleep2 50;
+//	
+//	query_sql "select c.name, sum(fnc_total_pts(a.char_id)) total_pts "+
+//	"from pvp a "+
+//	"join `char` b on a.char_id = b.char_id "+
+//	"join classes c on b.class = c.id "+
+//	"where b.base_level >= 254 "+
+//	"group by b.class "+
+//	"order by total_pts desc",@name$,@total_pts;
+//	
+//	mes .@title$;
+//	set @i, 0;
+//	do {
+//		mes "^D96700" + (@i+1) + "º^000000 ^1285E2" + @name$[@i] + "^000000 ^D909AF" + @total_pts[@i] + " pontos^000000";
+//		set @i, @i + 1;
+//	} while (@i < getarraysize(@name$));
+//	close;
+//	
+//OnInit:
+//	waitingroom "Rank - Classes",0;
+//	end;
+//}

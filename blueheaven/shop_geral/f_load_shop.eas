@@ -1,0 +1,32 @@
+// Configura itens de lojas a partir de registros no banco de dados
+function	script	F_LOAD_SHOP	{
+	set .@name$, getarg(0);
+	set .@exists, 0;
+	set .@shopid, 0;
+	deletearray .@itemid[0], getarraysize(.@itemid);
+	deletearray .@name_japanese$, getarraysize(.@name_japanese$);
+	deletearray .@price, getarraysize(.@price);
+	
+	query_sql "select 1 from shop a where a.name = '"+ .@name$ +"';", .@exists;
+	if (.@exists) {
+		query_sql "select b.itemid, c.name_japanese, ifnull(b.price, c.price_buy) price " +
+				  "from shop a " +
+				  "join shopitem b on a.shopid = b.shopid " +
+				  "join item_db c on b.itemid = c.id " +
+				  "where a.name = '"+ .@name$ +"' " +
+				  "and ifnull(b.price, c.price_buy) is not null " +
+				  "order by c.name_japanese;", .@itemid, .@name_japanese$, .@price;
+		
+		// Remove item inicial que permite a existencia da loja.
+		npcshopdelitem .@name$, 512;
+		
+		for(set .@i, 0; .@i < getarraysize(.@itemid); set .@i, .@i + 1) {
+			npcshopdelitem .@name$, .@itemid[.@i];
+			npcshopadditem .@name$, .@itemid[.@i], .@price[.@i];
+		}
+	} else {
+		query_sql "insert into shop (name) values ('"+ .@name$ +"');";
+	}
+	query_sql "select shopid from shop where name = '"+ .@name$ +"';", .@shopid;
+	return .@shopid;
+}

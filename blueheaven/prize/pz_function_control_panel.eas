@@ -1,0 +1,255 @@
+function	script	F_PZ_CP_MAIN	{
+L_BEGIN:
+	set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Painel de controle");
+	mes .@title$;
+	mes "intro message";
+	next;
+	switch(select("Traders:Mantenedores:Configurações:Sair")) {
+		case 1:
+			callfunc("F_PZ_CP_TRADER");
+			break;
+		case 2:
+			callfunc("F_PZ_CP_MAINTAINER");
+			break;
+		case 3:
+			callfunc("F_PZ_CP_SCRIPT_CONFIG");
+			break;
+		case 4:
+			callfunc("F_PZ_CP_EXIT");
+			break;
+	}
+	goto L_BEGIN;
+}
+
+function	script	F_PZ_CP_TRADER	{
+L_BEGIN:	
+	set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Traders");
+	mes .@title$;
+	callfunc("F_PZ_TRADER_LIST_VIEW");
+	next;
+	switch(select("Novo:Editar:Remover:Voltar <<:Sair")) {
+		case 1:
+			callfunc("F_PZ_CP_TRADER_NEW");
+			break;
+		case 2:
+			input .@trader_id;
+			next;
+			callfunc("F_PZ_CP_TRADER_EDIT", .@trader_id);
+			break;
+		case 3:
+			input .@trader_id;
+			callfunc("F_PZ_CP_TRADER_REMOVE", .@trader_id);
+			break;
+		case 4:
+			return;
+		case 5:
+			callfunc("F_PZ_CP_EXIT");
+			break;
+	}
+	goto L_BEGIN;
+}
+
+function	script	F_PZ_CP_TRADER_EXISTS	{
+	set .@trader_id, getarg(0);
+	set .@exists, callfunc("F_PZ_TRADER_EXISTS", .@trader_id);
+	if (!.@exists) {
+		mes "O ID '" + .@trader_id + "' não é valido.";
+		next;
+	}
+	return .@exists;
+}
+
+function	script	F_PZ_CP_TRADER_NEW	{
+L_BEGIN:
+	set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Novo trader");
+	mes .@title$;
+	mes "Informe o nome de visualização do trader.";
+	input .@display_name$;
+	mes "Informe o nome script do NPC trader.";
+	input .@script_name$;
+	next;
+	mes .@title$;
+	mes "Confirme os dados:";
+	mes "Display: ^ff0000" + .@display_name$ + "^000000";
+	mes "Script: ^ff0000" + .@script_name$ + "^000000";
+	next;
+	switch(select("Confirmar:Redefinir")) {
+		case 1:
+			mes .@title$;
+			if (callfunc("F_PZ_TRADER_NEW", .@display_name$, .@script_name$)) {
+				mes "Trader cadastrado.";
+			} else {
+				mes @error$;
+			}
+			next;
+			return;
+		case 2:
+			break;
+	}
+	goto L_BEGIN;
+}
+
+function	script	F_PZ_CP_TRADER_EDIT	{
+	set .@trader_id, getarg(0);
+	set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Editar trader");
+L_BEGIN:
+	mes .@title$;
+	if (!callfunc("F_PZ_CP_TRADER_EXISTS", .@trader_id)) {
+		return;
+	}
+	callfunc("F_PZ_TRADER_SUMMARY", .@trader_id);
+	next;
+	switch(select("Premios:Alterar nome:Ativar/Desativar:Voltar <<:Sair")) {
+		case 1:
+			callfunc("F_PZ_CP_PRIZE", .@trader_id);
+			break;
+		case 2:
+			callfunc("F_PZ_CP_TRADER_EDIT_NAME", .@trader_id);
+			break;
+		case 3:
+			callfunc("F_PZ_TRADER_SETENABLED", .@trader_id, !callfunc("F_PZ_TRADER_GETENABLED", .@trader_id));
+			break;
+		case 4:
+			return;
+		case 5:
+			callfunc("F_PZ_CP_EXIT");
+			break;
+	}
+	goto L_BEGIN;
+}
+
+function	script	F_PZ_CP_TRADER_EDIT_NAME	{
+	set .@trader_id, getarg(0);
+	set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Alterar nome do trader");
+L_BEGIN:
+	mes .@title$;
+	mes "Informe o nome de visualização do trader.";
+	input .@display_name$;
+	mes "Informe o nome script do NPC trader.";
+	input .@script_name$;
+	next;
+	mes .@title$;
+	mes "Confirme os dados:";
+	mes "Display: ^ff0000" + .@display_name$ + "^000000";
+	mes "Script: ^ff0000" + .@script_name$ + "^000000";
+	next;
+	switch(select("Confirmar:Redefinir")) {
+		case 1:
+			mes .@title$;
+			if (callfunc("F_PZ_TRADER_EDIT", .@trader_id, .@display_name$, .@script_name$)) {
+				mes "Nome do trader alterado.";
+			} else {
+				mes @error$;
+			}
+			next;
+			return;
+		case 2:
+			break;
+	}
+	goto L_BEGIN;
+}
+
+function	script	F_PZ_CP_TRADER_REMOVE	{
+	set .@trader_id, getarg(0);
+	set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Remover trader");
+	mes .@title$;
+	if (!callfunc("F_PZ_CP_TRADER_EXISTS", .@trader_id)) {
+		return;
+	}
+	mes "Confirmar remoção do trader.";
+	mes "";
+	mes "OBS.: ^ff0000" + "Todos os premios relacionados ao trader também serão removidos." + "^000000";
+	next;
+	switch(select("Confirmar:Voltar <<:Sair")) {
+		case 1:
+			callfunc("F_PZ_TRADER_DEL", .@trader_id);
+			break;
+		case 2:
+			break;
+		case 3:
+			callfunc("F_PZ_CP_EXIT");
+			break;
+	}
+	next;
+	return;
+}
+
+function	script	F_PZ_CP_PRIZE	{
+	set .@trader_id, getarg(0);
+	set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Premios");
+L_BEGIN:
+	mes .@title$;
+	callfunc("F_PZ_PRIZE_LIST_VIEW", .@trader_id);
+	next;
+	switch(select("Novo:Editar:Remover:Voltar <<:Sair")) {
+		case 1:
+			callfunc("F_PZ_CP_PRIZE_NEW", .@trader_id);
+			break;
+		case 2:
+			input .@prize_id;
+			callfunc("F_PZ_CP_PRIZE_EDIT", .@prize_id);
+			break;
+		case 3:
+			input .@prize_id;
+			callfunc("F_PZ_CP_PRIZE_REMOVE", .@prize_id);
+			break;
+		case 4:
+			return;
+		case 5:
+			callfunc("F_PZ_CP_EXIT");
+			break;
+	}
+	goto L_BEGIN;
+}
+
+function	script	F_PZ_CP_PRIZE_NEW	{
+	set .@trader_id, getarg(0);
+	set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Novo premio");
+	mes .@title$;
+	mes "Informe o nome do premio.";
+	input .@nome$;
+	next;
+	mes .@title$;
+	mes "Confirme o nome:";
+	mes "Nome: ^ff0000" + .@nome$ + "^000000";
+	next;
+	switch(select("Confirmar:Voltar <<")) {
+		case 1:
+			mes .@title$;
+			if (callfunc("F_PZ_PRIZE_NEW", .@trader_id, .@nome$)) {
+				mes "Premio cadastrado.";
+			} else {
+				mes @error$;
+			}
+			break;
+		case 2:
+			break;
+	}
+	next;
+	return;
+}
+
+function	script	F_PZ_CP_PRIZE_EDIT	{
+	set .@prize_id, getarg(0);
+	set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Editar premio");
+L_BEGIN:
+	mes .@title$;
+	next;
+	switch(select("Adicionar item:Remover item")) {
+		case 1:
+			callfunc("F_PZ_CP_PRIZE_ITEM_NEW", .@prize_id);
+			break;
+		case 2:
+			input .@prize_item_id;
+			callfunc("F_PZ_PRIZEITEM_DEL", .@prize_item_id);
+			break;
+	}
+	goto L_BEGIN;
+}
+
+function	script	F_PZ_CP_EXIT	{
+	set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Painel de controle");
+	mes .@title$;
+	mes "Flw.";
+	close;
+}

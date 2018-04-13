@@ -1,0 +1,27 @@
+function	script	FNC_BotCheck	{
+	set @tentativas, 0;
+	set .@title$, "["+"^ad250a"+"Anti-Console Bot Check"+"^000000"+"]";
+	do {
+		mes .@title$;
+		set @size, rand(1, 10);
+		set @pre$, "";
+		for(set @i, 0; @i < @size; set @i, @i + 1) {
+			set @pre$, @pre$ + rand(0, 9);
+		}
+		set @size, rand(1, 10);
+		set @pos$, "";
+		for(set @i, 0; @i < @size; set @i, @i + 1) {
+			set @pos$, @pos$ + rand(0, 9);
+		}
+		set @code, rand(10,9999999);
+		mes "Digite o número para continuar...";
+		mes " ";
+		mes "-----------------------------------";
+		mes "^FFFFFF" + @pre$ + "^2d3742" + @code + "^FFFFFF" + @pos$ + "^000000";
+		mes "-----------------------------------";
+		set @tentativas, @tentativas + 1;
+		input @pccode;
+		close2;
+	} while (@tentativas < 3) && (@code != @pccode);
+	return @code == @pccode;
+}

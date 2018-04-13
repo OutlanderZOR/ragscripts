@@ -1,0 +1,20 @@
+prontera,160,187,4	script	PvP Warper#vai	874,{
+	warp "pvp_y_room", 41, 72;
+	savepoint "pvp_y_room", 41, 72;
+	end;
+	
+OnInit:
+	waitingroom "Central PvP", 0;
+	end;
+}
+izlude,128,150,4	duplicate(PvP Warper#vai)	PvP Warper#1	874
+
+pvp_y_room,51,39,0	script	PvP Warper#volta	874,{
+	warp "prontera", 156, 180;
+	savepoint "prontera", 156, 180;
+	end;
+	
+OnInit:
+	waitingroom "Prontera", 0;
+	end;
+}

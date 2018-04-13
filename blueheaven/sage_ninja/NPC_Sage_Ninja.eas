@@ -1,0 +1,55 @@
+quiz_00,56,36,4	script	Sage Ninja	998,{
+	set .@duracao, 1800000;
+	set .@title$, "[" + "^4611bd" + "Sage Ninja" + "^000000" + "]";
+	mes .@title$;
+	mes "Eu sei que vc nunca conseguirá ser tão maneiro como eu, " +
+		"um sage ninja, mas não se preocupe, tenho algo especial para vc.";
+	next;
+	mes .@title$;
+	mes "O rei de midgard pediu para que eu fornecesse a todos que conseguissem " +
+		"entrar nesta sala o encantamento elemental de armas e buffs de longa duração.";
+	next;
+	mes .@title$;
+	mes "E então, o que vai ser?";
+	next;
+	switch(select("Buffs:Encantamento de Arma:Sair")) {
+		case 1:
+			mes .@title$;
+			mes "Os buffs acabarão após "+ (.@duracao/60000) +" minutos ou caso vc morra.";
+
+			sc_start SC_MAGNIFICAT, .@duracao, 10;
+			sc_start SC_GLORIA, .@duracao, 5;
+			sc_start SC_IMPOSITIO, .@duracao, 5;
+			sc_start SC_INCREASEAGI, .@duracao, 10;
+			sc_start SC_BLESSING, .@duracao, 10;
+			sc_start SC_ANGELUS, .@duracao, 10;
+			sc_start SC_MAXIMIZEPOWER, .@duracao, 5;
+			sc_start SC_WINDWALK, .@duracao, 10;
+			sc_start SC_CP_WEAPON, .@duracao, 5;
+			sc_start SC_CP_SHIELD, .@duracao, 5;
+			sc_start SC_CP_ARMOR, .@duracao, 5;
+			sc_start SC_CP_HELM, .@duracao, 5;
+			break;
+		case 2:
+			mes .@title$;
+			mes "Com qual elemento deseja encantar sua arma?";
+			next;
+			switch(select("Fire:Water:Wind:Earth")) {
+				case 1:
+					sc_start SC_FIREWEAPON, .@duracao, 0;
+					break;
+				case 2:
+					sc_start SC_WATERWEAPON, .@duracao, 0;
+					break;
+				case 3:
+					sc_start SC_WINDWEAPON, .@duracao, 0;
+					break;
+				case 4:
+					sc_start SC_EARTHWEAPON, .@duracao, 0;
+					break;
+			}
+			mes "O encantamento acabará após "+ (.@duracao/60000) +" minutos ou caso vc morra.";
+			break;
+	}
+	close2;
+}

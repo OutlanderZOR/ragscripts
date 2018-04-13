@@ -1,0 +1,29 @@
+//======================================================================
+//= MVP KILLERS
+//======================================================================
+prontera,141,166,6	script	Ranking Top Mvp Killers	857,{
+	deletearray .@nome$[0], getarraysize(.@nome$);
+	deletearray .@valor[0], getarraysize(.@valor);
+
+	sleep2 100;
+	
+	query_sql "select substring(name,1,18), count(a.charid) " +
+			  "from `mvpkill` a "+
+			  "join `char` b on a.charid = b.char_id "+
+			  "group by a.charid "+
+			  "order by count(a.charid) desc limit 10",.@nome$, .@valor;
+
+	set .@title$, "[^D3220E" + "Ranking Top 10 Mvp Killers" + "^000000]";
+	mes .@title$;
+	if (getarraysize(.@valor)==0) {
+		mes "^616161Nenhum resultado disponível...^000000";
+		close;
+	}
+	set .@i, 0;
+	do {
+		if (.@nome$[.@i] != "") mes "^D96700" + (.@i + 1) + "º^000000 ^1285E2" + .@nome$[.@i] + "^000000 ^D909AF" + .@valor[.@i] + " MvPs ^000000";
+		set .@i, .@i + 1;
+		if (.@valor[.@i]==0) break;
+	} while (.@i <= 19);
+	close;	
+}

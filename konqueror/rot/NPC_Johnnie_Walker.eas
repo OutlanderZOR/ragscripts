@@ -1,0 +1,90 @@
+prontera,164,164,2	script	Johnnie Walker	903,{
+	function F_ConstruirMenuItem
+	{
+		set .@len, 0;
+		set .@len, getarraysize(.item);
+		if (.@len)
+		{
+			set .@menu$, "Cancelar:";
+			for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+			{
+				set .@menu$, .@menu$ + "^333333" + getitemname(.item[.@i]) + "^000000 - ^f600ff" + .preco[.@i] + " Skulls^000000:";
+			}
+		}
+		return .@menu$;
+	}
+
+	set .@title$, "[" + "^d18d4a" + "Johnnie Walker" + "^000000" + "]";
+	mes .@title$;
+	mes "Olá meu jovem, estou trocando itens raros por ^0000ffSkulls de PVP^000000.";
+	mes "Estaria interessado no assunto?";
+	next;
+	menu "Sim:Não",-;
+	mes .@title$;
+	switch(@menu)
+	{
+		case 1:
+			mes "Ai está a lita de itens que possuo.";
+			next;
+			menu F_ConstruirMenuItem(),-;
+			break;
+		case 2:
+			mes "Volte quando quiser ouvir minha proposta...";
+			close;
+	}
+	mes .@title$;
+	if (@menu == 1)
+	{
+		mes "Volte quando mudar de idéia.";
+	} 
+	else
+	{
+		set @indice, @menu - 2;
+		mes "O item ^0000ff" + getitemname(.item[@indice]) + "^000000 pode ser obtido por ^0000ff" + .preco[@indice] + " Skulls^000000.";
+		mes "Deseja prosseguir com a troca?";
+		next;
+		menu "Sim:Não",-;
+		mes .@title$;
+		switch(@menu)
+		{
+			case 1:
+				if (countitem(7420) >= .preco[@indice])
+				{
+					delitem 7420, .preco[@indice];
+					getitem .item[@indice], 1;
+					mes "Ai está, bom proveito e até a próxima...";
+				}
+				else
+				{
+					mes "Você não possui ^0000ffSkulls^000000 suficiente para efetuar a troca, volte quando conseguir alguma coisa...";
+				}
+				break;
+			case 2:
+				mes "Volte quando tiver certeza...";
+				break;
+		}
+	}
+	close;
+
+OnInit:
+	setarray .item,
+		5132,
+		5013,
+		2630,
+		2410,
+		2541;
+	setarray .preco,
+		400,
+		800,
+		1200,
+		1600,
+		50000;
+	end;
+//5013 Lord Kaho
+//2410 Sleipnir
+//2541 Aesprika
+//2630 Brisingamen
+//5132 Angeling Hat
+
+		//getitemname
+}

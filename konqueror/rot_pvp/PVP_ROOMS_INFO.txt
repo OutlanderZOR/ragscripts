@@ -1,0 +1,43 @@
+pvp_y_room.gat,33,72,4	script	PvP Informante	868,{
+	cutin "lhz_kaz06",2;
+	sleep2 50;
+	
+	cleararray(@map_name$[0],"",getarraysize(@map_name$));
+	cleararray(@whisper_name$[0],"",getarraysize(@whisper_name$));
+	query_sql "select map_name, whisper_name from pvp_room",@map_name$,@whisper_name$;
+	
+	set .@title$,"[^681EA6PvP Informante^000000]";
+	mes .@title$;
+	set @i,0;
+	do {
+		if (getmapusers(@map_name$[@i]) > 0) {
+			mes @whisper_name$[@i] + " - Players: " + getmapusers(@map_name$[@i]);
+		}
+		set @i, @i + 1;
+	} while (@i < getarraysize(@whisper_name$)+1);
+	if (getmapusers("bat_c01"))
+	{
+		mes "Ringue Arena - Players: " + getmapusers("bat_c01");
+	}
+	if (getgmlevel()>=99) goto L_MapChange;
+	close2;
+	cutin "",255;
+	end;
+	
+L_MapChange:
+	next;
+	mes "alterar mapas?";
+	set @doit,select("não","sim");
+	if (@doit==2) {
+		donpcevent "PvP_Rotator::OnEvent";
+	}
+	close2;
+	cutin "",255;
+	end;
+	
+
+	
+end;
+}
+
+pvp_y_room.gat,81,72,4	duplicate(PvP Informante)	PvP Informante#soldier2	868

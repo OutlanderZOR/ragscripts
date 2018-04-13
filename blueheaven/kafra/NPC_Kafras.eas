@@ -1,0 +1,8 @@
+quiz_00,62,36,4	script	Kafra#rk01	112,{
+	callfunc("F_Dialogo_Kafra", "VIP", "quiz_00", 65, 6, "rot_kafra2");
+	end;
+}
+prontera,163,183,4	script	Kafra#rk02	116,{
+	callfunc("F_Dialogo_Kafra", "Prontera", "prontera", 156, 179, "rot_kafra1");
+	end;
+}

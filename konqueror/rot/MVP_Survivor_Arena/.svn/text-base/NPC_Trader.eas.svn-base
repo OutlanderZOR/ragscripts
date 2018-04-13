@@ -1,0 +1,155 @@
+//|      ___           ___           ___           ___                                                    ___     
+//|     /  /\         /  /\         /  /\         /  /\          ___            ___         ___          /  /\    
+//|    /  /::\       /  /::\       /  /::\       /  /::\        /__/\          /__/\       /  /\        /  /::\   
+//|   /  /:/\:\     /  /:/\:\     /  /:/\:\     /  /:/\:\       \  \:\         \__\:\     /  /:/       /  /:/\:\  
+//|  /  /:/  \:\   /  /::\ \:\   /  /::\ \:\   /  /::\ \:\       \__\:\        /  /::\   /  /:/       /  /::\ \:\ 
+//| /__/:/ \  \:\ /__/:/\:\_\:\ /__/:/\:\ \:\ /__/:/\:\_\:\      /  /::\    __/  /:/\/  /__/:/  ___  /__/:/\:\ \:\
+//| \  \:\  \__\/ \__\/~|::\/:/ \  \:\ \:\_\/ \__\/  \:\/:/     /  /:/\:\  /__/\/:/~~   |  |:| /  /\ \  \:\ \:\_\/
+//|  \  \:\          |  |:|::/   \  \:\ \:\        \__\::/     /  /:/__\/  \  \::/      |  |:|/  /:/  \  \:\ \:\  
+//|   \  \:\         |  |:|\/     \  \:\_\/        /  /:/     /__/:/        \  \:\      |__|:|__/:/    \  \:\_\/  
+//|    \  \:\        |__|:|~       \  \:\         /__/:/      \__\/          \__\/       \__\::::/      \  \:\    
+//|     \__\/         \__\|         \__\/         \__\/                                      ~~~~        \__\/    
+//|      ___           ___           ___                                                    ___                   
+//|     /  /\         /  /\         /  /\           ___         ___           ___          /  /\                  
+//|    /  /::\       /  /::\       /  /::\         /__/\       /  /\         /__/\        /  /::\                 
+//|   /__/:/\:\     /  /:/\:\     /  /:/\:\        \__\:\     /  /::\        \  \:\      /__/:/\:\                
+//|  _\_ \:\ \:\   /  /:/  \:\   /  /::\ \:\       /  /::\   /  /:/\:\        \__\:\    _\_ \:\ \:\               
+//| /__/\ \:\ \:\ /__/:/ \  \:\ /__/:/\:\_\:\   __/  /:/\/  /  /::\ \:\       /  /::\  /__/\ \:\ \:\              
+//| \  \:\ \:\_\/ \  \:\  \__\/ \__\/~|::\/:/  /__/\/:/~~  /__/:/\:\_\:\     /  /:/\:\ \  \:\ \:\_\/              
+//|  \  \:\_\:\    \  \:\          |  |:|::/   \  \::/     \__\/  \:\/:/    /  /:/__\/  \  \:\_\:\                
+//|   \  \:\/:/     \  \:\         |  |:|\/     \  \:\          \  \::/    /__/:/        \  \:\/:/                
+//|    \  \::/       \  \:\        |__|:|~       \__\/           \__\/     \__\/          \  \::/                 
+//|     \__\/         \__\/         \__\|                                                  \__\/                  
+//|
+//|===============================================================================================================
+//|
+//|				M V P    S U R V I V O R    A R E N A
+//|
+//|===============================================================================================================
+//|
+//| Módulo: Trader
+//| Categoria: Evento
+//| Autor: Outlander
+//| Data: 12/01/2008
+//| SQL: Não
+//| 
+//|===============================================================================================================
+prontera,164,146,2	script	MSA Trader	998,{
+//|===============================================================================================================
+//|	Funções essenciais
+//|===============================================================================================================
+	// Cria menu
+	function F_Menu
+	{
+		next;
+		set .@len, getarraysize(.menu$);
+		set .@menu$, "";
+		for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+		{
+			set .@menu$, .@menu$ + .lo$ + .menu$[.@i] + .ro$ + ":";
+		}
+		deletearray .menu$[0], .@len;
+		menu .@menu$, -;
+		return @menu;
+	}
+
+	set .@title$, "[MSA Trader]";
+	mes .@title$;
+	if (MSA_Nivel_Completo)
+	{
+		set .@itemid, 0;
+		mes "Parabéns, ai está o seu premio.";
+		switch(MSA_Nivel_Completo)
+		{
+			case 1:
+				set .@itemid, .premioFacil[rand(getarraysize(.premioFacil))];
+				break;
+			case 2:
+				set .@itemid, .premioMedio[rand(getarraysize(.premioMedio))];
+				break;
+			case 3:
+				set .@itemid, .premioDificil[rand(getarraysize(.premioDificil))];
+				break;
+		}
+		getitem .@itemid, 1;
+		set .@itemid, 0;
+		set MSA_Nivel_Completo, 0;
+	}
+	else
+	{
+		mes "Veja os premios que estarão valendo para o próximo round.";
+		setarray .menu$, "Playground", "Normal", "Ninja";
+		F_Menu();
+		mes .@title$;
+		switch(@menu)
+		{
+			case 1:
+				set .@len, getarraysize(.premioFacil);
+				for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+					mes .premioFacil[.@i] + " - " + getitemname(.premioFacil[.@i]);
+				break;
+			case 2:
+				set .@len, getarraysize(.premioMedio);
+				for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+					mes .premioMedio[.@i] + " - " + getitemname(.premioMedio[.@i]);
+				break;
+			case 3:
+				set .@len, getarraysize(.premioDificil);
+				for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+					mes .premioDificil[.@i] + " - " + getitemname(.premioDificil[.@i]);
+				break;
+		}
+	}
+	close;
+
+OnInit:
+	set .lo$, "^9d90a6(^a9a2ae*^9d90a6)^444246 ";
+	set .ro$, " ^9d90a6(^a9a2ae*^9d90a6)^000000";
+	deletearray .premioFacil[0], getarraysize(.premioFacil);
+	deletearray .premioMedio[0], getarraysize(.premioMedio);
+	deletearray .premioDificil[0], getarraysize(.premioDificil);
+	setarray .premioDificil,
+		2383, // Brynhildr
+		2378, // Assassin's Robe
+		2377, // Elite Engineer's Armor
+		2381, // Elite Marksman Suit
+		2382, // Elite Shooter's Suit
+		2376, // General's Plate Mail
+		2380, // Robe of Order
+		2379, // Wolong's Battle Robe
+		2437, // Combat Boots
+		2435, // Combat Greaves
+		2436, // Military Boots
+		2539, // Commander's Manteau
+		2538, // General's Manteau
+		2540; // Sheriff's Manteau
+	// Premios raros
+	if (rand(10)==0) 
+	{
+		set .premioDificil[getarraysize(.premioDificil)], 5013; // Lord Kaho
+		set .premioDificil[getarraysize(.premioDificil)], 5132; // Angeling Hat
+	}
+	setarray .premioMedio,
+		2375, // Diabolus Armor
+		2537, // Diabolus Manteau
+		4357, // Lord Knight Card
+		2374, // Diabolus Robe
+		2433, // Diabolus Boots
+		2729, // Diabolus Ring
+		4407; // Randgris Card
+	// Premios raros
+	if (rand(10)>=8)
+	{
+		set .premioMedio[getarraysize(.premioMedio)], 5171; // Valkyrie Helm
+		set .premioMedio[getarraysize(.premioMedio)], 5137; // Alice Doll
+	}
+	setarray .premioFacil,
+		4367, // Sniper Card
+		4399, // Thanatos Card
+		2357, // Valkyrie Armor
+		2524, // Valkyrie Manteau
+		4363, // High Priest Card
+		2115, // Valkyrie Shield
+		5022; // Hat of the Sun God
+	end;
+}

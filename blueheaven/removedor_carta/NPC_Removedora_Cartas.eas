@@ -1,0 +1,113 @@
+-	script	Removedora de Cartas	863,{
+	set .@title$, "["+"^ad250a"+"Removedora de Cartas"+"^000000"+"]";
+UPGRADEROOT:
+	mes .@title$;
+	mes "Bom dia, criança. Eu tenho o poder de remover cartas que já foram fundidas em seus equipamentos. Tem algum interesse nesse assunto?";
+	next;
+	menu "Sim.",REMOVEMENU,
+	     "Qual o preço?",REMOVEPRICE,
+	     "Naum vlw.",CLOSEOUT;
+REMOVEPRICE:
+	mes .@title$;
+	if (getgmlevel()) {
+		mes "Para VIPs este serviço é gratuito.";
+	} else {
+		mes "Você deverá me pagar 100000 zeny para cada carta que eu remover do item. Também precisarei de star crumb e yellow gemstone para poder trabalhar com a minha mágica.";
+	}
+	next;
+	menu "Hmm, ok, vamos lá.",REMOVEMENU,
+	     "Naum vlw.",CLOSEOUT;
+REMOVEMENU:
+	mes .@title$;
+	mes "Muito bem, qual item eu devo examinar?";
+	next;
+	menu "Mudei de ideia...",CLOSEOUT,
+	     getequipname(1),SLOT1,
+	     getequipname(2),SLOT2,
+	     getequipname(3),SLOT3,
+	     getequipname(4),SLOT4,
+	     getequipname(5),SLOT5,
+	     getequipname(6),SLOT6,
+	     getequipname(7),SLOT7,
+	     getequipname(8),SLOT8,
+	     getequipname(9),SLOT9,
+	     getequipname(10),SLOT10;
+SLOT1:
+	set @part,1;
+	goto CARDNUMCHECK;
+SLOT2:
+	set @part,2;
+	goto CARDNUMCHECK;
+SLOT3:
+	set @part,3;
+	goto CARDNUMCHECK;
+SLOT4:
+	set @part,4;
+	goto CARDNUMCHECK;
+SLOT5:
+	set @part,5;
+	goto CARDNUMCHECK;
+SLOT6:
+	set @part,6;
+	goto CARDNUMCHECK;
+SLOT7:
+	set @part,7;
+	goto CARDNUMCHECK;
+SLOT8:
+	set @part,8;
+	goto CARDNUMCHECK;
+SLOT9:
+	set @part,9;
+	goto CARDNUMCHECK;
+SLOT10:
+	set @part,10;
+	goto CARDNUMCHECK;
+CARDNUMCHECK:
+	if(getequipcardcnt(@part) == 0) goto DENYCARDCOUNT;
+	set @cardcount,getequipcardcnt(@part);
+	if (getgmlevel()) goto REMOVECARD;
+	if(@cardcount > 1) goto CARDNUMMULTIMSG;
+	mes .@title$;
+	mes "Este item tem " + @cardcount + " cartas equipadas. Para executar minha magia, eu preciso de 100000 zeny, uma ^0000FFStar Crumb^000000, e uma ^0000FFYellow Gemstone^000000.";
+	goto CARDNUMPOSTMSG;
+CARDNUMMULTIMSG:
+	mes .@title$;
+	mes "Este item tem " + @cardcount + " cartas equipadas. Para executar minha magia, eu preciso de " + (@cardcount * 100000) + " zeny, uma ^0000FFStar Crumb^000000, e uma ^0000FFYellow Gemstone^000000.";
+CARDNUMPOSTMSG:
+	next;
+	menu "Hmm, ok, vamos lá.",REMOVECARD,
+	     "Deixa pra lá.",CLOSEOUT;
+REMOVECARD:
+	mes .@title$;
+	mes "Muito bem. Vou começar.";
+	next;
+	if (!getgmlevel()) {
+		if((zeny < (@cardcount * 100000)) || (countitem(1000) < 1) || (countitem(715) < 1)) goto DENYMATERIAL;
+		set zeny, zeny - (@cardcount * 100000);
+		delitem 1000,1;
+		delitem 715,1;
+	}
+	successremovecards @part;
+	mes .@title$;
+	mes "Pronto, ai está seu item.. Volte sempre que precisar.";
+	close;
+DENYCARDCOUNT:
+	mes .@title$;
+	mes "Jovem, não há cartas equipadas eu seu item....";
+	close;
+DENYMATERIAL:
+	next;	
+	mes .@title$;
+	mes "Você não tem os itens que preciso para trabalhar em seu equipamento. Volte outra hora.";
+	close;
+CLOSEOUT:
+	mes .@title$;
+	mes "Muito bem. Volte quando precisar de meus serviços.";
+	close;
+}
+prontera,146,166,4	duplicate(Removedora de Cartas)	Removedora de Cartas#1	863
+morocc,154,97,4	duplicate(Removedora de Cartas)	Removedora de Cartas#2	863
+geffen,126,64,6	duplicate(Removedora de Cartas)	Removedora de Cartas#3	863
+payon,188,104,4	duplicate(Removedora de Cartas)	Removedora de Cartas#4	863
+izlude,134,91,2	duplicate(Removedora de Cartas)	Removedora de Cartas#5	863
+quiz_00,77,36,4	duplicate(Removedora de Cartas)	Removedora de Cartas#6	863

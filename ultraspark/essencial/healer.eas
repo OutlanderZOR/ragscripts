@@ -1,0 +1,141 @@
+//|                         ___           ___                     ___           ___                               
+//|                        /  /\         /  /\      ___          /  /\         /  /\                              
+//|                       /  /:/        /  /:/     /__/\        /  /::\       /  /::\                             
+//|                      /  /:/        /  /:/      \  \:\      /  /:/\:\     /  /:/\:\                            
+//|                     /  /:/        /  /:/        \__\:\    /  /::\ \:\   /  /::\ \:\                           
+//|                    /__/:/     /\ /__/:/         /  /::\  /__/:/\:\_\:\ /__/:/\:\_\:\                          
+//|                    \  \:\    /:/ \  \:\        /  /:/\:\ \__\/~|::\/:/ \__\/  \:\/:/                          
+//|                     \  \:\  /:/   \  \:\      /  /:/__\/    |  |:|::/       \__\::/                           
+//|                      \  \:\/:/     \  \:\    /__/:/         |  |:|\/        /  /:/                            
+//|                       \  \::/       \  \:\   \__\/          |__|:|~        /__/:/                             
+//|                        \__\/         \__\/                   \__\|         \__\/                              
+//|                         ___                         ___           ___           ___                           
+//|                        /  /\          ___          /  /\         /  /\         /  /\                          
+//|                       /  /::\        /  /\        /  /::\       /  /::\       /  /:/                          
+//|                      /__/:/\:\      /  /::\      /  /:/\:\     /  /:/\:\     /  /:/                           
+//|                     _\_ \:\ \:\    /  /:/\:\    /  /::\ \:\   /  /::\ \:\   /  /::\____                       
+//|                    /__/\ \:\ \:\  /  /::\ \:\  /__/:/\:\_\:\ /__/:/\:\_\:\ /__/:/\:::::\                      
+//|                    \  \:\ \:\_\/ /__/:/\:\_\:\ \__\/  \:\/:/ \__\/~|::\/:/ \__\/~|:|~~~~                      
+//|                     \  \:\_\:\   \__\/  \:\/:/      \__\::/     |  |:|::/     |  |:|                          
+//|                      \  \:\/:/        \  \::/       /  /:/      |  |:|\/      |  |:|                          
+//|                       \  \::/          \__\/       /__/:/       |__|:|~       |__|:|                          
+//|                        \__\/                       \__\/         \__\|         \__\|                          
+//|===============================================================================================================
+//|
+//|				H E A L E R
+//|
+//|===============================================================================================================
+//|
+//| Módulo: Script Core
+//| Categoria: Utilidades
+//| Autor: Outlander
+//| Data: 02/10/2012
+//| SQL: Não
+//| 
+//|===============================================================================================================
+-	script	Healer_Core	-1,{
+	end;
+//|===============================================================================================================
+//|	Funções essenciais
+//|===============================================================================================================
+	
+	function f_cutin_normal
+	{
+		cutin "bu_mark1",2;
+		return;
+	}
+	
+	function f_cutin_feliz
+	{
+		cutin "bu_mark2",2;
+		return;
+	}
+
+	function f_color
+	{
+		set .@str$, getarg(0);
+		set .@color$, getarg(1);
+		return "^"+.@color$+.@str$+"^000000";
+	}
+	
+	// Monta string de opção do menu
+	function f_opt
+	{
+		set .@str$, getarg(0);
+		return f_color("(*) ", .color$) + .@str$ + f_color(" (*)", .color$);
+	}
+	
+	function f_destaque
+	{
+		set .@str$, getarg(0);
+		return "^d80505" + .@str$ + "^000000";
+	}
+	
+	function f_player_name
+	{
+		return "^23a0f7" + strcharinfo(0) + "^000000";
+	}
+	
+	function f_sex
+	{
+		set .@str_m$, getarg(0);
+		set .@str_f$, getarg(1);
+		return (Sex?.@str_m$:.@str_f$);
+	}
+	
+//|===============================================================================================================
+//|	Inicialização de variáveis
+//|===============================================================================================================
+OnInit:
+	// Variaveis Warper Padrão
+	set .color$, "41D5F2";
+	set .title$, "[" + f_color("Healer Mark",.color$) + "]";
+	end;
+	
+OnHealer:
+	sc_end SC_POISON;
+	sc_end SC_SILENCE;
+	sc_end SC_CONFUSION;
+	sc_end SC_BLIND;
+	sc_end SC_BLEEDING;
+	sc_end SC_DPOISON;
+	sc_end SC_PROVOKE;
+	sc_end SC_QUAGMIRE;
+	sc_end SC_DECREASEAGI;
+	sc_end SC_AETERNA;
+	sc_end SC_HALLUCINATION;
+	sc_end SC_SLOWDOWN;
+	sc_end SC_STRIPWEAPON;
+	sc_end SC_STRIPSHIELD;
+	sc_end SC_STRIPARMOR;
+	sc_end SC_STRIPHELM;
+	sc_end SC_JOINTBEAT;
+	sc_end SC_CHANGEUNDEAD;
+	sc_end SC_MINDBREAKER;
+	sc_end SC_ORCISH;
+	mes .title$;
+	if((readparam(5)<readparam(6)) || (readparam(7)<readparam(8))) {
+		f_cutin_normal();
+		mes "Você parece estar "+f_sex("ferido", "ferida")+".";
+		mes " ";
+		mes "Tome mais cuidado.";
+		percentheal 100,100;
+		specialeffect2 408;
+		specialeffect2 491;
+	}
+	else
+	{
+		f_cutin_feliz();
+		mes "Err... vc parece estar bem.";
+		mes "Volte quando precisar de cura.";
+	}
+	close2;
+	cutin "",255;
+	end;
+}
+
+
+-	script	Healer	-1,{
+	doevent "Healer_Core::OnHealer";
+	end;
+}

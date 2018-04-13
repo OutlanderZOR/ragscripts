@@ -1,0 +1,25 @@
+function	script	F_SET_VIEWPOINT	{
+	set .@map$, getarg(0);
+	set .@x, getarg(1);
+	set .@y, getarg(2);
+	set .@color, getarg(3);
+	set .@partyid, getarg(4);
+	set .@action, getarg(5);
+	
+	getpartymember .@partyid, 2;
+	set .@len, getarraysize($@partymemberaid);
+	for(set .@i, 0; .@i < .@len; set .@i, .@i + 1)
+	{
+		if (isloggedin($@partymemberaid[.@i]))
+		{
+			attachrid $@partymemberaid[.@i];
+			getmapxy(.@current_map$, .@n_x, .@n_y, 0);
+			if (.@current_map$ == .@map$)
+			{
+				viewpoint .@action, .@x, .@y, 1, .@color;
+			}
+			detachrid $@partymemberaid[.@i];
+		}
+	}
+	return;
+}

@@ -1,0 +1,22 @@
+-	script	AI_WaypointMob	-1,{
+	if(getarraysize(.@ai_action) == 4){ // Checks if the data is formatted correctly.
+		switch(.@ai_action[AI_ACTION_TYPE]){
+			case AI_ACTION_TYPE_DEAD: // We got killed :(
+				if(.@ai_action[AI_ACTION_TAR_TYPE] == AI_ACTION_TAR_TYPE_PC) {
+					getmobdata(.@ai_action[AI_ACTION_SRC], .@mobdata);
+					if(.@mobdata[26]==1) {
+						set $mobsdead[getarraysize($mobsdead)], .@ai_action[AI_ACTION_SRC];
+						if(!rand(100)) {
+							attachrid(.@ai_action[AI_ACTION_TAR]);
+							percentheal 100,100;
+							specialeffect2 408;
+							detachrid;
+						}
+					}
+				}
+				break;
+		}
+	}
+	deletearray .@ai_action, getarraysize(.@ai_action); // Cleans up and frees up memory
+	end;
+}

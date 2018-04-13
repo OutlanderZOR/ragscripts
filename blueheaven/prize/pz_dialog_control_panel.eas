@@ -1,0 +1,68 @@
+//=================================================================================================
+//= CONTROL PANEL DIALOG
+//=================================================================================================
+-	script	D_PZ_CONTROLPANEL	-1,{
+	callfunc("F_PZ_GLOBAL_RESTOREDEFAULTS");
+	callfunc("F_PZ_CP_MAIN");
+	close2;
+	end;
+}
+	
+	
+//	function F_TITLE {
+//		set .@title$, "[" + "^00b293" + "PZ - " + getarg(0) + "^000000" + "]";
+//		return .@title$;
+//	}
+//	
+//L_MAIN:
+//	mes (set .@title$, callfunc("F_PZ_GLOBAL_TITLE", "Painel de controle"));
+//	mes "intro message;
+//	next;
+//	menu "Traders",L_TRADER,"Mantenedores",L_MAINTAINER,"Configurações do script",L_CONFIG_SCRIPT,"Sair",L_EXIT;
+//	
+//L_TRADER:
+//	mes (set .@title$, F_TITLE("Traders"));
+//	mes "";
+//	next;
+//	menu "Novo",L_TRADER_NEW,"Editar",L_TRADER_EDIT,"Remover",L_TRADER_REMOVE,"<< Painel de controle",L_MAIN,"Sair",L_EXIT;
+//
+//L_TRADER_NEW:
+//	mes (set .@title$, F_TITLE("Novo trader"));
+//	mes "Informe o nome de visualização do trader.";
+//	input .@display_name$;
+//	mes "Informe o nome script do trader.";
+//	input .@script_name$;
+//	next;
+//	mes .@title$;
+//	mes "Confirme os dados:";
+//	mes "Display: ^ff0000" + .@display_name$ + "^000000";
+//	mes "Script: ^ff0000" + .@script_name$ + "^000000";
+//	next;
+//	mes "Cadastrar",-,"Redefinir",L_TRADER_NEW;
+//	mes .@title$;
+//	if (callfunc("F_PZ_TRADER_NEW", .@display_name$, .@script_name$)) {
+//		mes "Trader cadastrado.";
+//	} else {
+//		mes @error$;
+//	}
+//	next;
+//	goto L_TRADER;
+//	
+//L_TRADER_EDIT:
+//	set .@item_index, 0;
+//L_TRADER_EDIT_PAGE_VIEW:
+//	mes (set .@title$, F_TITLE("Editar trader " + .@item_index + " - " + (.@item_index+$pz_page_size)));
+//	mes "Selecione o trader.";
+//	set .@item_index, callfunc("F_PZ_TRADER_VIEW", .@item_index);
+//	switch(select("Selecionar:Avançar >>:Retornar <<") {
+//		case 1:
+//			
+//	}
+//	
+//L_EXIT:
+//	mes .@title$;
+//	mes "exit message";
+//	close;
+//	
+
+prontera,150,150,4	duplicate(D_PZ_CONTROLPANEL)	D_PZ_CONTROLPANEL#dpz01	100

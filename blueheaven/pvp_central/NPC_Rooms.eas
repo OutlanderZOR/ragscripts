@@ -1,0 +1,196 @@
+//==================================================================================================
+//= CONTROLE
+//==================================================================================================
+-	script	mapchange	-1,{
+	end;
+OnInit:
+	deletearray $pvp_map_aloc[0], getarraysize($pvp_map_aloc);
+OnTimer1800000: // 30 minutos
+OnMapChange:
+	stopnpctimer;
+	initnpctimer;
+	announce "(>) Alteração automática de mapas! (<)", 0;
+	callfunc("F_LOAD_PVP_ROOM", "PvP Room 1", 0);
+	callfunc("F_LOAD_PVP_ROOM", "PvP Room 2", 0);
+	//callfunc("F_LOAD_PVP_ROOM", "PvP Room 3", 0);
+	callfunc("F_LOAD_PVP_ROOM", "PvP Room 4", 1);
+	callfunc("F_LOAD_PVP_ROOM", "PvP Room 5", 1);
+	end;
+}
+
+
+//==================================================================================================
+//= SALA 1
+//==================================================================================================
+pvp_y_room,30,85,4	script	PvP Room 1	105,{
+	callfunc("F_DIALOGO_PVP_ROOM", .gat_name$, .spawn_x, .spawn_y, .name$, .ranked);
+	end;
+	
+OnLoad:
+	delwaitingroom;
+	waitingroom "NR-" + .name$, 0;
+	end;
+	
+OnLoadFail:
+	delwaitingroom;
+	waitingroom "Erro", 0;
+	end;
+}
+//==================================================================================================
+//= SALA 2
+//==================================================================================================
+pvp_y_room.gat,38,85,4	script	PvP Room 2	105,{
+	callfunc("F_DIALOGO_PVP_ROOM", .gat_name$, .spawn_x, .spawn_y, .name$, .ranked);
+	end;
+	
+OnLoad:
+	delwaitingroom;
+	waitingroom "NR-" + .name$, 0;
+	end;
+	
+OnLoadFail:
+	delwaitingroom;
+	waitingroom "Erro", 0;
+	end;
+}
+
+//==================================================================================================
+//= SALA 3
+//==================================================================================================
+pvp_y_room.gat,46,85,4	script	PvP Room 3	105,{
+	set .@title$, "[" + "^ff0000" + "Informações" + "^000000" + "]";
+	mes .@title$;
+	mes "Bem vindo.";
+	mes "Esta é a central de PVP, onde todas as modalidades de PVP serão disponibilizadas.";
+	next;
+	mes .@title$;
+	mes "A esquerda estão todas as salas de PVP sem ranking e a direita estão as salas com ranking.";
+	next;
+	mes .@title$;
+	mes "Nas salas sem ranking é possível utilizar todo tipo de equipamento e cartas.";
+	next;
+	mes .@title$;
+	mes "Nas salas com ranking todas as cartas de MVP são bloqueadas e os únicos itens de cura permitidos são os comercializados pelas lojas da central.";
+	next;
+	mes .@title$;
+	mes "O objetivo do pvp sem ranking é disponibilizar o PVP original do RO.";
+	next;
+	mes .@title$;
+	mes "O objetivo do pvp com ranking é oferecer uma experiencia de PVP balanceado para disputas mais justas, junto a efeitos especiais exclusivos e sistema de reputação.";
+	next;
+	mes .@title$;
+	mes "Divirta-se!";
+	close;
+	//callfunc("F_DIALOGO_PVP_ROOM", .gat_name$, .spawn_x, .spawn_y, .name$, .ranked);
+	end;
+	
+OnInit:
+	delwaitingroom;
+	waitingroom "<<< NR | R >>>", 0;
+	sleep 5000;
+	delwaitingroom;
+	waitingroom "Informações aqui!", 0;
+	sleep 5000;
+	delwaitingroom;
+	waitingroom "Central de PVP", 0;
+	sleep 5000;
+	goto OnInit;
+	end;
+	
+OnLoad:
+	delwaitingroom;
+	waitingroom "R-" + .name$, 0;
+	end;
+	
+OnLoadFail:
+	delwaitingroom;
+	waitingroom "Erro", 0;
+	end;
+}
+
+//==================================================================================================
+//= SALA 4
+//==================================================================================================
+pvp_y_room.gat,54,85,4	script	PvP Room 4	105,{
+	callfunc("F_DIALOGO_PVP_ROOM", .gat_name$, .spawn_x, .spawn_y, .name$, .ranked);
+	end;
+	
+OnLoad:
+	delwaitingroom;
+	waitingroom "R-" + .name$, 0;
+	end;
+	
+OnLoadFail:
+	delwaitingroom;
+	waitingroom "Erro", 0;
+	end;
+}
+
+//==================================================================================================
+//= SALA 5
+//==================================================================================================
+pvp_y_room.gat,62,85,4	script	PvP Room 5	105,{
+	callfunc("F_DIALOGO_PVP_ROOM", .gat_name$, .spawn_x, .spawn_y, .name$, .ranked);
+	end;
+	
+OnLoad:
+	delwaitingroom;
+	waitingroom "R-" + .name$, 0;
+	end;
+	
+OnLoadFail:
+	delwaitingroom;
+	waitingroom "Erro", 0;
+	end;
+}
+//==================================================================================================
+//= SALA 6
+//==================================================================================================
+pvp_y_room.gat,70,85,4	script	PvP Room 6	105,{
+	callfunc("F_DIALOGO_PVP_ROOM", .gat_name$, .spawn_x, .spawn_y, .name$, .ranked);
+	end;
+	
+OnLoad:
+	delwaitingroom;
+	waitingroom .name$, 0;
+	end;
+	
+OnLoadFail:
+	delwaitingroom;
+	waitingroom "Erro", 0;
+	end;
+}
+//==================================================================================================
+//= SALA 7
+//==================================================================================================
+pvp_y_room.gat,78,85,4	script	PvP Room 7	105,{
+	callfunc("F_DIALOGO_PVP_ROOM", .gat_name$, .spawn_x, .spawn_y, .name$, .ranked);
+	end;
+	
+OnLoad:
+	delwaitingroom;
+	waitingroom .name$, 0;
+	end;
+	
+OnLoadFail:
+	delwaitingroom;
+	waitingroom "Erro", 0;
+	end;
+}
+//==================================================================================================
+//= SALA 8
+//==================================================================================================
+pvp_y_room.gat,86,85,4	script	PvP Room 8	105,{
+	callfunc("F_DIALOGO_PVP_ROOM", .gat_name$, .spawn_x, .spawn_y, .name$, .ranked);
+	end;
+	
+OnLoad:
+	delwaitingroom;
+	waitingroom .name$, 0;
+	end;
+	
+OnLoadFail:
+	delwaitingroom;
+	waitingroom "Erro", 0;
+	end;
+}

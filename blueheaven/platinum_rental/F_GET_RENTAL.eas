@@ -1,0 +1,13 @@
+function	script	F_GET_RENTAL	{
+	set .@success, 1;
+	if ((BaseClass == Job_Merchant || BaseJob == Job_SuperNovice) && checkcart() == 0 && getskilllv("MC_PUSHCART")>0) {
+		setcart;
+	} else if (BaseJob != Job_Archer && BaseClass == Job_Archer && checkfalcon() == 0 && getskilllv("HT_FALCON")>0) {
+		setfalcon;
+	} else if (BaseJob != Job_Swordman && BaseClass == Job_Swordman && checkriding() == 0 && getskilllv("KN_RIDING")>0) {
+		setriding;
+	} else {
+		set .@success, 0;
+	}
+	return .@success;
+}
